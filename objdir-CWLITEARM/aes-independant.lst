@@ -1,0 +1,608 @@
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 4
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"aes-independant.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.file 1 "../../firmware/mcu/crypto/aes-independant.c"
+  18              		.section	.text.change_ok_led,"ax",%progbits
+  19              		.align	1
+  20              		.weak	change_ok_led
+  21              		.syntax unified
+  22              		.thumb
+  23              		.thumb_func
+  25              	change_ok_led:
+  26              	.LFB11:
+  27              		.cfi_startproc
+  28              		.file 2 "../../firmware/mcu/hal/hal.h"
+   1:../../firmware/mcu/hal/hal.h **** /*
+   2:../../firmware/mcu/hal/hal.h ****     This file is part of the ChipWhisperer Example Targets
+   3:../../firmware/mcu/hal/hal.h ****     Copyright (C) 2012-2015 NewAE Technology Inc.
+   4:../../firmware/mcu/hal/hal.h **** 
+   5:../../firmware/mcu/hal/hal.h ****     This program is free software: you can redistribute it and/or modify
+   6:../../firmware/mcu/hal/hal.h ****     it under the terms of the GNU General Public License as published by
+   7:../../firmware/mcu/hal/hal.h ****     the Free Software Foundation, either version 3 of the License, or
+   8:../../firmware/mcu/hal/hal.h ****     (at your option) any later version.
+   9:../../firmware/mcu/hal/hal.h **** 
+  10:../../firmware/mcu/hal/hal.h ****     This program is distributed in the hope that it will be useful,
+  11:../../firmware/mcu/hal/hal.h ****     but WITHOUT ANY WARRANTY; without even the implied warranty of
+  12:../../firmware/mcu/hal/hal.h ****     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  13:../../firmware/mcu/hal/hal.h ****     GNU General Public License for more details.
+  14:../../firmware/mcu/hal/hal.h **** 
+  15:../../firmware/mcu/hal/hal.h ****     You should have received a copy of the GNU General Public License
+  16:../../firmware/mcu/hal/hal.h ****     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  17:../../firmware/mcu/hal/hal.h **** */
+  18:../../firmware/mcu/hal/hal.h **** 
+  19:../../firmware/mcu/hal/hal.h **** #ifndef HAL_H_
+  20:../../firmware/mcu/hal/hal.h **** #define HAL_H_
+  21:../../firmware/mcu/hal/hal.h **** 
+  22:../../firmware/mcu/hal/hal.h **** #include <stdint.h>
+  23:../../firmware/mcu/hal/hal.h **** 
+  24:../../firmware/mcu/hal/hal.h **** void platform_init(void);
+  25:../../firmware/mcu/hal/hal.h **** 
+  26:../../firmware/mcu/hal/hal.h **** //PLATFORM Define Types
+  27:../../firmware/mcu/hal/hal.h **** #define CW301_AVR      1
+  28:../../firmware/mcu/hal/hal.h **** #define CW301_XMEGA    2
+  29:../../firmware/mcu/hal/hal.h **** #define CW303          3
+  30:../../firmware/mcu/hal/hal.h **** #define CW304          4
+  31:../../firmware/mcu/hal/hal.h **** #define CW308_MEGARF   8
+  32:../../firmware/mcu/hal/hal.h **** #define CW308_PIC24FJ  10
+  33:../../firmware/mcu/hal/hal.h **** #define CW308_SAM4L    11
+  34:../../firmware/mcu/hal/hal.h **** #define CW308_SI4010   12
+  35:../../firmware/mcu/hal/hal.h **** #define CW308_MPC5748G 13
+  36:../../firmware/mcu/hal/hal.h **** #define CW308_STM32F0  14
+  37:../../firmware/mcu/hal/hal.h **** #define CW308_STM32F1  15
+  38:../../firmware/mcu/hal/hal.h **** #define CW308_STM32F2  16
+  39:../../firmware/mcu/hal/hal.h **** #define CW308_STM32F3  17
+  40:../../firmware/mcu/hal/hal.h **** #define CW308_STM32F4  18
+  41:../../firmware/mcu/hal/hal.h **** #define CW308_CC2538   19
+  42:../../firmware/mcu/hal/hal.h **** #define CW308_K24F     20
+  43:../../firmware/mcu/hal/hal.h **** #define CW308_NRF52840 21
+  44:../../firmware/mcu/hal/hal.h **** #define CW308_AURIX    22
+  45:../../firmware/mcu/hal/hal.h **** #define CW308_SAML11   23
+  46:../../firmware/mcu/hal/hal.h **** #define CW308_EFM32TG11B 24
+  47:../../firmware/mcu/hal/hal.h **** #define CW308_K82F     25
+  48:../../firmware/mcu/hal/hal.h **** #define CW308_LPC55S6X 26
+  49:../../firmware/mcu/hal/hal.h **** #define CW308_PSOC62   27
+  50:../../firmware/mcu/hal/hal.h **** #define CW308_IMXRT1062 28
+  51:../../firmware/mcu/hal/hal.h **** #define CW308_FE310    29
+  52:../../firmware/mcu/hal/hal.h **** #define CW308_EFR32MG21A  30
+  53:../../firmware/mcu/hal/hal.h **** #define CW308_EFM32GG11  31
+  54:../../firmware/mcu/hal/hal.h **** #define CW308_STM32L5  32
+  55:../../firmware/mcu/hal/hal.h **** #define CW308_STM32L4  33
+  56:../../firmware/mcu/hal/hal.h **** #define CW308_RX65N  34
+  57:../../firmware/mcu/hal/hal.h **** #define CW308_MPC5676R 35
+  58:../../firmware/mcu/hal/hal.h **** #define CW308_NEORV32  36
+  59:../../firmware/mcu/hal/hal.h **** #define CW305_IBEX  37
+  60:../../firmware/mcu/hal/hal.h **** 
+  61:../../firmware/mcu/hal/hal.h **** //HAL_TYPE Define Types
+  62:../../firmware/mcu/hal/hal.h **** #define HAL_avr      1
+  63:../../firmware/mcu/hal/hal.h **** #define HAL_xmega    2
+  64:../../firmware/mcu/hal/hal.h **** #define HAL_pic24f   3
+  65:../../firmware/mcu/hal/hal.h **** #define HAL_sam4l    4
+  66:../../firmware/mcu/hal/hal.h **** #define HAL_stm32f0  5
+  67:../../firmware/mcu/hal/hal.h **** #define HAL_stm32f1  6
+  68:../../firmware/mcu/hal/hal.h **** #define HAL_stm32f2  7
+  69:../../firmware/mcu/hal/hal.h **** #define HAL_stm32f3  8
+  70:../../firmware/mcu/hal/hal.h **** #define HAL_stm32f4  9
+  71:../../firmware/mcu/hal/hal.h **** #define HAL_cc2538   10
+  72:../../firmware/mcu/hal/hal.h **** #define HAL_k24f     11
+  73:../../firmware/mcu/hal/hal.h **** #define HAL_nrf52840 12
+  74:../../firmware/mcu/hal/hal.h **** #define HAL_stm32f0_nano 13
+  75:../../firmware/mcu/hal/hal.h **** #define HAL_aurix    14
+  76:../../firmware/mcu/hal/hal.h **** #define HAL_saml11   15
+  77:../../firmware/mcu/hal/hal.h **** #define HAL_efm32tg11b 16
+  78:../../firmware/mcu/hal/hal.h **** #define HAL_k82f     17
+  79:../../firmware/mcu/hal/hal.h **** #define HAL_lpc55s6x 18
+  80:../../firmware/mcu/hal/hal.h **** #define HAL_psoc62   19
+  81:../../firmware/mcu/hal/hal.h **** #define HAL_imxrt1062 20
+  82:../../firmware/mcu/hal/hal.h **** #define HAL_fe310    21
+  83:../../firmware/mcu/hal/hal.h **** #define HAL_efr32mg21a 22
+  84:../../firmware/mcu/hal/hal.h **** #define HAL_efm32gg11 23
+  85:../../firmware/mcu/hal/hal.h **** #define HAL_stm32l5 24
+  86:../../firmware/mcu/hal/hal.h **** #define HAL_stm32l4 25
+  87:../../firmware/mcu/hal/hal.h **** #define HAL_rx65n 26
+  88:../../firmware/mcu/hal/hal.h **** #define HAL_mpc5676r 27
+  89:../../firmware/mcu/hal/hal.h **** #define HAL_neorv32  28
+  90:../../firmware/mcu/hal/hal.h **** #define HAL_sam4s  29
+  91:../../firmware/mcu/hal/hal.h **** #define HAL_ibex  30
+  92:../../firmware/mcu/hal/hal.h **** 
+  93:../../firmware/mcu/hal/hal.h **** #if HAL_TYPE == HAL_avr
+  94:../../firmware/mcu/hal/hal.h ****     #include <avr/io.h>
+  95:../../firmware/mcu/hal/hal.h ****     #include <util/delay.h>
+  96:../../firmware/mcu/hal/hal.h ****     #include "avr/avr_hal.h"
+  97:../../firmware/mcu/hal/hal.h **** #elif HAL_TYPE == HAL_xmega
+  98:../../firmware/mcu/hal/hal.h ****     #include <avr/io.h>
+  99:../../firmware/mcu/hal/hal.h ****     #include <util/delay.h>
+ 100:../../firmware/mcu/hal/hal.h ****     #include "xmega/xmega_hal.h"
+ 101:../../firmware/mcu/hal/hal.h ****     #include "xmega/avr_compiler.h"
+ 102:../../firmware/mcu/hal/hal.h **** #elif HAL_TYPE == HAL_pic24f
+ 103:../../firmware/mcu/hal/hal.h ****     #include <xc.h>
+ 104:../../firmware/mcu/hal/hal.h ****     #include "pic24f/pic24f_hal.h"
+ 105:../../firmware/mcu/hal/hal.h ****     #include "pic24f/uart.h"
+ 106:../../firmware/mcu/hal/hal.h **** #elif HAL_TYPE == HAL_sam4l
+ 107:../../firmware/mcu/hal/hal.h ****     #include "chipwhisperer-fw-extra/sam4l/sam4l_hal.h"
+ 108:../../firmware/mcu/hal/hal.h **** #elif HAL_TYPE == HAL_stm32f0
+ 109:../../firmware/mcu/hal/hal.h **** 	#include "stm32f0/stm32f0_hal.h"
+ 110:../../firmware/mcu/hal/hal.h **** #elif HAL_TYPE == HAL_stm32f1
+ 111:../../firmware/mcu/hal/hal.h **** 	#include "chipwhisperer-fw-extra/stm32f1/stm32f1_hal.h"
+ 112:../../firmware/mcu/hal/hal.h **** #elif HAL_TYPE == HAL_stm32f2
+ 113:../../firmware/mcu/hal/hal.h **** 	#include "chipwhisperer-fw-extra/stm32f2/stm32f2_hal.h"
+ 114:../../firmware/mcu/hal/hal.h **** #elif HAL_TYPE == HAL_stm32f3
+ 115:../../firmware/mcu/hal/hal.h **** 	#include "stm32f3/stm32f3_hal.h"
+ 116:../../firmware/mcu/hal/hal.h **** 	#ifdef SECCAN
+ 117:../../firmware/mcu/hal/hal.h **** 		#include "stm32f3/stm32f3_hal_seccan.h"
+ 118:../../firmware/mcu/hal/hal.h **** 	#endif
+ 119:../../firmware/mcu/hal/hal.h **** #elif HAL_TYPE == HAL_stm32f4
+ 120:../../firmware/mcu/hal/hal.h **** 	#include "chipwhisperer-fw-extra/stm32f4/stm32f4_hal.h"
+ 121:../../firmware/mcu/hal/hal.h **** #elif HAL_TYPE == HAL_cc2538
+ 122:../../firmware/mcu/hal/hal.h **** 	#include "chipwhisperer-fw-extra/cc2538/cc2538_hal.h"
+ 123:../../firmware/mcu/hal/hal.h **** #elif HAL_TYPE == HAL_k24f
+ 124:../../firmware/mcu/hal/hal.h ****     #include "chipwhisperer-fw-extra/k24f/k24f_hal.h"
+ 125:../../firmware/mcu/hal/hal.h **** #elif HAL_TYPE == HAL_k82f
+ 126:../../firmware/mcu/hal/hal.h **** #include "chipwhisperer-fw-extra/k82f/k82f_hal.h"
+ 127:../../firmware/mcu/hal/hal.h **** #elif HAL_TYPE == HAL_nrf52840
+ 128:../../firmware/mcu/hal/hal.h ****     #include "chipwhisperer-fw-extra/nrf52840/nrf52840_hal.h"   
+ 129:../../firmware/mcu/hal/hal.h **** #elif HAL_TYPE == HAL_stm32f0_nano
+ 130:../../firmware/mcu/hal/hal.h ****     #include "stm32f0/stm32f0_hal.h" 
+ 131:../../firmware/mcu/hal/hal.h ****     void led_error(unsigned int status);
+ 132:../../firmware/mcu/hal/hal.h ****     void led_ok(unsigned int status);
+ 133:../../firmware/mcu/hal/hal.h **** #elif HAL_TYPE == HAL_aurix
+ 134:../../firmware/mcu/hal/hal.h ****     #include "chipwhisperer-fw-extra/aurix/aurix_hal.h"
+ 135:../../firmware/mcu/hal/hal.h **** #elif HAL_TYPE == HAL_saml11
+ 136:../../firmware/mcu/hal/hal.h ****      #include "chipwhisperer-fw-extra/saml11/saml11_hal.h"
+ 137:../../firmware/mcu/hal/hal.h **** #elif HAL_TYPE == HAL_efm32tg11b
+ 138:../../firmware/mcu/hal/hal.h ****      #include "chipwhisperer-fw-extra/efm32tg11b/efm32tg11b_hal.h"
+ 139:../../firmware/mcu/hal/hal.h **** #elif HAL_TYPE == HAL_lpc55s6x
+ 140:../../firmware/mcu/hal/hal.h ****      #include "chipwhisperer-fw-extra/lpc55s6x/lpc55s6x_hal.h"
+ 141:../../firmware/mcu/hal/hal.h **** #elif HAL_TYPE == HAL_psoc62
+ 142:../../firmware/mcu/hal/hal.h ****     #include "chipwhisperer-fw-extra/psoc62/psoc62_hal.h"
+ 143:../../firmware/mcu/hal/hal.h **** #elif HAL_TYPE == HAL_imxrt1062
+ 144:../../firmware/mcu/hal/hal.h ****     #include "chipwhisperer-fw-extra/imxrt1062/imxrt1062_hal.h"
+ 145:../../firmware/mcu/hal/hal.h **** #elif HAL_TYPE == HAL_fe310
+ 146:../../firmware/mcu/hal/hal.h ****     #include "chipwhisperer-fw-extra/fe310/fe310_hal.h"
+ 147:../../firmware/mcu/hal/hal.h **** #elif HAL_TYPE == HAL_efr32mg21a
+ 148:../../firmware/mcu/hal/hal.h ****     #include "chipwhisperer-fw-extra/efr32mg21a/efr32mg21a_hal.h"
+ 149:../../firmware/mcu/hal/hal.h **** #elif HAL_TYPE == HAL_efm32gg11
+ 150:../../firmware/mcu/hal/hal.h ****     #include "chipwhisperer-fw-extra/efm32gg11/efm32gg11_hal.h"
+ 151:../../firmware/mcu/hal/hal.h **** #elif HAL_TYPE == HAL_stm32l5
+ 152:../../firmware/mcu/hal/hal.h ****     #include "chipwhisperer-fw-extra/stm32l5/stm32l5_hal.h"
+ 153:../../firmware/mcu/hal/hal.h **** #elif HAL_TYPE == HAL_stm32l4
+ 154:../../firmware/mcu/hal/hal.h ****     #include "chipwhisperer-fw-extra/stm32l4/stm32l4_hal.h"
+ 155:../../firmware/mcu/hal/hal.h **** #elif HAL_TYPE == HAL_rx65n
+ 156:../../firmware/mcu/hal/hal.h ****     #include "chipwhisperer-fw-extra/rx65n/rx65n_hal.h"
+ 157:../../firmware/mcu/hal/hal.h **** #elif HAL_TYPE == HAL_mpc5676r
+ 158:../../firmware/mcu/hal/hal.h ****     #include "chipwhisperer-fw-extra/mpc5676r/MPC5676R_hal.h"
+ 159:../../firmware/mcu/hal/hal.h **** #elif HAL_TYPE == HAL_neorv32
+ 160:../../firmware/mcu/hal/hal.h ****     #include "chipwhisperer-fw-extra/neorv32/neorv32_hal.h"
+ 161:../../firmware/mcu/hal/hal.h **** #elif HAL_TYPE == HAL_sam4s
+ 162:../../firmware/mcu/hal/hal.h ****     #include "sam4s/sam4s_hal.h"
+ 163:../../firmware/mcu/hal/hal.h **** #elif HAL_TYPE == HAL_ibex
+ 164:../../firmware/mcu/hal/hal.h ****     #include "ibex/ibex_hal.h"
+ 165:../../firmware/mcu/hal/hal.h **** #else
+ 166:../../firmware/mcu/hal/hal.h ****     #error "Unsupported HAL Type"
+ 167:../../firmware/mcu/hal/hal.h **** #endif
+ 168:../../firmware/mcu/hal/hal.h **** 
+ 169:../../firmware/mcu/hal/hal.h **** #if PLATFORM == CW308_MEGARF
+ 170:../../firmware/mcu/hal/hal.h ****     #undef trigger_setup
+ 171:../../firmware/mcu/hal/hal.h ****     #undef trigger_high
+ 172:../../firmware/mcu/hal/hal.h ****     #undef trigger_low
+ 173:../../firmware/mcu/hal/hal.h ****     #define trigger_setup() DDRD |= 0x02
+ 174:../../firmware/mcu/hal/hal.h ****     #define trigger_high()  PORTD |= 0x02
+ 175:../../firmware/mcu/hal/hal.h ****     #define trigger_low()   PORTD &= ~(0x02)
+ 176:../../firmware/mcu/hal/hal.h ****     
+ 177:../../firmware/mcu/hal/hal.h ****     #define HW_AES128_Init();      AES_CTRL = 0x00;
+ 178:../../firmware/mcu/hal/hal.h **** 
+ 179:../../firmware/mcu/hal/hal.h ****     #define HW_AES128_LoadKey(key);  for (uint8_t i = 0; i < 16; i++){ \
+ 180:../../firmware/mcu/hal/hal.h ****                                      AES_KEY = *(key+i); \
+ 181:../../firmware/mcu/hal/hal.h ****                                   }
+ 182:../../firmware/mcu/hal/hal.h **** 
+ 183:../../firmware/mcu/hal/hal.h ****     #define HW_AES128_Enc(pt);  for (uint8_t i = 0; i < 16; i++){ \
+ 184:../../firmware/mcu/hal/hal.h ****                                     AES_STATE = *(pt+i); \
+ 185:../../firmware/mcu/hal/hal.h ****                                 } \
+ 186:../../firmware/mcu/hal/hal.h ****                                   \
+ 187:../../firmware/mcu/hal/hal.h ****                                 AES_CTRL |= 1<<AES_REQUEST; \
+ 188:../../firmware/mcu/hal/hal.h ****                                   \
+ 189:../../firmware/mcu/hal/hal.h ****                                 /*Wait for done  */ \
+ 190:../../firmware/mcu/hal/hal.h ****                                 while ((AES_STATUS & (1<<AES_DONE)) == 0){ \
+ 191:../../firmware/mcu/hal/hal.h ****                                     ; \
+ 192:../../firmware/mcu/hal/hal.h ****                                 } \
+ 193:../../firmware/mcu/hal/hal.h ****                                   \
+ 194:../../firmware/mcu/hal/hal.h ****                                 for (uint8_t i = 0; i < 16; i++){ \
+ 195:../../firmware/mcu/hal/hal.h ****                                     *(pt+i) = AES_STATE; \
+ 196:../../firmware/mcu/hal/hal.h ****                                 }
+ 197:../../firmware/mcu/hal/hal.h ****     
+ 198:../../firmware/mcu/hal/hal.h **** #endif
+ 199:../../firmware/mcu/hal/hal.h **** 
+ 200:../../firmware/mcu/hal/hal.h **** __attribute__((weak)) void led_ok(unsigned int status)
+  29              		.loc 2 200 28 view -0
+  30              		@ args = 0, pretend = 0, frame = 0
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
+  32              		@ link register save eliminated.
+  33 0000 7047     		bx	lr
+  34              		.cfi_endproc
+  35              	.LFE11:
+  37              		.section	.text.change_err_led,"ax",%progbits
+  38              		.align	1
+  39              		.weak	change_err_led
+  40              		.syntax unified
+  41              		.thumb
+  42              		.thumb_func
+  44              	change_err_led:
+  45              	.LVL0:
+  46              	.LFB1:
+ 201:../../firmware/mcu/hal/hal.h **** {
+ 202:../../firmware/mcu/hal/hal.h **** }
+ 203:../../firmware/mcu/hal/hal.h **** 
+ 204:../../firmware/mcu/hal/hal.h **** __attribute__((weak)) void led_error(unsigned int status)
+ 205:../../firmware/mcu/hal/hal.h **** {
+  47              		.loc 2 205 1 view -0
+  48              		.cfi_startproc
+  49              		@ args = 0, pretend = 0, frame = 0
+  50              		@ frame_needed = 0, uses_anonymous_args = 0
+  51              		@ link register save eliminated.
+ 206:../../firmware/mcu/hal/hal.h **** }
+  52              		.loc 2 206 1 view .LVU2
+  53 0000 7047     		bx	lr
+  54              		.cfi_endproc
+  55              	.LFE1:
+  57              		.section	.text.aes_indep_init,"ax",%progbits
+  58              		.align	1
+  59              		.global	aes_indep_init
+  60              		.syntax unified
+  61              		.thumb
+  62              		.thumb_func
+  64              	aes_indep_init:
+  65              	.LFB2:
+   1:../../firmware/mcu/crypto/aes-independant.c **** /*
+   2:../../firmware/mcu/crypto/aes-independant.c ****     This file is part of the AESExplorer Example Targets
+   3:../../firmware/mcu/crypto/aes-independant.c ****     Copyright (C) 2012 Colin O'Flynn <coflynn@newae.com>
+   4:../../firmware/mcu/crypto/aes-independant.c **** 
+   5:../../firmware/mcu/crypto/aes-independant.c ****     This program is free software: you can redistribute it and/or modify
+   6:../../firmware/mcu/crypto/aes-independant.c ****     it under the terms of the GNU General Public License as published by
+   7:../../firmware/mcu/crypto/aes-independant.c ****     the Free Software Foundation, either version 3 of the License, or
+   8:../../firmware/mcu/crypto/aes-independant.c ****     (at your option) any later version.
+   9:../../firmware/mcu/crypto/aes-independant.c **** 
+  10:../../firmware/mcu/crypto/aes-independant.c ****     This program is distributed in the hope that it will be useful,
+  11:../../firmware/mcu/crypto/aes-independant.c ****     but WITHOUT ANY WARRANTY; without even the implied warranty of
+  12:../../firmware/mcu/crypto/aes-independant.c ****     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  13:../../firmware/mcu/crypto/aes-independant.c ****     GNU General Public License for more details.
+  14:../../firmware/mcu/crypto/aes-independant.c **** 
+  15:../../firmware/mcu/crypto/aes-independant.c ****     You should have received a copy of the GNU General Public License
+  16:../../firmware/mcu/crypto/aes-independant.c ****     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  17:../../firmware/mcu/crypto/aes-independant.c **** */
+  18:../../firmware/mcu/crypto/aes-independant.c **** 
+  19:../../firmware/mcu/crypto/aes-independant.c **** #include "aes-independant.h"
+  20:../../firmware/mcu/crypto/aes-independant.c **** #include "hal.h"
+  21:../../firmware/mcu/crypto/aes-independant.c **** 
+  22:../../firmware/mcu/crypto/aes-independant.c **** #if HWCRYPTO
+  23:../../firmware/mcu/crypto/aes-independant.c **** 
+  24:../../firmware/mcu/crypto/aes-independant.c **** void aes_indep_init(void)
+  25:../../firmware/mcu/crypto/aes-independant.c **** {
+  26:../../firmware/mcu/crypto/aes-independant.c ****     HW_AES128_Init();
+  27:../../firmware/mcu/crypto/aes-independant.c **** }
+  28:../../firmware/mcu/crypto/aes-independant.c **** 
+  29:../../firmware/mcu/crypto/aes-independant.c **** void aes_indep_key(uint8_t * key)
+  30:../../firmware/mcu/crypto/aes-independant.c **** {
+  31:../../firmware/mcu/crypto/aes-independant.c ****     HW_AES128_LoadKey(key);
+  32:../../firmware/mcu/crypto/aes-independant.c **** }
+  33:../../firmware/mcu/crypto/aes-independant.c **** 
+  34:../../firmware/mcu/crypto/aes-independant.c **** void aes_indep_enc_pretrigger(uint8_t * pt)
+  35:../../firmware/mcu/crypto/aes-independant.c **** {
+  36:../../firmware/mcu/crypto/aes-independant.c ****     HW_AES128_Enc_pretrigger(pt);
+  37:../../firmware/mcu/crypto/aes-independant.c **** }
+  38:../../firmware/mcu/crypto/aes-independant.c **** 
+  39:../../firmware/mcu/crypto/aes-independant.c **** void aes_indep_enc_posttrigger(uint8_t * pt)
+  40:../../firmware/mcu/crypto/aes-independant.c **** {
+  41:../../firmware/mcu/crypto/aes-independant.c ****     HW_AES128_Enc_posttrigger(pt);
+  42:../../firmware/mcu/crypto/aes-independant.c **** }
+  43:../../firmware/mcu/crypto/aes-independant.c **** 
+  44:../../firmware/mcu/crypto/aes-independant.c **** void aes_indep_enc(uint8_t * pt)
+  45:../../firmware/mcu/crypto/aes-independant.c **** {
+  46:../../firmware/mcu/crypto/aes-independant.c ****     HW_AES128_Enc(pt);
+  47:../../firmware/mcu/crypto/aes-independant.c **** }
+  48:../../firmware/mcu/crypto/aes-independant.c **** 
+  49:../../firmware/mcu/crypto/aes-independant.c **** void aes_indep_mask(uint8_t * m, uint8_t len)
+  50:../../firmware/mcu/crypto/aes-independant.c **** {
+  51:../../firmware/mcu/crypto/aes-independant.c **** }
+  52:../../firmware/mcu/crypto/aes-independant.c **** 
+  53:../../firmware/mcu/crypto/aes-independant.c **** #elif defined(AVRCRYPTOLIB)
+  54:../../firmware/mcu/crypto/aes-independant.c **** #include "aes128_enc.h"
+  55:../../firmware/mcu/crypto/aes-independant.c **** #include "aes_keyschedule.h"
+  56:../../firmware/mcu/crypto/aes-independant.c **** 
+  57:../../firmware/mcu/crypto/aes-independant.c **** aes128_ctx_t ctx;
+  58:../../firmware/mcu/crypto/aes-independant.c **** 
+  59:../../firmware/mcu/crypto/aes-independant.c **** void aes_indep_init(void)
+  60:../../firmware/mcu/crypto/aes-independant.c **** {
+  61:../../firmware/mcu/crypto/aes-independant.c **** 	;
+  62:../../firmware/mcu/crypto/aes-independant.c **** }
+  63:../../firmware/mcu/crypto/aes-independant.c **** 
+  64:../../firmware/mcu/crypto/aes-independant.c **** void aes_indep_key(uint8_t * key)
+  65:../../firmware/mcu/crypto/aes-independant.c **** {
+  66:../../firmware/mcu/crypto/aes-independant.c **** 	aes128_init(key, &ctx);
+  67:../../firmware/mcu/crypto/aes-independant.c **** }
+  68:../../firmware/mcu/crypto/aes-independant.c **** 
+  69:../../firmware/mcu/crypto/aes-independant.c **** void aes_indep_enc(uint8_t * pt)
+  70:../../firmware/mcu/crypto/aes-independant.c **** {
+  71:../../firmware/mcu/crypto/aes-independant.c **** 	aes128_enc(pt, &ctx); /* encrypting the data block */
+  72:../../firmware/mcu/crypto/aes-independant.c **** }
+  73:../../firmware/mcu/crypto/aes-independant.c **** 
+  74:../../firmware/mcu/crypto/aes-independant.c **** void aes_indep_enc_pretrigger(uint8_t * pt)
+  75:../../firmware/mcu/crypto/aes-independant.c **** {
+  76:../../firmware/mcu/crypto/aes-independant.c ****     ;
+  77:../../firmware/mcu/crypto/aes-independant.c **** }
+  78:../../firmware/mcu/crypto/aes-independant.c **** 
+  79:../../firmware/mcu/crypto/aes-independant.c **** void aes_indep_enc_posttrigger(uint8_t * pt)
+  80:../../firmware/mcu/crypto/aes-independant.c **** {
+  81:../../firmware/mcu/crypto/aes-independant.c ****     ;
+  82:../../firmware/mcu/crypto/aes-independant.c **** }
+  83:../../firmware/mcu/crypto/aes-independant.c **** 
+  84:../../firmware/mcu/crypto/aes-independant.c **** void aes_indep_mask(uint8_t * m, uint8_t len)
+  85:../../firmware/mcu/crypto/aes-independant.c **** {
+  86:../../firmware/mcu/crypto/aes-independant.c **** }
+  87:../../firmware/mcu/crypto/aes-independant.c **** 
+  88:../../firmware/mcu/crypto/aes-independant.c **** #elif defined(SIMPLEAES)
+  89:../../firmware/mcu/crypto/aes-independant.c **** 
+  90:../../firmware/mcu/crypto/aes-independant.c **** uint8_t enckey[16];
+  91:../../firmware/mcu/crypto/aes-independant.c **** 
+  92:../../firmware/mcu/crypto/aes-independant.c **** void aes_indep_init(void)
+  93:../../firmware/mcu/crypto/aes-independant.c **** {
+  94:../../firmware/mcu/crypto/aes-independant.c **** 	;
+  95:../../firmware/mcu/crypto/aes-independant.c **** }
+  96:../../firmware/mcu/crypto/aes-independant.c **** 
+  97:../../firmware/mcu/crypto/aes-independant.c **** void aes_indep_key(uint8_t * key)
+  98:../../firmware/mcu/crypto/aes-independant.c **** {
+  99:../../firmware/mcu/crypto/aes-independant.c **** 	for(uint8_t i=0; i < 16; i++){
+ 100:../../firmware/mcu/crypto/aes-independant.c **** 		enckey[i] = key[i];
+ 101:../../firmware/mcu/crypto/aes-independant.c **** 	}
+ 102:../../firmware/mcu/crypto/aes-independant.c **** }
+ 103:../../firmware/mcu/crypto/aes-independant.c **** 
+ 104:../../firmware/mcu/crypto/aes-independant.c **** void aes_indep_enc(uint8_t * pt)
+ 105:../../firmware/mcu/crypto/aes-independant.c **** {
+ 106:../../firmware/mcu/crypto/aes-independant.c **** 	uint8_t * result = aes(pt, enckey);
+ 107:../../firmware/mcu/crypto/aes-independant.c **** 	for(uint8_t i=0; i < 16; i++){
+ 108:../../firmware/mcu/crypto/aes-independant.c **** 		pt[i] = result[i];
+ 109:../../firmware/mcu/crypto/aes-independant.c **** 	}
+ 110:../../firmware/mcu/crypto/aes-independant.c **** }
+ 111:../../firmware/mcu/crypto/aes-independant.c **** 
+ 112:../../firmware/mcu/crypto/aes-independant.c **** void aes_indep_enc_pretrigger(uint8_t * pt)
+ 113:../../firmware/mcu/crypto/aes-independant.c **** {
+ 114:../../firmware/mcu/crypto/aes-independant.c ****     ;
+ 115:../../firmware/mcu/crypto/aes-independant.c **** }
+ 116:../../firmware/mcu/crypto/aes-independant.c **** 
+ 117:../../firmware/mcu/crypto/aes-independant.c **** void aes_indep_enc_posttrigger(uint8_t * pt)
+ 118:../../firmware/mcu/crypto/aes-independant.c **** {
+ 119:../../firmware/mcu/crypto/aes-independant.c ****     ;
+ 120:../../firmware/mcu/crypto/aes-independant.c **** }
+ 121:../../firmware/mcu/crypto/aes-independant.c **** 
+ 122:../../firmware/mcu/crypto/aes-independant.c **** void aes_indep_mask(uint8_t * m, uint8_t len)
+ 123:../../firmware/mcu/crypto/aes-independant.c **** {
+ 124:../../firmware/mcu/crypto/aes-independant.c **** }
+ 125:../../firmware/mcu/crypto/aes-independant.c **** 
+ 126:../../firmware/mcu/crypto/aes-independant.c **** #elif defined(DPAV4)
+ 127:../../firmware/mcu/crypto/aes-independant.c **** 
+ 128:../../firmware/mcu/crypto/aes-independant.c **** #include "aes.h"
+ 129:../../firmware/mcu/crypto/aes-independant.c **** #include "aes_enc.h"
+ 130:../../firmware/mcu/crypto/aes-independant.c **** 
+ 131:../../firmware/mcu/crypto/aes-independant.c **** /*  This is the AES RSM 256 encryption function that call the generic AES RSM encryption core*/
+ 132:../../firmware/mcu/crypto/aes-independant.c **** void aes256_enc(uint8_t* j, void* buffer, aes256_ctx_t* ctx,uint8_t rng){
+ 133:../../firmware/mcu/crypto/aes-independant.c **** 	aes_encrypt_core(j,buffer, (aes_genctx_t*)ctx, 14,(uint8_t)rng);
+ 134:../../firmware/mcu/crypto/aes-independant.c **** }
+ 135:../../firmware/mcu/crypto/aes-independant.c **** 
+ 136:../../firmware/mcu/crypto/aes-independant.c **** aes256_ctx_t ctx;
+ 137:../../firmware/mcu/crypto/aes-independant.c **** 
+ 138:../../firmware/mcu/crypto/aes-independant.c **** void aes_indep_init(void)
+ 139:../../firmware/mcu/crypto/aes-independant.c **** {
+ 140:../../firmware/mcu/crypto/aes-independant.c ****     ;
+ 141:../../firmware/mcu/crypto/aes-independant.c **** }
+ 142:../../firmware/mcu/crypto/aes-independant.c **** 
+ 143:../../firmware/mcu/crypto/aes-independant.c **** void aes_indep_key(uint8_t * key)
+ 144:../../firmware/mcu/crypto/aes-independant.c **** {
+ 145:../../firmware/mcu/crypto/aes-independant.c **** 	aes256_init(key, &ctx);
+ 146:../../firmware/mcu/crypto/aes-independant.c **** }
+ 147:../../firmware/mcu/crypto/aes-independant.c **** 
+ 148:../../firmware/mcu/crypto/aes-independant.c **** void aes_indep_enc(uint8_t * pt)
+ 149:../../firmware/mcu/crypto/aes-independant.c **** {
+ 150:../../firmware/mcu/crypto/aes-independant.c **** 	static uint8_t j[0];
+ 151:../../firmware/mcu/crypto/aes-independant.c **** 
+ 152:../../firmware/mcu/crypto/aes-independant.c **** 	//Encryption with trigger enabled
+ 153:../../firmware/mcu/crypto/aes-independant.c **** 	aes256_enc(j, pt, &ctx, 1);
+ 154:../../firmware/mcu/crypto/aes-independant.c **** }
+ 155:../../firmware/mcu/crypto/aes-independant.c **** 
+ 156:../../firmware/mcu/crypto/aes-independant.c **** void aes_indep_enc_pretrigger(uint8_t * pt)
+ 157:../../firmware/mcu/crypto/aes-independant.c **** {
+ 158:../../firmware/mcu/crypto/aes-independant.c ****     ;
+ 159:../../firmware/mcu/crypto/aes-independant.c **** }
+ 160:../../firmware/mcu/crypto/aes-independant.c **** 
+ 161:../../firmware/mcu/crypto/aes-independant.c **** void aes_indep_enc_posttrigger(uint8_t * pt)
+ 162:../../firmware/mcu/crypto/aes-independant.c **** {
+ 163:../../firmware/mcu/crypto/aes-independant.c ****     ;
+ 164:../../firmware/mcu/crypto/aes-independant.c **** }
+ 165:../../firmware/mcu/crypto/aes-independant.c **** 
+ 166:../../firmware/mcu/crypto/aes-independant.c **** void aes_indep_mask(uint8_t * m, uint8_t len)
+ 167:../../firmware/mcu/crypto/aes-independant.c **** {
+ 168:../../firmware/mcu/crypto/aes-independant.c **** }
+ 169:../../firmware/mcu/crypto/aes-independant.c **** 
+ 170:../../firmware/mcu/crypto/aes-independant.c **** #elif defined(TINYAES128C)
+ 171:../../firmware/mcu/crypto/aes-independant.c **** 
+ 172:../../firmware/mcu/crypto/aes-independant.c **** #include "aes.h"
+ 173:../../firmware/mcu/crypto/aes-independant.c **** 
+ 174:../../firmware/mcu/crypto/aes-independant.c **** uint8_t enckey[16];
+ 175:../../firmware/mcu/crypto/aes-independant.c **** 
+ 176:../../firmware/mcu/crypto/aes-independant.c **** void aes_indep_init(void)
+ 177:../../firmware/mcu/crypto/aes-independant.c **** {
+  66              		.loc 1 177 1 view -0
+  67              		.cfi_startproc
+  68              		@ args = 0, pretend = 0, frame = 0
+  69              		@ frame_needed = 0, uses_anonymous_args = 0
+  70              		@ link register save eliminated.
+ 178:../../firmware/mcu/crypto/aes-independant.c **** 	;
+  71              		.loc 1 178 2 view .LVU4
+ 179:../../firmware/mcu/crypto/aes-independant.c **** }
+  72              		.loc 1 179 1 is_stmt 0 view .LVU5
+  73 0000 7047     		bx	lr
+  74              		.cfi_endproc
+  75              	.LFE2:
+  77              		.section	.text.aes_indep_key,"ax",%progbits
+  78              		.align	1
+  79              		.global	aes_indep_key
+  80              		.syntax unified
+  81              		.thumb
+  82              		.thumb_func
+  84              	aes_indep_key:
+  85              	.LVL1:
+  86              	.LFB3:
+ 180:../../firmware/mcu/crypto/aes-independant.c **** 
+ 181:../../firmware/mcu/crypto/aes-independant.c **** void aes_indep_key(uint8_t * key)
+ 182:../../firmware/mcu/crypto/aes-independant.c **** {
+  87              		.loc 1 182 1 is_stmt 1 view -0
+  88              		.cfi_startproc
+  89              		@ args = 0, pretend = 0, frame = 0
+  90              		@ frame_needed = 0, uses_anonymous_args = 0
+  91              		@ link register save eliminated.
+ 183:../../firmware/mcu/crypto/aes-independant.c ****     AES128_ECB_indp_setkey(key);
+  92              		.loc 1 183 5 view .LVU7
+  93 0000 FFF7FEBF 		b	AES128_ECB_indp_setkey
+  94              	.LVL2:
+  95              		.loc 1 183 5 is_stmt 0 view .LVU8
+  96              		.cfi_endproc
+  97              	.LFE3:
+  99              		.section	.text.aes_indep_enc,"ax",%progbits
+ 100              		.align	1
+ 101              		.global	aes_indep_enc
+ 102              		.syntax unified
+ 103              		.thumb
+ 104              		.thumb_func
+ 106              	aes_indep_enc:
+ 107              	.LVL3:
+ 108              	.LFB4:
+ 184:../../firmware/mcu/crypto/aes-independant.c **** }
+ 185:../../firmware/mcu/crypto/aes-independant.c **** 
+ 186:../../firmware/mcu/crypto/aes-independant.c **** void aes_indep_enc(uint8_t * pt)
+ 187:../../firmware/mcu/crypto/aes-independant.c **** {
+ 109              		.loc 1 187 1 is_stmt 1 view -0
+ 110              		.cfi_startproc
+ 111              		@ args = 0, pretend = 0, frame = 0
+ 112              		@ frame_needed = 0, uses_anonymous_args = 0
+ 113              		@ link register save eliminated.
+ 188:../../firmware/mcu/crypto/aes-independant.c **** 	AES128_ECB_indp_crypto(pt);
+ 114              		.loc 1 188 2 view .LVU10
+ 115 0000 FFF7FEBF 		b	AES128_ECB_indp_crypto
+ 116              	.LVL4:
+ 117              		.loc 1 188 2 is_stmt 0 view .LVU11
+ 118              		.cfi_endproc
+ 119              	.LFE4:
+ 121              		.section	.text.aes_indep_enc_pretrigger,"ax",%progbits
+ 122              		.align	1
+ 123              		.global	aes_indep_enc_pretrigger
+ 124              		.syntax unified
+ 125              		.thumb
+ 126              		.thumb_func
+ 128              	aes_indep_enc_pretrigger:
+ 129              	.LVL5:
+ 130              	.LFB5:
+ 189:../../firmware/mcu/crypto/aes-independant.c **** }
+ 190:../../firmware/mcu/crypto/aes-independant.c **** 
+ 191:../../firmware/mcu/crypto/aes-independant.c **** void aes_indep_enc_pretrigger(uint8_t * pt)
+ 192:../../firmware/mcu/crypto/aes-independant.c **** {
+ 131              		.loc 1 192 1 is_stmt 1 view -0
+ 132              		.cfi_startproc
+ 133              		@ args = 0, pretend = 0, frame = 0
+ 134              		@ frame_needed = 0, uses_anonymous_args = 0
+ 135              		@ link register save eliminated.
+ 193:../../firmware/mcu/crypto/aes-independant.c ****     ;
+ 136              		.loc 1 193 5 view .LVU13
+ 194:../../firmware/mcu/crypto/aes-independant.c **** }
+ 137              		.loc 1 194 1 is_stmt 0 view .LVU14
+ 138 0000 7047     		bx	lr
+ 139              		.cfi_endproc
+ 140              	.LFE5:
+ 142              		.section	.text.aes_indep_enc_posttrigger,"ax",%progbits
+ 143              		.align	1
+ 144              		.global	aes_indep_enc_posttrigger
+ 145              		.syntax unified
+ 146              		.thumb
+ 147              		.thumb_func
+ 149              	aes_indep_enc_posttrigger:
+ 150              	.LFB9:
+ 151              		.cfi_startproc
+ 195:../../firmware/mcu/crypto/aes-independant.c **** 
+ 196:../../firmware/mcu/crypto/aes-independant.c **** void aes_indep_enc_posttrigger(uint8_t * pt)
+ 152              		.loc 1 196 6 is_stmt 1 view -0
+ 153              		@ args = 0, pretend = 0, frame = 0
+ 154              		@ frame_needed = 0, uses_anonymous_args = 0
+ 155              		@ link register save eliminated.
+ 156 0000 7047     		bx	lr
+ 157              		.cfi_endproc
+ 158              	.LFE9:
+ 160              		.section	.text.aes_indep_mask,"ax",%progbits
+ 161              		.align	1
+ 162              		.global	aes_indep_mask
+ 163              		.syntax unified
+ 164              		.thumb
+ 165              		.thumb_func
+ 167              	aes_indep_mask:
+ 168              	.LVL6:
+ 169              	.LFB7:
+ 197:../../firmware/mcu/crypto/aes-independant.c **** {
+ 198:../../firmware/mcu/crypto/aes-independant.c ****     ;
+ 199:../../firmware/mcu/crypto/aes-independant.c **** }
+ 200:../../firmware/mcu/crypto/aes-independant.c **** 
+ 201:../../firmware/mcu/crypto/aes-independant.c **** void aes_indep_mask(uint8_t * m, uint8_t len)
+ 202:../../firmware/mcu/crypto/aes-independant.c **** {
+ 170              		.loc 1 202 1 view -0
+ 171              		.cfi_startproc
+ 172              		@ args = 0, pretend = 0, frame = 0
+ 173              		@ frame_needed = 0, uses_anonymous_args = 0
+ 174              		@ link register save eliminated.
+ 203:../../firmware/mcu/crypto/aes-independant.c **** }
+ 175              		.loc 1 203 1 view .LVU17
+ 176 0000 7047     		bx	lr
+ 177              		.cfi_endproc
+ 178              	.LFE7:
+ 180              		.global	enckey
+ 181              		.bss
+ 184              	enckey:
+ 185 0000 00000000 		.space	16
+ 185      00000000 
+ 185      00000000 
+ 185      00000000 
+ 186              		.text
+ 187              	.Letext0:
+ 188              		.file 3 "/Applications/ArmGNUToolchain/15.2.rel1/arm-none-eabi/arm-none-eabi/include/machine/_defa
+ 189              		.file 4 "/Applications/ArmGNUToolchain/15.2.rel1/arm-none-eabi/arm-none-eabi/include/sys/_stdint.h
+ 190              		.file 5 "../../firmware/mcu/crypto/tiny-AES128-C/aes.h"
+DEFINED SYMBOLS
+                            *ABS*:00000000 aes-independant.c
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccoayPiL.s:19     .text.change_ok_led:00000000 $t
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccoayPiL.s:25     .text.change_ok_led:00000000 change_ok_led
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccoayPiL.s:38     .text.change_err_led:00000000 $t
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccoayPiL.s:44     .text.change_err_led:00000000 change_err_led
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccoayPiL.s:58     .text.aes_indep_init:00000000 $t
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccoayPiL.s:64     .text.aes_indep_init:00000000 aes_indep_init
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccoayPiL.s:78     .text.aes_indep_key:00000000 $t
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccoayPiL.s:84     .text.aes_indep_key:00000000 aes_indep_key
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccoayPiL.s:100    .text.aes_indep_enc:00000000 $t
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccoayPiL.s:106    .text.aes_indep_enc:00000000 aes_indep_enc
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccoayPiL.s:122    .text.aes_indep_enc_pretrigger:00000000 $t
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccoayPiL.s:128    .text.aes_indep_enc_pretrigger:00000000 aes_indep_enc_pretrigger
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccoayPiL.s:143    .text.aes_indep_enc_posttrigger:00000000 $t
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccoayPiL.s:149    .text.aes_indep_enc_posttrigger:00000000 aes_indep_enc_posttrigger
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccoayPiL.s:161    .text.aes_indep_mask:00000000 $t
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccoayPiL.s:167    .text.aes_indep_mask:00000000 aes_indep_mask
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccoayPiL.s:184    .bss:00000000 enckey
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccoayPiL.s:185    .bss:00000000 $d
+
+UNDEFINED SYMBOLS
+AES128_ECB_indp_setkey
+AES128_ECB_indp_crypto

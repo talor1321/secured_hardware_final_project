@@ -1,0 +1,842 @@
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 4
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"c_code.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.file 1 "c_code.c"
+  18              		.section	.text.set_seed_lfsr_low_hw,"ax",%progbits
+  19              		.align	1
+  20              		.global	set_seed_lfsr_low_hw
+  21              		.syntax unified
+  22              		.thumb
+  23              		.thumb_func
+  25              	set_seed_lfsr_low_hw:
+  26              	.LVL0:
+  27              	.LFB2:
+   1:c_code.c      **** #include "hal.h"
+   2:c_code.c      **** #include "simpleserial.h"
+   3:c_code.c      **** #include <stdint.h>
+   4:c_code.c      **** #include <stdlib.h>
+   5:c_code.c      **** 
+   6:c_code.c      **** static uint32_t lfsr_state_low_hw  = 0; 
+   7:c_code.c      **** static uint32_t lfsr_state_high_hw = 0;
+   8:c_code.c      **** 
+   9:c_code.c      **** uint8_t set_seed_lfsr_low_hw(uint8_t* msg, uint8_t len)
+  10:c_code.c      **** {
+  28              		.loc 1 10 1 view -0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 8
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
+  11:c_code.c      ****     if(len >= 4) {
+  32              		.loc 1 11 5 view .LVU1
+  10:c_code.c      ****     if(len >= 4) {
+  33              		.loc 1 10 1 is_stmt 0 view .LVU2
+  34 0000 07B5     		push	{r0, r1, r2, lr}
+  35              	.LCFI0:
+  36              		.cfi_def_cfa_offset 16
+  37              		.cfi_offset 14, -4
+  38              		.loc 1 11 7 view .LVU3
+  39 0002 0329     		cmp	r1, #3
+  12:c_code.c      ****         lfsr_state_low_hw = ((uint32_t)msg[3] << 24) | 
+  40              		.loc 1 12 9 is_stmt 1 view .LVU4
+  41              		.loc 1 12 27 is_stmt 0 view .LVU5
+  42 0004 82BF     		ittt	hi
+  43 0006 074B     		ldrhi	r3, .L3
+  13:c_code.c      ****                             ((uint32_t)msg[2] << 16) | 
+  14:c_code.c      ****                             ((uint32_t)msg[1] << 8)  | 
+  44              		.loc 1 14 54 view .LVU6
+  45 0008 0268     		ldrhi	r2, [r0]	@ unaligned
+  12:c_code.c      ****         lfsr_state_low_hw = ((uint32_t)msg[3] << 24) | 
+  46              		.loc 1 12 27 view .LVU7
+  47 000a 1A60     		strhi	r2, [r3]
+  15:c_code.c      ****                             ((uint32_t)msg[0]);
+  16:c_code.c      ****     }
+  17:c_code.c      ****     
+  18:c_code.c      ****     // ACK
+  19:c_code.c      ****     uint8_t res = 0xAA; 
+  48              		.loc 1 19 5 is_stmt 1 view .LVU8
+  20:c_code.c      ****     simpleserial_put('r', 1, &res); 
+  49              		.loc 1 20 5 is_stmt 0 view .LVU9
+  50 000c 0121     		movs	r1, #1
+  51              	.LVL1:
+  19:c_code.c      ****     simpleserial_put('r', 1, &res); 
+  52              		.loc 1 19 13 view .LVU10
+  53 000e AA23     		movs	r3, #170
+  54              		.loc 1 20 5 view .LVU11
+  55 0010 0DF10702 		add	r2, sp, #7
+  56 0014 7220     		movs	r0, #114
+  57              	.LVL2:
+  19:c_code.c      ****     simpleserial_put('r', 1, &res); 
+  58              		.loc 1 19 13 view .LVU12
+  59 0016 8DF80730 		strb	r3, [sp, #7]
+  60              		.loc 1 20 5 is_stmt 1 view .LVU13
+  61 001a FFF7FEFF 		bl	simpleserial_put
+  62              	.LVL3:
+  21:c_code.c      ****     
+  22:c_code.c      ****     return 0x00;
+  63              		.loc 1 22 5 view .LVU14
+  23:c_code.c      **** }
+  64              		.loc 1 23 1 is_stmt 0 view .LVU15
+  65 001e 0020     		movs	r0, #0
+  66 0020 03B0     		add	sp, sp, #12
+  67              	.LCFI1:
+  68              		.cfi_def_cfa_offset 4
+  69              		@ sp needed
+  70 0022 00BD     		pop	{pc}
+  71              	.L4:
+  72              		.align	2
+  73              	.L3:
+  74 0024 00000000 		.word	.LANCHOR0
+  75              		.cfi_endproc
+  76              	.LFE2:
+  78              		.section	.text.set_seed_lfsr_high_hw,"ax",%progbits
+  79              		.align	1
+  80              		.global	set_seed_lfsr_high_hw
+  81              		.syntax unified
+  82              		.thumb
+  83              		.thumb_func
+  85              	set_seed_lfsr_high_hw:
+  86              	.LVL4:
+  87              	.LFB3:
+  24:c_code.c      **** 
+  25:c_code.c      **** uint8_t set_seed_lfsr_high_hw(uint8_t* msg, uint8_t len)
+  26:c_code.c      **** {
+  88              		.loc 1 26 1 is_stmt 1 view -0
+  89              		.cfi_startproc
+  90              		@ args = 0, pretend = 0, frame = 8
+  91              		@ frame_needed = 0, uses_anonymous_args = 0
+  27:c_code.c      ****     if(len >= 4) {
+  92              		.loc 1 27 5 view .LVU17
+  26:c_code.c      ****     if(len >= 4) {
+  93              		.loc 1 26 1 is_stmt 0 view .LVU18
+  94 0000 07B5     		push	{r0, r1, r2, lr}
+  95              	.LCFI2:
+  96              		.cfi_def_cfa_offset 16
+  97              		.cfi_offset 14, -4
+  98              		.loc 1 27 7 view .LVU19
+  99 0002 0329     		cmp	r1, #3
+  28:c_code.c      ****         lfsr_state_high_hw = ((uint32_t)msg[3] << 24) | 
+ 100              		.loc 1 28 9 is_stmt 1 view .LVU20
+ 101              		.loc 1 28 28 is_stmt 0 view .LVU21
+ 102 0004 82BF     		ittt	hi
+ 103 0006 074B     		ldrhi	r3, .L7
+  29:c_code.c      ****                              ((uint32_t)msg[2] << 16) | 
+  30:c_code.c      ****                              ((uint32_t)msg[1] << 8)  | 
+ 104              		.loc 1 30 55 view .LVU22
+ 105 0008 0268     		ldrhi	r2, [r0]	@ unaligned
+  28:c_code.c      ****         lfsr_state_high_hw = ((uint32_t)msg[3] << 24) | 
+ 106              		.loc 1 28 28 view .LVU23
+ 107 000a 5A60     		strhi	r2, [r3, #4]
+  31:c_code.c      ****                              ((uint32_t)msg[0]);
+  32:c_code.c      ****     }
+  33:c_code.c      ****     
+  34:c_code.c      ****     // ACK
+  35:c_code.c      ****     uint8_t res = 0xBB; 
+ 108              		.loc 1 35 5 is_stmt 1 view .LVU24
+  36:c_code.c      ****     simpleserial_put('r', 1, &res); 
+ 109              		.loc 1 36 5 is_stmt 0 view .LVU25
+ 110 000c 0121     		movs	r1, #1
+ 111              	.LVL5:
+  35:c_code.c      ****     simpleserial_put('r', 1, &res); 
+ 112              		.loc 1 35 13 view .LVU26
+ 113 000e BB23     		movs	r3, #187
+ 114              		.loc 1 36 5 view .LVU27
+ 115 0010 0DF10702 		add	r2, sp, #7
+ 116 0014 7220     		movs	r0, #114
+ 117              	.LVL6:
+  35:c_code.c      ****     simpleserial_put('r', 1, &res); 
+ 118              		.loc 1 35 13 view .LVU28
+ 119 0016 8DF80730 		strb	r3, [sp, #7]
+ 120              		.loc 1 36 5 is_stmt 1 view .LVU29
+ 121 001a FFF7FEFF 		bl	simpleserial_put
+ 122              	.LVL7:
+  37:c_code.c      ****     
+  38:c_code.c      ****     return 0x00;
+ 123              		.loc 1 38 5 view .LVU30
+  39:c_code.c      **** }
+ 124              		.loc 1 39 1 is_stmt 0 view .LVU31
+ 125 001e 0020     		movs	r0, #0
+ 126 0020 03B0     		add	sp, sp, #12
+ 127              	.LCFI3:
+ 128              		.cfi_def_cfa_offset 4
+ 129              		@ sp needed
+ 130 0022 00BD     		pop	{pc}
+ 131              	.L8:
+ 132              		.align	2
+ 133              	.L7:
+ 134 0024 00000000 		.word	.LANCHOR0
+ 135              		.cfi_endproc
+ 136              	.LFE3:
+ 138              		.section	.text.step_lfsr_low_hw,"ax",%progbits
+ 139              		.align	1
+ 140              		.global	step_lfsr_low_hw
+ 141              		.syntax unified
+ 142              		.thumb
+ 143              		.thumb_func
+ 145              	step_lfsr_low_hw:
+ 146              	.LVL8:
+ 147              	.LFB4:
+  40:c_code.c      **** uint8_t step_lfsr_low_hw(uint8_t* msg, uint8_t len)
+  41:c_code.c      **** {
+ 148              		.loc 1 41 1 is_stmt 1 view -0
+ 149              		.cfi_startproc
+ 150              		@ args = 0, pretend = 0, frame = 8
+ 151              		@ frame_needed = 0, uses_anonymous_args = 0
+  42:c_code.c      ****     // Extract number of steps from the message, default to 1 if empty
+  43:c_code.c      ****     uint8_t num_steps = (len > 0) ? msg[0] : 1;
+ 152              		.loc 1 43 5 view .LVU33
+  41:c_code.c      ****     // Extract number of steps from the message, default to 1 if empty
+ 153              		.loc 1 41 1 is_stmt 0 view .LVU34
+ 154 0000 73B5     		push	{r0, r1, r4, r5, r6, lr}
+ 155              	.LCFI4:
+ 156              		.cfi_def_cfa_offset 24
+ 157              		.cfi_offset 4, -16
+ 158              		.cfi_offset 5, -12
+ 159              		.cfi_offset 6, -8
+ 160              		.cfi_offset 14, -4
+ 161              		.loc 1 43 13 view .LVU35
+ 162 0002 D1B1     		cbz	r1, .L14
+ 163              		.loc 1 43 13 discriminator 1 view .LVU36
+ 164 0004 0578     		ldrb	r5, [r0]	@ zero_extendqisi2
+ 165              	.LVL9:
+ 166              	.L10:
+  44:c_code.c      **** 
+  45:c_code.c      ****     trigger_high(); 
+ 167              		.loc 1 45 5 is_stmt 1 view .LVU37
+ 168 0006 124C     		ldr	r4, .L18
+ 169 0008 FFF7FEFF 		bl	trigger_high
+ 170              	.LVL10:
+  46:c_code.c      ****     
+  47:c_code.c      ****     for(uint8_t i = 0; i < num_steps; i++) {
+ 171              		.loc 1 47 5 view .LVU38
+ 172              	.LBB2:
+ 173              		.loc 1 47 9 view .LVU39
+ 174              		.loc 1 47 5 is_stmt 0 view .LVU40
+ 175 000c 0022     		movs	r2, #0
+ 176 000e 2368     		ldr	r3, [r4]
+ 177              	.LBB3:
+  48:c_code.c      ****         uint32_t lsb = lfsr_state_low_hw & 1;
+  49:c_code.c      ****         lfsr_state_low_hw = (lfsr_state_low_hw >> 1) ^ (0xE0000200 * lsb);
+ 178              		.loc 1 49 68 view .LVU41
+ 179 0010 1048     		ldr	r0, .L18+4
+ 180              	.LBE3:
+  47:c_code.c      ****         uint32_t lsb = lfsr_state_low_hw & 1;
+ 181              		.loc 1 47 5 view .LVU42
+ 182 0012 1146     		mov	r1, r2
+ 183              	.LVL11:
+ 184              	.L11:
+  47:c_code.c      ****         uint32_t lsb = lfsr_state_low_hw & 1;
+ 185              		.loc 1 47 26 is_stmt 1 discriminator 1 view .LVU43
+ 186 0014 D6B2     		uxtb	r6, r2
+ 187 0016 B542     		cmp	r5, r6
+ 188 0018 11D8     		bhi	.L12
+ 189 001a 01B1     		cbz	r1, .L13
+ 190 001c 2360     		str	r3, [r4]
+ 191              	.L13:
+ 192              	.LBE2:
+  50:c_code.c      ****     }
+  51:c_code.c      ****     
+  52:c_code.c      ****     trigger_low(); 
+ 193              		.loc 1 52 5 view .LVU44
+ 194 001e FFF7FEFF 		bl	trigger_low
+ 195              	.LVL12:
+  53:c_code.c      **** 
+  54:c_code.c      ****     uint8_t res = (uint8_t)(lfsr_state_low_hw & 0xFF);
+ 196              		.loc 1 54 5 view .LVU45
+ 197              		.loc 1 54 19 is_stmt 0 view .LVU46
+ 198 0022 2368     		ldr	r3, [r4]
+ 199 0024 8DF80730 		strb	r3, [sp, #7]
+  55:c_code.c      ****     simpleserial_put('r', 1, &res); 
+ 200              		.loc 1 55 5 is_stmt 1 view .LVU47
+ 201 0028 0DF10702 		add	r2, sp, #7
+ 202 002c 0121     		movs	r1, #1
+ 203 002e 7220     		movs	r0, #114
+ 204 0030 FFF7FEFF 		bl	simpleserial_put
+ 205              	.LVL13:
+  56:c_code.c      ****     
+  57:c_code.c      ****     return 0x00;
+ 206              		.loc 1 57 5 view .LVU48
+  58:c_code.c      **** }
+ 207              		.loc 1 58 1 is_stmt 0 view .LVU49
+ 208 0034 0020     		movs	r0, #0
+ 209 0036 02B0     		add	sp, sp, #8
+ 210              	.LCFI5:
+ 211              		.cfi_remember_state
+ 212              		.cfi_def_cfa_offset 16
+ 213              		@ sp needed
+ 214 0038 70BD     		pop	{r4, r5, r6, pc}
+ 215              	.LVL14:
+ 216              	.L14:
+ 217              	.LCFI6:
+ 218              		.cfi_restore_state
+  43:c_code.c      **** 
+ 219              		.loc 1 43 13 discriminator 2 view .LVU50
+ 220 003a 0125     		movs	r5, #1
+ 221 003c E3E7     		b	.L10
+ 222              	.LVL15:
+ 223              	.L12:
+ 224              	.LBB6:
+ 225              	.LBB4:
+  48:c_code.c      ****         lfsr_state_low_hw = (lfsr_state_low_hw >> 1) ^ (0xE0000200 * lsb);
+ 226              		.loc 1 48 9 is_stmt 1 view .LVU51
+  49:c_code.c      ****     }
+ 227              		.loc 1 49 9 view .LVU52
+  49:c_code.c      ****     }
+ 228              		.loc 1 49 68 is_stmt 0 view .LVU53
+ 229 003e 43F30001 		sbfx	r1, r3, #0, #1
+ 230 0042 0140     		ands	r1, r1, r0
+  49:c_code.c      ****     }
+ 231              		.loc 1 49 54 view .LVU54
+ 232 0044 81EA5303 		eor	r3, r1, r3, lsr #1
+ 233              	.LVL16:
+  49:c_code.c      ****     }
+ 234              		.loc 1 49 54 view .LVU55
+ 235              	.LBE4:
+  47:c_code.c      ****         uint32_t lsb = lfsr_state_low_hw & 1;
+ 236              		.loc 1 47 40 is_stmt 1 discriminator 3 view .LVU56
+  47:c_code.c      ****         uint32_t lsb = lfsr_state_low_hw & 1;
+ 237              		.loc 1 47 40 is_stmt 0 discriminator 3 view .LVU57
+ 238 0048 0132     		adds	r2, r2, #1
+ 239              	.LVL17:
+ 240              	.LBB5:
+  49:c_code.c      ****     }
+ 241              		.loc 1 49 54 view .LVU58
+ 242 004a 0121     		movs	r1, #1
+ 243 004c E2E7     		b	.L11
+ 244              	.L19:
+ 245 004e 00BF     		.align	2
+ 246              	.L18:
+ 247 0050 00000000 		.word	.LANCHOR0
+ 248 0054 000200E0 		.word	-536870400
+ 249              	.LBE5:
+ 250              	.LBE6:
+ 251              		.cfi_endproc
+ 252              	.LFE4:
+ 254              		.section	.text.step_lfsr_high_hw,"ax",%progbits
+ 255              		.align	1
+ 256              		.global	step_lfsr_high_hw
+ 257              		.syntax unified
+ 258              		.thumb
+ 259              		.thumb_func
+ 261              	step_lfsr_high_hw:
+ 262              	.LVL18:
+ 263              	.LFB5:
+  59:c_code.c      **** 
+  60:c_code.c      **** uint8_t step_lfsr_high_hw(uint8_t* msg, uint8_t len)
+  61:c_code.c      **** {
+ 264              		.loc 1 61 1 is_stmt 1 view -0
+ 265              		.cfi_startproc
+ 266              		@ args = 0, pretend = 0, frame = 8
+ 267              		@ frame_needed = 0, uses_anonymous_args = 0
+  62:c_code.c      ****     // Extract number of steps from the message, default to 1 if empty
+  63:c_code.c      ****     uint8_t num_steps = (len > 0) ? msg[0] : 1;
+ 268              		.loc 1 63 5 view .LVU60
+  61:c_code.c      ****     // Extract number of steps from the message, default to 1 if empty
+ 269              		.loc 1 61 1 is_stmt 0 view .LVU61
+ 270 0000 37B5     		push	{r0, r1, r2, r4, r5, lr}
+ 271              	.LCFI7:
+ 272              		.cfi_def_cfa_offset 24
+ 273              		.cfi_offset 4, -12
+ 274              		.cfi_offset 5, -8
+ 275              		.cfi_offset 14, -4
+ 276              		.loc 1 63 13 view .LVU62
+ 277 0002 C9B1     		cbz	r1, .L25
+ 278              		.loc 1 63 13 discriminator 1 view .LVU63
+ 279 0004 0578     		ldrb	r5, [r0]	@ zero_extendqisi2
+ 280              	.LVL19:
+ 281              	.L21:
+  64:c_code.c      **** 
+  65:c_code.c      ****     trigger_high(); 
+ 282              		.loc 1 65 5 is_stmt 1 view .LVU64
+ 283 0006 124C     		ldr	r4, .L29
+ 284 0008 FFF7FEFF 		bl	trigger_high
+ 285              	.LVL20:
+  66:c_code.c      ****     
+  67:c_code.c      ****     for(uint8_t i = 0; i < num_steps; i++) {
+ 286              		.loc 1 67 5 view .LVU65
+ 287              	.LBB7:
+ 288              		.loc 1 67 9 view .LVU66
+ 289              		.loc 1 67 5 is_stmt 0 view .LVU67
+ 290 000c 0022     		movs	r2, #0
+ 291 000e 6368     		ldr	r3, [r4, #4]
+ 292 0010 1146     		mov	r1, r2
+ 293              	.LVL21:
+ 294              	.L22:
+ 295              		.loc 1 67 26 is_stmt 1 discriminator 1 view .LVU68
+ 296 0012 D0B2     		uxtb	r0, r2
+ 297 0014 8542     		cmp	r5, r0
+ 298 0016 11D8     		bhi	.L23
+ 299 0018 01B1     		cbz	r1, .L24
+ 300 001a 6360     		str	r3, [r4, #4]
+ 301              	.L24:
+ 302              	.LBE7:
+  68:c_code.c      ****         uint32_t lsb = lfsr_state_high_hw & 1;
+  69:c_code.c      ****         lfsr_state_high_hw = (lfsr_state_high_hw >> 1) ^ (0xEDB88320 * lsb);
+  70:c_code.c      ****     }
+  71:c_code.c      ****     
+  72:c_code.c      ****     trigger_low(); 
+ 303              		.loc 1 72 5 view .LVU69
+ 304 001c FFF7FEFF 		bl	trigger_low
+ 305              	.LVL22:
+  73:c_code.c      **** 
+  74:c_code.c      ****     uint8_t res = (uint8_t)(lfsr_state_high_hw & 0xFF);
+ 306              		.loc 1 74 5 view .LVU70
+ 307              		.loc 1 74 19 is_stmt 0 view .LVU71
+ 308 0020 6368     		ldr	r3, [r4, #4]
+ 309 0022 8DF80730 		strb	r3, [sp, #7]
+  75:c_code.c      ****     simpleserial_put('r', 1, &res); 
+ 310              		.loc 1 75 5 is_stmt 1 view .LVU72
+ 311 0026 0DF10702 		add	r2, sp, #7
+ 312 002a 0121     		movs	r1, #1
+ 313 002c 7220     		movs	r0, #114
+ 314 002e FFF7FEFF 		bl	simpleserial_put
+ 315              	.LVL23:
+  76:c_code.c      ****     
+  77:c_code.c      ****     return 0x00;
+ 316              		.loc 1 77 5 view .LVU73
+  78:c_code.c      **** }
+ 317              		.loc 1 78 1 is_stmt 0 view .LVU74
+ 318 0032 0020     		movs	r0, #0
+ 319 0034 03B0     		add	sp, sp, #12
+ 320              	.LCFI8:
+ 321              		.cfi_remember_state
+ 322              		.cfi_def_cfa_offset 12
+ 323              		@ sp needed
+ 324 0036 30BD     		pop	{r4, r5, pc}
+ 325              	.LVL24:
+ 326              	.L25:
+ 327              	.LCFI9:
+ 328              		.cfi_restore_state
+  63:c_code.c      **** 
+ 329              		.loc 1 63 13 discriminator 2 view .LVU75
+ 330 0038 0125     		movs	r5, #1
+ 331 003a E4E7     		b	.L21
+ 332              	.LVL25:
+ 333              	.L23:
+ 334              	.LBB10:
+ 335              	.LBB8:
+  68:c_code.c      ****         lfsr_state_high_hw = (lfsr_state_high_hw >> 1) ^ (0xEDB88320 * lsb);
+ 336              		.loc 1 68 9 is_stmt 1 view .LVU76
+  69:c_code.c      ****     }
+ 337              		.loc 1 69 9 view .LVU77
+  69:c_code.c      ****     }
+ 338              		.loc 1 69 70 is_stmt 0 view .LVU78
+ 339 003c 0549     		ldr	r1, .L29+4
+ 340 003e 43F30000 		sbfx	r0, r3, #0, #1
+ 341 0042 0140     		ands	r1, r1, r0
+  69:c_code.c      ****     }
+ 342              		.loc 1 69 56 view .LVU79
+ 343 0044 81EA5303 		eor	r3, r1, r3, lsr #1
+ 344              	.LVL26:
+  69:c_code.c      ****     }
+ 345              		.loc 1 69 56 view .LVU80
+ 346              	.LBE8:
+  67:c_code.c      ****         uint32_t lsb = lfsr_state_high_hw & 1;
+ 347              		.loc 1 67 40 is_stmt 1 discriminator 3 view .LVU81
+  67:c_code.c      ****         uint32_t lsb = lfsr_state_high_hw & 1;
+ 348              		.loc 1 67 40 is_stmt 0 discriminator 3 view .LVU82
+ 349 0048 0132     		adds	r2, r2, #1
+ 350              	.LVL27:
+ 351              	.LBB9:
+  69:c_code.c      ****     }
+ 352              		.loc 1 69 56 view .LVU83
+ 353 004a 0121     		movs	r1, #1
+ 354 004c E1E7     		b	.L22
+ 355              	.L30:
+ 356 004e 00BF     		.align	2
+ 357              	.L29:
+ 358 0050 00000000 		.word	.LANCHOR0
+ 359 0054 2083B8ED 		.word	-306674912
+ 360              	.LBE9:
+ 361              	.LBE10:
+ 362              		.cfi_endproc
+ 363              	.LFE5:
+ 365              		.section	.text.change_ok_led,"ax",%progbits
+ 366              		.align	1
+ 367              		.weak	change_ok_led
+ 368              		.syntax unified
+ 369              		.thumb
+ 370              		.thumb_func
+ 372              	change_ok_led:
+ 373              	.LFB8:
+ 374              		.cfi_startproc
+ 375              		.file 2 "../../firmware/mcu/hal/hal.h"
+   1:../../firmware/mcu/hal/hal.h **** /*
+   2:../../firmware/mcu/hal/hal.h ****     This file is part of the ChipWhisperer Example Targets
+   3:../../firmware/mcu/hal/hal.h ****     Copyright (C) 2012-2015 NewAE Technology Inc.
+   4:../../firmware/mcu/hal/hal.h **** 
+   5:../../firmware/mcu/hal/hal.h ****     This program is free software: you can redistribute it and/or modify
+   6:../../firmware/mcu/hal/hal.h ****     it under the terms of the GNU General Public License as published by
+   7:../../firmware/mcu/hal/hal.h ****     the Free Software Foundation, either version 3 of the License, or
+   8:../../firmware/mcu/hal/hal.h ****     (at your option) any later version.
+   9:../../firmware/mcu/hal/hal.h **** 
+  10:../../firmware/mcu/hal/hal.h ****     This program is distributed in the hope that it will be useful,
+  11:../../firmware/mcu/hal/hal.h ****     but WITHOUT ANY WARRANTY; without even the implied warranty of
+  12:../../firmware/mcu/hal/hal.h ****     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  13:../../firmware/mcu/hal/hal.h ****     GNU General Public License for more details.
+  14:../../firmware/mcu/hal/hal.h **** 
+  15:../../firmware/mcu/hal/hal.h ****     You should have received a copy of the GNU General Public License
+  16:../../firmware/mcu/hal/hal.h ****     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  17:../../firmware/mcu/hal/hal.h **** */
+  18:../../firmware/mcu/hal/hal.h **** 
+  19:../../firmware/mcu/hal/hal.h **** #ifndef HAL_H_
+  20:../../firmware/mcu/hal/hal.h **** #define HAL_H_
+  21:../../firmware/mcu/hal/hal.h **** 
+  22:../../firmware/mcu/hal/hal.h **** #include <stdint.h>
+  23:../../firmware/mcu/hal/hal.h **** 
+  24:../../firmware/mcu/hal/hal.h **** void platform_init(void);
+  25:../../firmware/mcu/hal/hal.h **** 
+  26:../../firmware/mcu/hal/hal.h **** //PLATFORM Define Types
+  27:../../firmware/mcu/hal/hal.h **** #define CW301_AVR      1
+  28:../../firmware/mcu/hal/hal.h **** #define CW301_XMEGA    2
+  29:../../firmware/mcu/hal/hal.h **** #define CW303          3
+  30:../../firmware/mcu/hal/hal.h **** #define CW304          4
+  31:../../firmware/mcu/hal/hal.h **** #define CW308_MEGARF   8
+  32:../../firmware/mcu/hal/hal.h **** #define CW308_PIC24FJ  10
+  33:../../firmware/mcu/hal/hal.h **** #define CW308_SAM4L    11
+  34:../../firmware/mcu/hal/hal.h **** #define CW308_SI4010   12
+  35:../../firmware/mcu/hal/hal.h **** #define CW308_MPC5748G 13
+  36:../../firmware/mcu/hal/hal.h **** #define CW308_STM32F0  14
+  37:../../firmware/mcu/hal/hal.h **** #define CW308_STM32F1  15
+  38:../../firmware/mcu/hal/hal.h **** #define CW308_STM32F2  16
+  39:../../firmware/mcu/hal/hal.h **** #define CW308_STM32F3  17
+  40:../../firmware/mcu/hal/hal.h **** #define CW308_STM32F4  18
+  41:../../firmware/mcu/hal/hal.h **** #define CW308_CC2538   19
+  42:../../firmware/mcu/hal/hal.h **** #define CW308_K24F     20
+  43:../../firmware/mcu/hal/hal.h **** #define CW308_NRF52840 21
+  44:../../firmware/mcu/hal/hal.h **** #define CW308_AURIX    22
+  45:../../firmware/mcu/hal/hal.h **** #define CW308_SAML11   23
+  46:../../firmware/mcu/hal/hal.h **** #define CW308_EFM32TG11B 24
+  47:../../firmware/mcu/hal/hal.h **** #define CW308_K82F     25
+  48:../../firmware/mcu/hal/hal.h **** #define CW308_LPC55S6X 26
+  49:../../firmware/mcu/hal/hal.h **** #define CW308_PSOC62   27
+  50:../../firmware/mcu/hal/hal.h **** #define CW308_IMXRT1062 28
+  51:../../firmware/mcu/hal/hal.h **** #define CW308_FE310    29
+  52:../../firmware/mcu/hal/hal.h **** #define CW308_EFR32MG21A  30
+  53:../../firmware/mcu/hal/hal.h **** #define CW308_EFM32GG11  31
+  54:../../firmware/mcu/hal/hal.h **** #define CW308_STM32L5  32
+  55:../../firmware/mcu/hal/hal.h **** #define CW308_STM32L4  33
+  56:../../firmware/mcu/hal/hal.h **** #define CW308_RX65N  34
+  57:../../firmware/mcu/hal/hal.h **** #define CW308_MPC5676R 35
+  58:../../firmware/mcu/hal/hal.h **** #define CW308_NEORV32  36
+  59:../../firmware/mcu/hal/hal.h **** #define CW305_IBEX  37
+  60:../../firmware/mcu/hal/hal.h **** 
+  61:../../firmware/mcu/hal/hal.h **** //HAL_TYPE Define Types
+  62:../../firmware/mcu/hal/hal.h **** #define HAL_avr      1
+  63:../../firmware/mcu/hal/hal.h **** #define HAL_xmega    2
+  64:../../firmware/mcu/hal/hal.h **** #define HAL_pic24f   3
+  65:../../firmware/mcu/hal/hal.h **** #define HAL_sam4l    4
+  66:../../firmware/mcu/hal/hal.h **** #define HAL_stm32f0  5
+  67:../../firmware/mcu/hal/hal.h **** #define HAL_stm32f1  6
+  68:../../firmware/mcu/hal/hal.h **** #define HAL_stm32f2  7
+  69:../../firmware/mcu/hal/hal.h **** #define HAL_stm32f3  8
+  70:../../firmware/mcu/hal/hal.h **** #define HAL_stm32f4  9
+  71:../../firmware/mcu/hal/hal.h **** #define HAL_cc2538   10
+  72:../../firmware/mcu/hal/hal.h **** #define HAL_k24f     11
+  73:../../firmware/mcu/hal/hal.h **** #define HAL_nrf52840 12
+  74:../../firmware/mcu/hal/hal.h **** #define HAL_stm32f0_nano 13
+  75:../../firmware/mcu/hal/hal.h **** #define HAL_aurix    14
+  76:../../firmware/mcu/hal/hal.h **** #define HAL_saml11   15
+  77:../../firmware/mcu/hal/hal.h **** #define HAL_efm32tg11b 16
+  78:../../firmware/mcu/hal/hal.h **** #define HAL_k82f     17
+  79:../../firmware/mcu/hal/hal.h **** #define HAL_lpc55s6x 18
+  80:../../firmware/mcu/hal/hal.h **** #define HAL_psoc62   19
+  81:../../firmware/mcu/hal/hal.h **** #define HAL_imxrt1062 20
+  82:../../firmware/mcu/hal/hal.h **** #define HAL_fe310    21
+  83:../../firmware/mcu/hal/hal.h **** #define HAL_efr32mg21a 22
+  84:../../firmware/mcu/hal/hal.h **** #define HAL_efm32gg11 23
+  85:../../firmware/mcu/hal/hal.h **** #define HAL_stm32l5 24
+  86:../../firmware/mcu/hal/hal.h **** #define HAL_stm32l4 25
+  87:../../firmware/mcu/hal/hal.h **** #define HAL_rx65n 26
+  88:../../firmware/mcu/hal/hal.h **** #define HAL_mpc5676r 27
+  89:../../firmware/mcu/hal/hal.h **** #define HAL_neorv32  28
+  90:../../firmware/mcu/hal/hal.h **** #define HAL_sam4s  29
+  91:../../firmware/mcu/hal/hal.h **** #define HAL_ibex  30
+  92:../../firmware/mcu/hal/hal.h **** 
+  93:../../firmware/mcu/hal/hal.h **** #if HAL_TYPE == HAL_avr
+  94:../../firmware/mcu/hal/hal.h ****     #include <avr/io.h>
+  95:../../firmware/mcu/hal/hal.h ****     #include <util/delay.h>
+  96:../../firmware/mcu/hal/hal.h ****     #include "avr/avr_hal.h"
+  97:../../firmware/mcu/hal/hal.h **** #elif HAL_TYPE == HAL_xmega
+  98:../../firmware/mcu/hal/hal.h ****     #include <avr/io.h>
+  99:../../firmware/mcu/hal/hal.h ****     #include <util/delay.h>
+ 100:../../firmware/mcu/hal/hal.h ****     #include "xmega/xmega_hal.h"
+ 101:../../firmware/mcu/hal/hal.h ****     #include "xmega/avr_compiler.h"
+ 102:../../firmware/mcu/hal/hal.h **** #elif HAL_TYPE == HAL_pic24f
+ 103:../../firmware/mcu/hal/hal.h ****     #include <xc.h>
+ 104:../../firmware/mcu/hal/hal.h ****     #include "pic24f/pic24f_hal.h"
+ 105:../../firmware/mcu/hal/hal.h ****     #include "pic24f/uart.h"
+ 106:../../firmware/mcu/hal/hal.h **** #elif HAL_TYPE == HAL_sam4l
+ 107:../../firmware/mcu/hal/hal.h ****     #include "chipwhisperer-fw-extra/sam4l/sam4l_hal.h"
+ 108:../../firmware/mcu/hal/hal.h **** #elif HAL_TYPE == HAL_stm32f0
+ 109:../../firmware/mcu/hal/hal.h **** 	#include "stm32f0/stm32f0_hal.h"
+ 110:../../firmware/mcu/hal/hal.h **** #elif HAL_TYPE == HAL_stm32f1
+ 111:../../firmware/mcu/hal/hal.h **** 	#include "chipwhisperer-fw-extra/stm32f1/stm32f1_hal.h"
+ 112:../../firmware/mcu/hal/hal.h **** #elif HAL_TYPE == HAL_stm32f2
+ 113:../../firmware/mcu/hal/hal.h **** 	#include "chipwhisperer-fw-extra/stm32f2/stm32f2_hal.h"
+ 114:../../firmware/mcu/hal/hal.h **** #elif HAL_TYPE == HAL_stm32f3
+ 115:../../firmware/mcu/hal/hal.h **** 	#include "stm32f3/stm32f3_hal.h"
+ 116:../../firmware/mcu/hal/hal.h **** 	#ifdef SECCAN
+ 117:../../firmware/mcu/hal/hal.h **** 		#include "stm32f3/stm32f3_hal_seccan.h"
+ 118:../../firmware/mcu/hal/hal.h **** 	#endif
+ 119:../../firmware/mcu/hal/hal.h **** #elif HAL_TYPE == HAL_stm32f4
+ 120:../../firmware/mcu/hal/hal.h **** 	#include "chipwhisperer-fw-extra/stm32f4/stm32f4_hal.h"
+ 121:../../firmware/mcu/hal/hal.h **** #elif HAL_TYPE == HAL_cc2538
+ 122:../../firmware/mcu/hal/hal.h **** 	#include "chipwhisperer-fw-extra/cc2538/cc2538_hal.h"
+ 123:../../firmware/mcu/hal/hal.h **** #elif HAL_TYPE == HAL_k24f
+ 124:../../firmware/mcu/hal/hal.h ****     #include "chipwhisperer-fw-extra/k24f/k24f_hal.h"
+ 125:../../firmware/mcu/hal/hal.h **** #elif HAL_TYPE == HAL_k82f
+ 126:../../firmware/mcu/hal/hal.h **** #include "chipwhisperer-fw-extra/k82f/k82f_hal.h"
+ 127:../../firmware/mcu/hal/hal.h **** #elif HAL_TYPE == HAL_nrf52840
+ 128:../../firmware/mcu/hal/hal.h ****     #include "chipwhisperer-fw-extra/nrf52840/nrf52840_hal.h"   
+ 129:../../firmware/mcu/hal/hal.h **** #elif HAL_TYPE == HAL_stm32f0_nano
+ 130:../../firmware/mcu/hal/hal.h ****     #include "stm32f0/stm32f0_hal.h" 
+ 131:../../firmware/mcu/hal/hal.h ****     void led_error(unsigned int status);
+ 132:../../firmware/mcu/hal/hal.h ****     void led_ok(unsigned int status);
+ 133:../../firmware/mcu/hal/hal.h **** #elif HAL_TYPE == HAL_aurix
+ 134:../../firmware/mcu/hal/hal.h ****     #include "chipwhisperer-fw-extra/aurix/aurix_hal.h"
+ 135:../../firmware/mcu/hal/hal.h **** #elif HAL_TYPE == HAL_saml11
+ 136:../../firmware/mcu/hal/hal.h ****      #include "chipwhisperer-fw-extra/saml11/saml11_hal.h"
+ 137:../../firmware/mcu/hal/hal.h **** #elif HAL_TYPE == HAL_efm32tg11b
+ 138:../../firmware/mcu/hal/hal.h ****      #include "chipwhisperer-fw-extra/efm32tg11b/efm32tg11b_hal.h"
+ 139:../../firmware/mcu/hal/hal.h **** #elif HAL_TYPE == HAL_lpc55s6x
+ 140:../../firmware/mcu/hal/hal.h ****      #include "chipwhisperer-fw-extra/lpc55s6x/lpc55s6x_hal.h"
+ 141:../../firmware/mcu/hal/hal.h **** #elif HAL_TYPE == HAL_psoc62
+ 142:../../firmware/mcu/hal/hal.h ****     #include "chipwhisperer-fw-extra/psoc62/psoc62_hal.h"
+ 143:../../firmware/mcu/hal/hal.h **** #elif HAL_TYPE == HAL_imxrt1062
+ 144:../../firmware/mcu/hal/hal.h ****     #include "chipwhisperer-fw-extra/imxrt1062/imxrt1062_hal.h"
+ 145:../../firmware/mcu/hal/hal.h **** #elif HAL_TYPE == HAL_fe310
+ 146:../../firmware/mcu/hal/hal.h ****     #include "chipwhisperer-fw-extra/fe310/fe310_hal.h"
+ 147:../../firmware/mcu/hal/hal.h **** #elif HAL_TYPE == HAL_efr32mg21a
+ 148:../../firmware/mcu/hal/hal.h ****     #include "chipwhisperer-fw-extra/efr32mg21a/efr32mg21a_hal.h"
+ 149:../../firmware/mcu/hal/hal.h **** #elif HAL_TYPE == HAL_efm32gg11
+ 150:../../firmware/mcu/hal/hal.h ****     #include "chipwhisperer-fw-extra/efm32gg11/efm32gg11_hal.h"
+ 151:../../firmware/mcu/hal/hal.h **** #elif HAL_TYPE == HAL_stm32l5
+ 152:../../firmware/mcu/hal/hal.h ****     #include "chipwhisperer-fw-extra/stm32l5/stm32l5_hal.h"
+ 153:../../firmware/mcu/hal/hal.h **** #elif HAL_TYPE == HAL_stm32l4
+ 154:../../firmware/mcu/hal/hal.h ****     #include "chipwhisperer-fw-extra/stm32l4/stm32l4_hal.h"
+ 155:../../firmware/mcu/hal/hal.h **** #elif HAL_TYPE == HAL_rx65n
+ 156:../../firmware/mcu/hal/hal.h ****     #include "chipwhisperer-fw-extra/rx65n/rx65n_hal.h"
+ 157:../../firmware/mcu/hal/hal.h **** #elif HAL_TYPE == HAL_mpc5676r
+ 158:../../firmware/mcu/hal/hal.h ****     #include "chipwhisperer-fw-extra/mpc5676r/MPC5676R_hal.h"
+ 159:../../firmware/mcu/hal/hal.h **** #elif HAL_TYPE == HAL_neorv32
+ 160:../../firmware/mcu/hal/hal.h ****     #include "chipwhisperer-fw-extra/neorv32/neorv32_hal.h"
+ 161:../../firmware/mcu/hal/hal.h **** #elif HAL_TYPE == HAL_sam4s
+ 162:../../firmware/mcu/hal/hal.h ****     #include "sam4s/sam4s_hal.h"
+ 163:../../firmware/mcu/hal/hal.h **** #elif HAL_TYPE == HAL_ibex
+ 164:../../firmware/mcu/hal/hal.h ****     #include "ibex/ibex_hal.h"
+ 165:../../firmware/mcu/hal/hal.h **** #else
+ 166:../../firmware/mcu/hal/hal.h ****     #error "Unsupported HAL Type"
+ 167:../../firmware/mcu/hal/hal.h **** #endif
+ 168:../../firmware/mcu/hal/hal.h **** 
+ 169:../../firmware/mcu/hal/hal.h **** #if PLATFORM == CW308_MEGARF
+ 170:../../firmware/mcu/hal/hal.h ****     #undef trigger_setup
+ 171:../../firmware/mcu/hal/hal.h ****     #undef trigger_high
+ 172:../../firmware/mcu/hal/hal.h ****     #undef trigger_low
+ 173:../../firmware/mcu/hal/hal.h ****     #define trigger_setup() DDRD |= 0x02
+ 174:../../firmware/mcu/hal/hal.h ****     #define trigger_high()  PORTD |= 0x02
+ 175:../../firmware/mcu/hal/hal.h ****     #define trigger_low()   PORTD &= ~(0x02)
+ 176:../../firmware/mcu/hal/hal.h ****     
+ 177:../../firmware/mcu/hal/hal.h ****     #define HW_AES128_Init();      AES_CTRL = 0x00;
+ 178:../../firmware/mcu/hal/hal.h **** 
+ 179:../../firmware/mcu/hal/hal.h ****     #define HW_AES128_LoadKey(key);  for (uint8_t i = 0; i < 16; i++){ \
+ 180:../../firmware/mcu/hal/hal.h ****                                      AES_KEY = *(key+i); \
+ 181:../../firmware/mcu/hal/hal.h ****                                   }
+ 182:../../firmware/mcu/hal/hal.h **** 
+ 183:../../firmware/mcu/hal/hal.h ****     #define HW_AES128_Enc(pt);  for (uint8_t i = 0; i < 16; i++){ \
+ 184:../../firmware/mcu/hal/hal.h ****                                     AES_STATE = *(pt+i); \
+ 185:../../firmware/mcu/hal/hal.h ****                                 } \
+ 186:../../firmware/mcu/hal/hal.h ****                                   \
+ 187:../../firmware/mcu/hal/hal.h ****                                 AES_CTRL |= 1<<AES_REQUEST; \
+ 188:../../firmware/mcu/hal/hal.h ****                                   \
+ 189:../../firmware/mcu/hal/hal.h ****                                 /*Wait for done  */ \
+ 190:../../firmware/mcu/hal/hal.h ****                                 while ((AES_STATUS & (1<<AES_DONE)) == 0){ \
+ 191:../../firmware/mcu/hal/hal.h ****                                     ; \
+ 192:../../firmware/mcu/hal/hal.h ****                                 } \
+ 193:../../firmware/mcu/hal/hal.h ****                                   \
+ 194:../../firmware/mcu/hal/hal.h ****                                 for (uint8_t i = 0; i < 16; i++){ \
+ 195:../../firmware/mcu/hal/hal.h ****                                     *(pt+i) = AES_STATE; \
+ 196:../../firmware/mcu/hal/hal.h ****                                 }
+ 197:../../firmware/mcu/hal/hal.h ****     
+ 198:../../firmware/mcu/hal/hal.h **** #endif
+ 199:../../firmware/mcu/hal/hal.h **** 
+ 200:../../firmware/mcu/hal/hal.h **** __attribute__((weak)) void led_ok(unsigned int status)
+ 376              		.loc 2 200 28 is_stmt 1 view -0
+ 377              		@ args = 0, pretend = 0, frame = 0
+ 378              		@ frame_needed = 0, uses_anonymous_args = 0
+ 379              		@ link register save eliminated.
+ 380 0000 7047     		bx	lr
+ 381              		.cfi_endproc
+ 382              	.LFE8:
+ 384              		.section	.text.change_err_led,"ax",%progbits
+ 385              		.align	1
+ 386              		.weak	change_err_led
+ 387              		.syntax unified
+ 388              		.thumb
+ 389              		.thumb_func
+ 391              	change_err_led:
+ 392              	.LVL28:
+ 393              	.LFB1:
+ 201:../../firmware/mcu/hal/hal.h **** {
+ 202:../../firmware/mcu/hal/hal.h **** }
+ 203:../../firmware/mcu/hal/hal.h **** 
+ 204:../../firmware/mcu/hal/hal.h **** __attribute__((weak)) void led_error(unsigned int status)
+ 205:../../firmware/mcu/hal/hal.h **** {
+ 394              		.loc 2 205 1 view -0
+ 395              		.cfi_startproc
+ 396              		@ args = 0, pretend = 0, frame = 0
+ 397              		@ frame_needed = 0, uses_anonymous_args = 0
+ 398              		@ link register save eliminated.
+ 206:../../firmware/mcu/hal/hal.h **** }
+ 399              		.loc 2 206 1 view .LVU86
+ 400 0000 7047     		bx	lr
+ 401              		.cfi_endproc
+ 402              	.LFE1:
+ 404              		.section	.text.startup.main,"ax",%progbits
+ 405              		.align	1
+ 406              		.global	main
+ 407              		.syntax unified
+ 408              		.thumb
+ 409              		.thumb_func
+ 411              	main:
+ 412              	.LFB6:
+  79:c_code.c      **** 
+  80:c_code.c      **** int main(void)
+  81:c_code.c      **** {
+ 413              		.loc 1 81 1 view -0
+ 414              		.cfi_startproc
+ 415              		@ Volatile: function does not return.
+ 416              		@ args = 0, pretend = 0, frame = 0
+ 417              		@ frame_needed = 0, uses_anonymous_args = 0
+  82:c_code.c      ****     platform_init();
+ 418              		.loc 1 82 5 view .LVU88
+  81:c_code.c      ****     platform_init();
+ 419              		.loc 1 81 1 is_stmt 0 view .LVU89
+ 420 0000 08B5     		push	{r3, lr}
+ 421              	.LCFI10:
+ 422              		.cfi_def_cfa_offset 8
+ 423              		.cfi_offset 3, -8
+ 424              		.cfi_offset 14, -4
+ 425              		.loc 1 82 5 view .LVU90
+ 426 0002 FFF7FEFF 		bl	platform_init
+ 427              	.LVL29:
+  83:c_code.c      ****     init_uart();
+ 428              		.loc 1 83 5 is_stmt 1 view .LVU91
+ 429 0006 FFF7FEFF 		bl	init_uart
+ 430              	.LVL30:
+  84:c_code.c      ****     trigger_setup();
+ 431              		.loc 1 84 5 view .LVU92
+ 432 000a FFF7FEFF 		bl	trigger_setup
+ 433              	.LVL31:
+  85:c_code.c      **** 	simpleserial_init();
+ 434              		.loc 1 85 2 view .LVU93
+ 435 000e FFF7FEFF 		bl	simpleserial_init
+ 436              	.LVL32:
+  86:c_code.c      ****     
+  87:c_code.c      ****     simpleserial_addcmd('a', 4, set_seed_lfsr_low_hw);
+ 437              		.loc 1 87 5 view .LVU94
+ 438 0012 0B4A     		ldr	r2, .L35
+ 439 0014 0421     		movs	r1, #4
+ 440 0016 6120     		movs	r0, #97
+ 441 0018 FFF7FEFF 		bl	simpleserial_addcmd
+ 442              	.LVL33:
+  88:c_code.c      ****     simpleserial_addcmd('b', 4, set_seed_lfsr_high_hw);
+ 443              		.loc 1 88 5 view .LVU95
+ 444 001c 094A     		ldr	r2, .L35+4
+ 445 001e 0421     		movs	r1, #4
+ 446 0020 6220     		movs	r0, #98
+ 447 0022 FFF7FEFF 		bl	simpleserial_addcmd
+ 448              	.LVL34:
+  89:c_code.c      ****     simpleserial_addcmd('c', 1, step_lfsr_low_hw);
+ 449              		.loc 1 89 5 view .LVU96
+ 450 0026 084A     		ldr	r2, .L35+8
+ 451 0028 0121     		movs	r1, #1
+ 452 002a 6320     		movs	r0, #99
+ 453 002c FFF7FEFF 		bl	simpleserial_addcmd
+ 454              	.LVL35:
+  90:c_code.c      ****     simpleserial_addcmd('d', 1, step_lfsr_high_hw);
+ 455              		.loc 1 90 5 view .LVU97
+ 456 0030 064A     		ldr	r2, .L35+12
+ 457 0032 0121     		movs	r1, #1
+ 458 0034 6420     		movs	r0, #100
+ 459 0036 FFF7FEFF 		bl	simpleserial_addcmd
+ 460              	.LVL36:
+ 461              	.L34:
+  91:c_code.c      ****     
+  92:c_code.c      ****     while(1)
+ 462              		.loc 1 92 5 view .LVU98
+  93:c_code.c      ****         simpleserial_get();
+ 463              		.loc 1 93 9 discriminator 2 view .LVU99
+ 464 003a FFF7FEFF 		bl	simpleserial_get
+ 465              	.LVL37:
+  92:c_code.c      ****         simpleserial_get();
+ 466              		.loc 1 92 10 view .LVU100
+ 467 003e FCE7     		b	.L34
+ 468              	.L36:
+ 469              		.align	2
+ 470              	.L35:
+ 471 0040 00000000 		.word	set_seed_lfsr_low_hw
+ 472 0044 00000000 		.word	set_seed_lfsr_high_hw
+ 473 0048 00000000 		.word	step_lfsr_low_hw
+ 474 004c 00000000 		.word	step_lfsr_high_hw
+ 475              		.cfi_endproc
+ 476              	.LFE6:
+ 478              		.bss
+ 479              		.align	2
+ 480              		.set	.LANCHOR0,. + 0
+ 483              	lfsr_state_low_hw:
+ 484 0000 00000000 		.space	4
+ 487              	lfsr_state_high_hw:
+ 488 0004 00000000 		.space	4
+ 489              		.text
+ 490              	.Letext0:
+ 491              		.file 3 "/Applications/ArmGNUToolchain/15.2.rel1/arm-none-eabi/arm-none-eabi/include/machine/_defa
+ 492              		.file 4 "/Applications/ArmGNUToolchain/15.2.rel1/arm-none-eabi/arm-none-eabi/include/sys/_stdint.h
+ 493              		.file 5 "../../firmware/mcu/simpleserial/simpleserial.h"
+ 494              		.file 6 "../../firmware/mcu/hal/stm32f3/stm32f3_hal.h"
+DEFINED SYMBOLS
+                            *ABS*:00000000 c_code.c
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccxG2iuV.s:19     .text.set_seed_lfsr_low_hw:00000000 $t
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccxG2iuV.s:25     .text.set_seed_lfsr_low_hw:00000000 set_seed_lfsr_low_hw
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccxG2iuV.s:74     .text.set_seed_lfsr_low_hw:00000024 $d
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccxG2iuV.s:79     .text.set_seed_lfsr_high_hw:00000000 $t
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccxG2iuV.s:85     .text.set_seed_lfsr_high_hw:00000000 set_seed_lfsr_high_hw
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccxG2iuV.s:134    .text.set_seed_lfsr_high_hw:00000024 $d
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccxG2iuV.s:139    .text.step_lfsr_low_hw:00000000 $t
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccxG2iuV.s:145    .text.step_lfsr_low_hw:00000000 step_lfsr_low_hw
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccxG2iuV.s:247    .text.step_lfsr_low_hw:00000050 $d
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccxG2iuV.s:255    .text.step_lfsr_high_hw:00000000 $t
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccxG2iuV.s:261    .text.step_lfsr_high_hw:00000000 step_lfsr_high_hw
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccxG2iuV.s:358    .text.step_lfsr_high_hw:00000050 $d
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccxG2iuV.s:366    .text.change_ok_led:00000000 $t
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccxG2iuV.s:372    .text.change_ok_led:00000000 change_ok_led
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccxG2iuV.s:385    .text.change_err_led:00000000 $t
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccxG2iuV.s:391    .text.change_err_led:00000000 change_err_led
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccxG2iuV.s:405    .text.startup.main:00000000 $t
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccxG2iuV.s:411    .text.startup.main:00000000 main
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccxG2iuV.s:471    .text.startup.main:00000040 $d
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccxG2iuV.s:479    .bss:00000000 $d
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccxG2iuV.s:483    .bss:00000000 lfsr_state_low_hw
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccxG2iuV.s:487    .bss:00000004 lfsr_state_high_hw
+
+UNDEFINED SYMBOLS
+simpleserial_put
+trigger_high
+trigger_low
+platform_init
+init_uart
+trigger_setup
+simpleserial_init
+simpleserial_addcmd
+simpleserial_get

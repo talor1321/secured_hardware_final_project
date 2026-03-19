@@ -1,0 +1,196 @@
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 4
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"stm32f3_sysmem.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.file 1 "../../firmware/mcu/hal//stm32f3/stm32f3_sysmem.c"
+  18              		.section	.text._sbrk,"ax",%progbits
+  19              		.align	1
+  20              		.global	_sbrk
+  21              		.syntax unified
+  22              		.thumb
+  23              		.thumb_func
+  25              	_sbrk:
+  26              	.LVL0:
+  27              	.LFB3:
+   1:../../firmware/mcu/hal//stm32f3/stm32f3_sysmem.c **** /**
+   2:../../firmware/mcu/hal//stm32f3/stm32f3_sysmem.c **** *****************************************************************************
+   3:../../firmware/mcu/hal//stm32f3/stm32f3_sysmem.c **** **
+   4:../../firmware/mcu/hal//stm32f3/stm32f3_sysmem.c **** **  File        : sysmem.c
+   5:../../firmware/mcu/hal//stm32f3/stm32f3_sysmem.c **** **
+   6:../../firmware/mcu/hal//stm32f3/stm32f3_sysmem.c **** **  Author	    : Ac6
+   7:../../firmware/mcu/hal//stm32f3/stm32f3_sysmem.c **** **
+   8:../../firmware/mcu/hal//stm32f3/stm32f3_sysmem.c **** **  Abstract    : System Workbench Minimal System Memory calls file
+   9:../../firmware/mcu/hal//stm32f3/stm32f3_sysmem.c **** **
+  10:../../firmware/mcu/hal//stm32f3/stm32f3_sysmem.c **** ** 		          For more information about which c-functions
+  11:../../firmware/mcu/hal//stm32f3/stm32f3_sysmem.c **** **                need which of these lowlevel functions
+  12:../../firmware/mcu/hal//stm32f3/stm32f3_sysmem.c **** **                please consult the Newlib libc-manual
+  13:../../firmware/mcu/hal//stm32f3/stm32f3_sysmem.c **** **
+  14:../../firmware/mcu/hal//stm32f3/stm32f3_sysmem.c **** **  Environment : System Workbench for MCU
+  15:../../firmware/mcu/hal//stm32f3/stm32f3_sysmem.c **** **
+  16:../../firmware/mcu/hal//stm32f3/stm32f3_sysmem.c **** **  Distribution: The file is distributed �as is,� without any warranty
+  17:../../firmware/mcu/hal//stm32f3/stm32f3_sysmem.c **** **                of any kind.
+  18:../../firmware/mcu/hal//stm32f3/stm32f3_sysmem.c **** **
+  19:../../firmware/mcu/hal//stm32f3/stm32f3_sysmem.c **** *****************************************************************************
+  20:../../firmware/mcu/hal//stm32f3/stm32f3_sysmem.c **** **
+  21:../../firmware/mcu/hal//stm32f3/stm32f3_sysmem.c **** ** <h2><center>&copy; COPYRIGHT(c) 2014 Ac6</center></h2>
+  22:../../firmware/mcu/hal//stm32f3/stm32f3_sysmem.c **** **
+  23:../../firmware/mcu/hal//stm32f3/stm32f3_sysmem.c **** ** Redistribution and use in source and binary forms, with or without modification,
+  24:../../firmware/mcu/hal//stm32f3/stm32f3_sysmem.c **** ** are permitted provided that the following conditions are met:
+  25:../../firmware/mcu/hal//stm32f3/stm32f3_sysmem.c **** **   1. Redistributions of source code must retain the above copyright notice,
+  26:../../firmware/mcu/hal//stm32f3/stm32f3_sysmem.c **** **      this list of conditions and the following disclaimer.
+  27:../../firmware/mcu/hal//stm32f3/stm32f3_sysmem.c **** **   2. Redistributions in binary form must reproduce the above copyright notice,
+  28:../../firmware/mcu/hal//stm32f3/stm32f3_sysmem.c **** **      this list of conditions and the following disclaimer in the documentation
+  29:../../firmware/mcu/hal//stm32f3/stm32f3_sysmem.c **** **      and/or other materials provided with the distribution.
+  30:../../firmware/mcu/hal//stm32f3/stm32f3_sysmem.c **** **   3. Neither the name of Ac6 nor the names of its contributors
+  31:../../firmware/mcu/hal//stm32f3/stm32f3_sysmem.c **** **      may be used to endorse or promote products derived from this software
+  32:../../firmware/mcu/hal//stm32f3/stm32f3_sysmem.c **** **      without specific prior written permission.
+  33:../../firmware/mcu/hal//stm32f3/stm32f3_sysmem.c **** **
+  34:../../firmware/mcu/hal//stm32f3/stm32f3_sysmem.c **** ** THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+  35:../../firmware/mcu/hal//stm32f3/stm32f3_sysmem.c **** ** AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+  36:../../firmware/mcu/hal//stm32f3/stm32f3_sysmem.c **** ** IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+  37:../../firmware/mcu/hal//stm32f3/stm32f3_sysmem.c **** ** DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+  38:../../firmware/mcu/hal//stm32f3/stm32f3_sysmem.c **** ** FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+  39:../../firmware/mcu/hal//stm32f3/stm32f3_sysmem.c **** ** DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+  40:../../firmware/mcu/hal//stm32f3/stm32f3_sysmem.c **** ** SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+  41:../../firmware/mcu/hal//stm32f3/stm32f3_sysmem.c **** ** CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+  42:../../firmware/mcu/hal//stm32f3/stm32f3_sysmem.c **** ** OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+  43:../../firmware/mcu/hal//stm32f3/stm32f3_sysmem.c **** ** OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  44:../../firmware/mcu/hal//stm32f3/stm32f3_sysmem.c **** **
+  45:../../firmware/mcu/hal//stm32f3/stm32f3_sysmem.c **** *****************************************************************************
+  46:../../firmware/mcu/hal//stm32f3/stm32f3_sysmem.c **** */
+  47:../../firmware/mcu/hal//stm32f3/stm32f3_sysmem.c **** 
+  48:../../firmware/mcu/hal//stm32f3/stm32f3_sysmem.c **** /* Includes */
+  49:../../firmware/mcu/hal//stm32f3/stm32f3_sysmem.c **** #include <errno.h>
+  50:../../firmware/mcu/hal//stm32f3/stm32f3_sysmem.c **** #include <stdio.h>
+  51:../../firmware/mcu/hal//stm32f3/stm32f3_sysmem.c **** 
+  52:../../firmware/mcu/hal//stm32f3/stm32f3_sysmem.c **** /* Variables */
+  53:../../firmware/mcu/hal//stm32f3/stm32f3_sysmem.c **** //Uncomment following if needed - commented out for now as not used and causes warning
+  54:../../firmware/mcu/hal//stm32f3/stm32f3_sysmem.c **** //extern int errno;
+  55:../../firmware/mcu/hal//stm32f3/stm32f3_sysmem.c **** register char * stack_ptr asm("sp");
+  56:../../firmware/mcu/hal//stm32f3/stm32f3_sysmem.c **** 
+  57:../../firmware/mcu/hal//stm32f3/stm32f3_sysmem.c **** /* Functions */
+  58:../../firmware/mcu/hal//stm32f3/stm32f3_sysmem.c **** 
+  59:../../firmware/mcu/hal//stm32f3/stm32f3_sysmem.c **** /**
+  60:../../firmware/mcu/hal//stm32f3/stm32f3_sysmem.c ****  _sbrk
+  61:../../firmware/mcu/hal//stm32f3/stm32f3_sysmem.c ****  Increase program data space. Malloc and related functions depend on this
+  62:../../firmware/mcu/hal//stm32f3/stm32f3_sysmem.c **** **/
+  63:../../firmware/mcu/hal//stm32f3/stm32f3_sysmem.c **** char *_sbrk(int incr)
+  64:../../firmware/mcu/hal//stm32f3/stm32f3_sysmem.c **** {
+  28              		.loc 1 64 1 view -0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 0
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
+  65:../../firmware/mcu/hal//stm32f3/stm32f3_sysmem.c **** 	extern char end asm("end");
+  32              		.loc 1 65 2 view .LVU1
+  66:../../firmware/mcu/hal//stm32f3/stm32f3_sysmem.c **** 	static char *heap_end;
+  33              		.loc 1 66 2 view .LVU2
+  67:../../firmware/mcu/hal//stm32f3/stm32f3_sysmem.c **** 	char *prev_heap_end;
+  34              		.loc 1 67 2 view .LVU3
+  68:../../firmware/mcu/hal//stm32f3/stm32f3_sysmem.c **** 
+  69:../../firmware/mcu/hal//stm32f3/stm32f3_sysmem.c **** 	if (heap_end == 0)
+  35              		.loc 1 69 2 view .LVU4
+  36              		.loc 1 69 15 is_stmt 0 view .LVU5
+  37 0000 094A     		ldr	r2, .L5
+  64:../../firmware/mcu/hal//stm32f3/stm32f3_sysmem.c **** 	extern char end asm("end");
+  38              		.loc 1 64 1 view .LVU6
+  39 0002 08B5     		push	{r3, lr}
+  40              	.LCFI0:
+  41              		.cfi_def_cfa_offset 8
+  42              		.cfi_offset 3, -8
+  43              		.cfi_offset 14, -4
+  44              		.loc 1 69 15 view .LVU7
+  45 0004 1368     		ldr	r3, [r2]
+  46              		.loc 1 69 5 view .LVU8
+  47 0006 0BB9     		cbnz	r3, .L2
+  70:../../firmware/mcu/hal//stm32f3/stm32f3_sysmem.c **** 		heap_end = &end;
+  48              		.loc 1 70 3 is_stmt 1 view .LVU9
+  49              		.loc 1 70 12 is_stmt 0 view .LVU10
+  50 0008 084B     		ldr	r3, .L5+4
+  51 000a 1360     		str	r3, [r2]
+  52              	.L2:
+  71:../../firmware/mcu/hal//stm32f3/stm32f3_sysmem.c **** 
+  72:../../firmware/mcu/hal//stm32f3/stm32f3_sysmem.c **** 	prev_heap_end = heap_end;
+  53              		.loc 1 72 2 is_stmt 1 view .LVU11
+  54              	.LVL1:
+  73:../../firmware/mcu/hal//stm32f3/stm32f3_sysmem.c **** 	if (heap_end + incr > stack_ptr)
+  55              		.loc 1 73 2 view .LVU12
+  56              		.loc 1 73 15 is_stmt 0 view .LVU13
+  57 000c 1844     		add	r0, r0, r3
+  58              	.LVL2:
+  59              		.loc 1 73 5 view .LVU14
+  60 000e 6946     		mov	r1, sp
+  61 0010 8842     		cmp	r0, r1
+  62 0012 07D9     		bls	.L3
+  74:../../firmware/mcu/hal//stm32f3/stm32f3_sysmem.c **** 	{
+  75:../../firmware/mcu/hal//stm32f3/stm32f3_sysmem.c **** 		errno = ENOMEM;
+  63              		.loc 1 75 3 is_stmt 1 view .LVU15
+  64 0014 FFF7FEFF 		bl	__errno
+  65              	.LVL3:
+  66              		.loc 1 75 9 is_stmt 0 discriminator 1 view .LVU16
+  67 0018 0C23     		movs	r3, #12
+  68 001a 0360     		str	r3, [r0]
+  76:../../firmware/mcu/hal//stm32f3/stm32f3_sysmem.c **** 		return (char *) -1;
+  69              		.loc 1 76 3 is_stmt 1 view .LVU17
+  70              		.loc 1 76 10 is_stmt 0 view .LVU18
+  71 001c 4FF0FF33 		mov	r3, #-1
+  72              	.L1:
+  77:../../firmware/mcu/hal//stm32f3/stm32f3_sysmem.c **** 	}
+  78:../../firmware/mcu/hal//stm32f3/stm32f3_sysmem.c **** 
+  79:../../firmware/mcu/hal//stm32f3/stm32f3_sysmem.c **** 	heap_end += incr;
+  80:../../firmware/mcu/hal//stm32f3/stm32f3_sysmem.c **** 
+  81:../../firmware/mcu/hal//stm32f3/stm32f3_sysmem.c **** 	return (char *) prev_heap_end;
+  82:../../firmware/mcu/hal//stm32f3/stm32f3_sysmem.c **** }
+  73              		.loc 1 82 1 view .LVU19
+  74 0020 1846     		mov	r0, r3
+  75 0022 08BD     		pop	{r3, pc}
+  76              	.LVL4:
+  77              	.L3:
+  79:../../firmware/mcu/hal//stm32f3/stm32f3_sysmem.c **** 
+  78              		.loc 1 79 2 is_stmt 1 view .LVU20
+  79:../../firmware/mcu/hal//stm32f3/stm32f3_sysmem.c **** 
+  79              		.loc 1 79 11 is_stmt 0 view .LVU21
+  80 0024 1060     		str	r0, [r2]
+  81              	.LVL5:
+  81:../../firmware/mcu/hal//stm32f3/stm32f3_sysmem.c **** }
+  82              		.loc 1 81 2 is_stmt 1 view .LVU22
+  81:../../firmware/mcu/hal//stm32f3/stm32f3_sysmem.c **** }
+  83              		.loc 1 81 9 is_stmt 0 view .LVU23
+  84 0026 FBE7     		b	.L1
+  85              	.L6:
+  86              		.align	2
+  87              	.L5:
+  88 0028 00000000 		.word	.LANCHOR0
+  89 002c 00000000 		.word	end
+  90              		.cfi_endproc
+  91              	.LFE3:
+  93              		.bss
+  94              		.align	2
+  95              		.set	.LANCHOR0,. + 0
+  98              	heap_end.0:
+  99 0000 00000000 		.space	4
+ 100              		.text
+ 101              	.Letext0:
+ 102              		.file 2 "/Applications/ArmGNUToolchain/15.2.rel1/arm-none-eabi/arm-none-eabi/include/sys/errno.h"
+DEFINED SYMBOLS
+                            *ABS*:00000000 stm32f3_sysmem.c
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//cclu6iGO.s:19     .text._sbrk:00000000 $t
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//cclu6iGO.s:25     .text._sbrk:00000000 _sbrk
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//cclu6iGO.s:88     .text._sbrk:00000028 $d
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//cclu6iGO.s:94     .bss:00000000 $d
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//cclu6iGO.s:98     .bss:00000000 heap_end.0
+
+UNDEFINED SYMBOLS
+__errno
+end
