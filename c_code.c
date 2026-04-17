@@ -20,19 +20,123 @@ static uint32_t unpack_u32_le(const uint8_t* data)
            ((uint32_t)data[0]);
 }
 
-static uint32_t step_unmasked_plain(uint8_t num_steps, uint32_t polynomial)
+static uint32_t step_plain_v1(uint8_t num_steps, uint32_t polynomial);
+static uint32_t step_plain_v2(uint8_t num_steps, uint32_t polynomial);
+static uint32_t step_plain_v3(uint8_t num_steps, uint32_t polynomial);
+
+static uint32_t step_plain(uint8_t num_steps, uint32_t polynomial)
 {
-    uint8_t i;
+    return step_plain_v3(num_steps, polynomial);
+}
+
+static uint32_t step_plain_v3(uint8_t num_steps, uint32_t polynomial)
+{
+    uint32_t lsb, temp, garbage; 
+    
     trigger_high();
-    for(i = 0; i < num_steps; i++) {
-        uint32_t lsb = g_lfsr_state & 1u;
-        g_lfsr_state = (g_lfsr_state >> 1) ^ (polynomial * lsb);
-    }
+
+    __asm__ volatile (
+        "cmp %[steps], #0 \n\t"               
+        "beq 2f \n"                           
+        "1: \n\t"                             
+        
+        // 1. Extract LSB and shift state right
+        "and %[lsb], %[state], #1 \n\t"       
+        "lsr %[state], %[state], #1 \n\t"     
+        
+        // 2. Unconditional XOR into a temporary register
+        "eor %[temp], %[state], %[poly] \n\t" 
+        
+        // 3. Register routing based on LSB
+        "cmp %[lsb], #1 \n\t"                 // Compare LSB to 1
+        "ite eq \n\t"                         // If-Then-Else block (Condition: Equal)
+        "moveq %[state], %[temp] \n\t"        // THEN (LSB=1): Copy temp to state
+        "movne %[garb], %[temp] \n\t"         // ELSE (LSB=0): Copy temp to garbage
+        
+        // --- Loop Control ---
+        "subs %[steps], %[steps], #1 \n\t"    
+        "bne 1b \n"                           
+        "2: \n"                               
+        
+        : [state] "+r" (g_lfsr_state),
+          [steps] "+r" (num_steps),
+          [lsb]   "=&r" (lsb),
+          [temp]  "=&r" (temp),
+          [garb]  "=&r" (garbage)
+        : [poly]  "r"  (polynomial)
+        : "cc"                                
+    );
+
     trigger_low();
     return g_lfsr_state;
 }
 
-static uint32_t step_unmasked_shuffled(uint8_t num_steps, uint32_t polynomial)
+static uint32_t step_plain_v2(uint8_t num_steps, uint32_t polynomial)
+{
+    uint32_t mask; 
+    
+    trigger_high();
+
+    __asm__ volatile (
+        "cmp %[steps], #0 \n\t"               
+        "beq 2f \n"                           
+        "1: \n\t"                             
+        
+        // --- Data Processing (No 's' -> No Flag Updates) ---
+        "and %[mask], %[state], #1 \n\t"      // Extract LSB
+        "lsr %[state], %[state], #1 \n\t"     // Shift state right
+        "rsb %[mask], %[mask], #0 \n\t"       // Mask expansion (0 - LSB)
+        "and %[mask], %[mask], %[poly] \n\t"  // Mask the polynomial
+        "eor %[state], %[state], %[mask] \n\t"// Apply XOR feedback
+        
+        // --- Loop Control (Keep 's' -> Updates Z flag) ---
+        "subs %[steps], %[steps], #1 \n\t"    // Decrement counter
+        "bne 1b \n"                           // Branch if Z flag != 1
+        "2: \n"                               
+        
+        : [state] "+r" (g_lfsr_state),
+          [steps] "+r" (num_steps),
+          [mask]  "=&r" (mask)                
+        : [poly]  "r"  (polynomial)
+        : "cc"                                // We still clobber CC because of subs/cmp
+    );
+
+    trigger_low();
+    return g_lfsr_state;
+}
+
+static uint32_t step_plain_v1(uint8_t num_steps, uint32_t polynomial)
+{
+    trigger_high();
+
+    __asm__ volatile (
+        "cmp %[steps], #0 \n\t"               // Check if num_steps is 0
+        "beq 2f \n"                           // If 0, jump forward to label 2
+        "1: \n\t"                             // Loop start
+        "lsrs %[state], %[state], #1 \n\t"    // Shift state right by 1. LSB goes into Carry flag
+        "bcc 3f \n\t"                         // If Carry is Clear (LSB was 0), skip the XOR
+        "eors %[state], %[state], %[poly] \n" // XOR state with polynomial
+        "3: \n\t"
+        "subs %[steps], %[steps], #1 \n\t"    // Decrement steps
+        "bne 1b \n"                           // If steps != 0, branch backward to label 1
+        "2: \n"                               // Loop end
+        
+        // --- Output Operands ---
+        : [state] "+r" (g_lfsr_state),        // '+' means read and write
+          [steps] "+r" (num_steps)
+          
+        // --- Input Operands ---
+        : [poly]  "r"  (polynomial)           // 'r' means put in a general register
+        
+        // --- Clobbers ---
+        : "cc"                                // Tells compiler we modify condition flags
+    );
+
+    trigger_low();
+    return g_lfsr_state;
+}
+
+static uint32_t step_shuffled(uint8_t num_steps, uint32_t polynomial)
 {
     uint8_t i;
     trigger_high();
@@ -44,7 +148,7 @@ static uint32_t step_unmasked_shuffled(uint8_t num_steps, uint32_t polynomial)
     return g_lfsr_state;
 }
 
-static uint32_t step_masked_plain(uint8_t num_steps, uint32_t polynomial)
+static uint32_t step_masked(uint8_t num_steps, uint32_t polynomial)
 {
     uint8_t i;
     trigger_high();
@@ -112,13 +216,13 @@ uint8_t step_lfsr(uint8_t* msg, uint8_t len)
         if(g_mode_flags & FLAG_SHUFFLED) {
             logical_state = step_masked_shuffled(num_steps, polynomial);
         } else {
-            logical_state = step_masked_plain(num_steps, polynomial);
+            logical_state = step_masked(num_steps, polynomial);
         }
     } else {
         if(g_mode_flags & FLAG_SHUFFLED) {
-            logical_state = step_unmasked_shuffled(num_steps, polynomial);
+            logical_state = step_shuffled(num_steps, polynomial);
         } else {
-            logical_state = step_unmasked_plain(num_steps, polynomial);
+            logical_state = step_plain(num_steps, polynomial);
         }
     }
 
