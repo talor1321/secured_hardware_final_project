@@ -2028,41 +2028,41 @@
  1205              		.file 5 "../../firmware/mcu/hal/stm32f3/stm32f3_hal.h"
 DEFINED SYMBOLS
                             *ABS*:00000000 simpleserial.c
-/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//cciGwWNs.s:19     .text.check_version:00000000 $t
-/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//cciGwWNs.s:25     .text.check_version:00000000 check_version
-/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//cciGwWNs.s:43     .text.change_ok_led:00000000 $t
-/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//cciGwWNs.s:49     .text.change_ok_led:00000000 change_ok_led
-/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//cciGwWNs.s:62     .text.change_err_led:00000000 $t
-/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//cciGwWNs.s:68     .text.change_err_led:00000000 change_err_led
-/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//cciGwWNs.s:82     .text.ss_crc:00000000 $t
-/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//cciGwWNs.s:88     .text.ss_crc:00000000 ss_crc
-/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//cciGwWNs.s:137    .text.ss_crc:0000001c $d
-/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//cciGwWNs.s:142    .text.hex_decode:00000000 $t
-/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//cciGwWNs.s:148    .text.hex_decode:00000000 hex_decode
-/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//cciGwWNs.s:313    .text.simpleserial_addcmd_flags:00000000 $t
-/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//cciGwWNs.s:319    .text.simpleserial_addcmd_flags:00000000 simpleserial_addcmd_flags
-/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//cciGwWNs.s:378    .text.simpleserial_addcmd_flags:00000028 $d
-/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//cciGwWNs.s:383    .text.simpleserial_addcmd:00000000 $t
-/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//cciGwWNs.s:389    .text.simpleserial_addcmd:00000000 simpleserial_addcmd
-/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//cciGwWNs.s:407    .text.simpleserial_init:00000000 $t
-/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//cciGwWNs.s:413    .text.simpleserial_init:00000000 simpleserial_init
-/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//cciGwWNs.s:452    .text.simpleserial_init:00000020 $d
-/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//cciGwWNs.s:612    .text.ss_get_commands:00000000 ss_get_commands
-/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//cciGwWNs.s:561    .text.ss_num_commands:00000000 ss_num_commands
-/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//cciGwWNs.s:459    .text.simpleserial_put:00000000 $t
-/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//cciGwWNs.s:465    .text.simpleserial_put:00000000 simpleserial_put
-/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//cciGwWNs.s:549    .text.simpleserial_put:00000044 $d
-/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//cciGwWNs.s:555    .text.ss_num_commands:00000000 $t
-/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//cciGwWNs.s:601    .text.ss_num_commands:0000001c $d
-/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//cciGwWNs.s:606    .text.ss_get_commands:00000000 $t
-/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//cciGwWNs.s:707    .text.ss_get_commands:00000048 $d
-/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//cciGwWNs.s:713    .text.simpleserial_get:00000000 $t
-/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//cciGwWNs.s:719    .text.simpleserial_get:00000000 simpleserial_get
-/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//cciGwWNs.s:922    .text.simpleserial_get:000000c0 $d
-/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//cciGwWNs.s:1188   .rodata:00000100 hex_lookup
-/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//cciGwWNs.s:1191   .bss:00000000 $d
-/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//cciGwWNs.s:1195   .bss:00000000 num_commands
-/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//cciGwWNs.s:1199   .bss:00000004 commands
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//cc0mwYAx.s:19     .text.check_version:00000000 $t
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//cc0mwYAx.s:25     .text.check_version:00000000 check_version
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//cc0mwYAx.s:43     .text.change_ok_led:00000000 $t
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//cc0mwYAx.s:49     .text.change_ok_led:00000000 change_ok_led
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//cc0mwYAx.s:62     .text.change_err_led:00000000 $t
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//cc0mwYAx.s:68     .text.change_err_led:00000000 change_err_led
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//cc0mwYAx.s:82     .text.ss_crc:00000000 $t
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//cc0mwYAx.s:88     .text.ss_crc:00000000 ss_crc
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//cc0mwYAx.s:137    .text.ss_crc:0000001c $d
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//cc0mwYAx.s:142    .text.hex_decode:00000000 $t
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//cc0mwYAx.s:148    .text.hex_decode:00000000 hex_decode
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//cc0mwYAx.s:313    .text.simpleserial_addcmd_flags:00000000 $t
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//cc0mwYAx.s:319    .text.simpleserial_addcmd_flags:00000000 simpleserial_addcmd_flags
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//cc0mwYAx.s:378    .text.simpleserial_addcmd_flags:00000028 $d
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//cc0mwYAx.s:383    .text.simpleserial_addcmd:00000000 $t
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//cc0mwYAx.s:389    .text.simpleserial_addcmd:00000000 simpleserial_addcmd
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//cc0mwYAx.s:407    .text.simpleserial_init:00000000 $t
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//cc0mwYAx.s:413    .text.simpleserial_init:00000000 simpleserial_init
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//cc0mwYAx.s:452    .text.simpleserial_init:00000020 $d
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//cc0mwYAx.s:612    .text.ss_get_commands:00000000 ss_get_commands
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//cc0mwYAx.s:561    .text.ss_num_commands:00000000 ss_num_commands
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//cc0mwYAx.s:459    .text.simpleserial_put:00000000 $t
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//cc0mwYAx.s:465    .text.simpleserial_put:00000000 simpleserial_put
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//cc0mwYAx.s:549    .text.simpleserial_put:00000044 $d
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//cc0mwYAx.s:555    .text.ss_num_commands:00000000 $t
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//cc0mwYAx.s:601    .text.ss_num_commands:0000001c $d
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//cc0mwYAx.s:606    .text.ss_get_commands:00000000 $t
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//cc0mwYAx.s:707    .text.ss_get_commands:00000048 $d
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//cc0mwYAx.s:713    .text.simpleserial_get:00000000 $t
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//cc0mwYAx.s:719    .text.simpleserial_get:00000000 simpleserial_get
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//cc0mwYAx.s:922    .text.simpleserial_get:000000c0 $d
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//cc0mwYAx.s:1188   .rodata:00000100 hex_lookup
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//cc0mwYAx.s:1191   .bss:00000000 $d
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//cc0mwYAx.s:1195   .bss:00000000 num_commands
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//cc0mwYAx.s:1199   .bss:00000004 commands
 
 UNDEFINED SYMBOLS
 putch

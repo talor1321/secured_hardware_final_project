@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Temporal Shuffling Hardware Trace</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #ffffff; color: #0f172a; padding: 40px; display: flex; flex-direction: column; align-items: center; margin: 0; min-width: 1400px;}
+        .container { background-color: white; padding: 40px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1); width: 1200px; margin-bottom: 40px; border: 1px solid #e2e8f0; }
+        h1.main-title { text-align: center; color: #1e293b; margin-bottom: 50px; font-size: 32px; border-bottom: 3px solid #f59e0b; display: inline-block; padding-bottom: 15px;}
+        h2 { border-bottom: 2px dashed #cbd5e1; padding-bottom: 10px; color: #334155; margin-top: 0; font-size: 24px;}
+        p { color: #475569; font-size: 15px; margin-bottom: 25px; line-height: 1.6; }
+        
+        table { border-collapse: collapse; text-align: center; margin: 0 auto; width: 100%; box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1); }
+        th, td { border: 2px solid #cbd5e1; padding: 12px; font-family: monospace; font-size: 18px; }
+        th { background-color: #f1f5f9; color: #475569; font-weight: bold; font-family: 'Segoe UI', sans-serif; font-size: 14px; }
+        
+        .code-block { background-color: #1e293b; color: #e2e8f0; font-family: 'Courier New', Courier, monospace; padding: 15px; border-radius: 8px; text-align: left; margin-bottom: 20px; font-size: 14px;}
+        .code-comment { color: #94a3b8; font-style: italic; }
+        .highlight-var { color: #38bdf8; font-weight: bold; }
+        
+        .timeline { display: flex; flex-direction: column; gap: 20px; border-left: 4px solid #cbd5e1; padding-left: 30px; margin-left: 30px; }
+        .timeline-item { position: relative; background-color: #f8fafc; border: 2px solid #e2e8f0; border-radius: 8px; padding: 15px 25px; margin-bottom:10px;}
+        .timeline-item h3 { margin-top: 0; margin-bottom: 15px; color: #1e293b; font-size: 18px; }
+        
+        /* Timeline Dots */
+        .timeline-item::before { content: ''; position: absolute; left: -39px; top: 20px; width: 10px; height: 10px; border-radius: 50%; background-color: #3b82f6; border: 4px solid white; box-shadow: 0 0 0 2px #3b82f6; }
+        .tl-nop { border-color: #fcd34d; background-color: #fffbeb; }
+        .tl-nop::before { background-color: #f59e0b; box-shadow: 0 0 0 2px #f59e0b; }
+        .tl-action { border-color: #bbf7d0; background-color: #f0fdf4; }
+        .tl-action::before { background-color: #22c55e; box-shadow: 0 0 0 2px #22c55e; }
+        
+        .state-tb td { padding: 6px; font-size: 16px; }
+        .state-tb th { padding: 6px; font-size: 12px; }
+        
+        .cache-hl { background-color: #fee2e2; border: 3px solid #ef4444; color: #b91c1c; font-weight: bold; }
+        .border-hl { background-color: #dcfce7; border: 3px solid #22c55e; color: #15803d; font-weight: bold; }
+        .tap-hl { background-color: #fef08a; border: 3px solid #eab308; color: #854d0e; font-weight: bold; }
+
+    </style>
+</head>
+<body>
+
+    <h1 class="main-title">Hardware Trace: Constant-Time Temporal Shuffling</h1>
+
+    <div class="container">
+        <h2>Initial CPU State (4 Core Registers)</h2>
+        <p>To demonstrate the reality of hardware shifting dependencies, we will trace the bits across all 4 independent 24-bit physical registers that make up our massive 96-bit LFSR. We will simplify each register visually into its Most Significant Block (MSB) and its boundary Least Significant Block (LSB).</p>
+        
+        <table class="state-tb">
+            <tr>
+                <th colspan="2" style="background-color: #bfdbfe;">R3 (Highest Order)</th>
+                <th colspan="2" style="background-color: #bbf7d0;">R2</th>
+                <th colspan="2" style="background-color: #fef08a;">R1</th>
+                <th colspan="2" style="background-color: #fecaca;">R0 (Lowest Order)</th>
+            </tr>
+            <tr>
+                <th>MSB</th><th>LSB (Border 3)</th>
+                <th>MSB</th><th>LSB (Border 2)</th>
+                <th>MSB</th><th>LSB (Border 1)</th>
+                <th>MSB</th><th>LSB (Core Secret)</th>
+            </tr>
+            <tr>
+                <td>0 0 0</td><td class="cache-hl">1 0 1</td>
+                <td>0 1 1</td><td class="cache-hl">1 1 0</td>
+                <td>1 0 1</td><td class="cache-hl">0 1 1</td>
+                <td>0 0 0</td><td style="font-weight:bold;">0 1 0</td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="container">
+        <h2>Phase 1: Dependency Decoupling (The Pre-Extraction Snapshot)</h2>
+        <p>Because the registers represent a sequential block, shifting <b>R1</b> causes it to drop its boundary bits `0 1 1`. Therefore, if we want to shift <b>R1</b> into <b>R0</b> seamlessly, there is a strict sequential dependency. <b>If we shift out of order, the boundary bits are destroyed and the cryptography fails!</b></p>
+        <p>To break this strict dependency, the CPU safely extracts and saves the boundaries <b>first</b>. The boundary slices maintain their completely masked form (they are never mathematically simplified/unmasked). This unlocks the physical registers allowing absolute temporal freedom.</p>
+        
+        <table class="state-tb" style="width: 60%;">
+            <tr><th>Snapshot Target</th><th>Temporary Core Cache</th></tr>
+            <tr><td style="font-weight:bold;">R1 LSB Block</td><td class="cache-hl"><code>[t1=011]</code></td></tr>
+            <tr><td style="font-weight:bold;">R2 LSB Block</td><td class="cache-hl"><code>[t2=110]</code></td></tr>
+            <tr><td style="font-weight:bold;">R3 LSB Block</td><td class="cache-hl"><code>[t3=101]</code></td></tr>
+            <tr><td style="font-weight:bold;">Core Feedback Secret</td><td style="font-weight:bold;"><code>[lsb=010]</code></td></tr>
+        </table>
+    </div>
+
+    <div class="container">
+        <h2>Phase 2: The Shuffled Shift Sequence (RNG = 2)</h2>
+        <p>The Fast Xorshift PRNG generated the routing number `2`. This forces the CPU to execute the `R2` &rightarrow; `R3` &rightarrow; `R0` &rightarrow; `R1` shift order.</p>
+
+        <div class="timeline">
+            <div class="timeline-item tl-nop">
+                <h3>Cycle +0: 1 Padding NOP</h3>
+                <p>Because jumping to Route 2 took 1 execution branch cycle, we burn exactly 1 NOP command mathematically. This normalizes the CPU timestamp baseline with the remaining 3 random routes, preventing Timing Attack leakage.</p>
+            </div>
+            <div class="timeline-item tl-action">
+                <h3>Cycle +1: Shift R2 (Independent)</h3>
+                <p>The CPU logs a Right-Shift on <code>R2</code>. It retrieves <code>[t3]</code> from the pre-extraction cache mapping perfectly to R3's intact history.</p>
+                <table class="state-tb" style="margin-top:10px;">
+                    <tr><td style="color:#d1d5db;">0 0 0</td><td style="color:#d1d5db;">1 0 1</td><td class="border-hl">1 0 1 <i>(from t3)</i></td><td style="font-weight:bold;">0 1 1</td><td style="color:#d1d5db;">1 0 1</td><td style="color:#d1d5db;">0 1 1</td><td style="color:#d1d5db;">0 0 0</td><td style="color:#d1d5db;">0 1 0</td></tr>
+                </table>
+            </div>
+            <div class="timeline-item tl-action">
+                <h3>Cycle +2: Shift R3 (Independent)</h3>
+                <p>The CPU logs a Right-Shift on <code>R3</code>. As the most significant matrix block, it natively logically wraps binary zeros.</p>
+                <table class="state-tb" style="margin-top:10px;">
+                    <tr><td class="border-hl">0 0 0</td><td style="font-weight:bold;">0 0 0</td><td style="color:#22c55e;">1 0 1</td><td>0 1 1</td><td style="color:#d1d5db;">1 0 1</td><td style="color:#d1d5db;">0 1 1</td><td style="color:#d1d5db;">0 0 0</td><td style="color:#d1d5db;">0 1 0</td></tr>
+                </table>
+            </div>
+            <div class="timeline-item tl-action">
+                <h3>Cycle +3: Shift R0 (Independent)</h3>
+                <p>The CPU logs a Right-Shift on <code>R0</code>. Think about this: <i>R1 hasn't been shifted yet.</i> However! R0 successfully injects <code>[t1=011]</code> from our safe bounds cache.</p>
+                <table class="state-tb" style="margin-top:10px;">
+                    <tr><td style="color:#22c55e;">0 0 0</td><td>0 0 0</td><td style="color:#22c55e;">1 0 1</td><td>0 1 1</td><td style="color:#d1d5db;">1 0 1</td><td style="color:#d1d5db;">0 1 1</td><td class="border-hl">0 1 1 <i>(from t1)</i></td><td style="font-weight:bold;">0 0 0</td></tr>
+                </table>
+            </div>
+            <div class="timeline-item tl-action">
+                <h3>Cycle +4: Shift R1 (Independent)</h3>
+                <p>The CPU concludes by shifting <code>R1</code> securely injecting <code>[t2=110]</code>.</p>
+                <table class="state-tb" style="margin-top:10px;">
+                    <tr><th style="background-color: #bfdbfe;">R3 Shifted Result</th><th></th><th style="background-color: #bbf7d0;">R2 Shifted Result</th><th></th><th style="background-color: #fef08a;">R1 Shifted Result</th><th></th><th style="background-color: #fecaca;">R0 Shifted Result</th><th></th></tr>
+                    <tr><td style="color:#22c55e; font-weight:bold;">0 0 0</td><td style="font-weight:bold;">0 0 0</td><td style="color:#22c55e; font-weight:bold;">1 0 1</td><td style="font-weight:bold;">0 1 1</td><td class="border-hl">1 1 0 <i>(from t2)</i></td><td style="font-weight:bold;">1 0 1</td><td style="color:#22c55e; font-weight:bold;">0 1 1</td><td style="font-weight:bold;">0 0 0</td></tr>
+                </table>
+                <p style="margin-top:15px; font-style:italic;">Notice how despite shifting entirely out of sequential order, the caching mechanism structurally achieved <b>Flawless Algebraic Parity</b>. The total result represents the exact state as an unmodified straight-cycle hardware process—but the execution footprint was pure chaotic randomness!</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>Phase 3: The Shuffled Feedback Sequence (RNG = 1)</h2>
+        <p>The Fast PRNG generated the Feedback route number `1`. This routes the temporal execution completely asynchronously from the Shift pipeline. Feedback will now be evaluated sequentially across `R1` &rightarrow; `R2` &rightarrow; `R3` &rightarrow; `R0`!</p>
+
+        <div class="timeline">
+            <div class="timeline-item tl-nop">
+                <h3>Cycle +0: 3 Padding NOPs</h3>
+                <p>Jumping to Route 1 evaluated slightly faster along the machine-code branching pipeline. To compensate mathematically, we burn precisely 3 independent NOP executions.</p>
+            </div>
+            <div class="timeline-item tl-action">
+                <h3>Cycle +1: Evaluate Local Feedback against R1</h3>
+                <p>The core Secret `[lsb=010]` evaluates its secure 3-mask matrix via the distributive property evaluated heavily in our other document. The resulting local XOR map modifies Active polynomials within R1 natively!</p>
+                <table class="state-tb" style="margin-top:10px;">
+                    <tr><td style="color:#d1d5db;">0 0 0</td><td style="color:#d1d5db;">0 0 0</td><td style="color:#d1d5db;">1 0 1</td><td style="color:#d1d5db;">0 1 1</td><td class="tap-hl">0 1 0</td><td style="font-weight:bold;">1 0 1</td><td style="color:#d1d5db;">0 1 1</td><td style="color:#d1d5db;">0 0 0</td></tr>
+                </table>
+            </div>
+            <div class="timeline-item tl-action">
+                <h3>Cycle +2: Evaluate Local Feedback against R2</h3>
+                <p>The identical isolated mask structures target mapping for Register 2. In this polynomial frame, zero feedback is projected temporally.</p>
+                <table class="state-tb" style="margin-top:10px;">
+                    <tr><td style="color:#d1d5db;">0 0 0</td><td style="color:#d1d5db;">0 0 0</td><td style="font-weight:bold;">1 0 1</td><td style="font-weight:bold;">0 1 1</td><td style="color:#22c55e;">0 1 0</td><td style="font-weight:bold;">1 0 1</td><td style="color:#d1d5db;">0 1 1</td><td style="color:#d1d5db;">0 0 0</td></tr>
+                </table>
+            </div>
+            <div class="timeline-item tl-action">
+                <h3>Cycle +3: Evaluate Local Feedback against R3</h3>
+                <p>Zero feedback mathematically projects to R3 components.</p>
+                <table class="state-tb" style="margin-top:10px;">
+                    <tr><td style="font-weight:bold;">0 0 0</td><td style="font-weight:bold;">0 0 0</td><td style="color:#22c55e;">1 0 1</td><td style="font-weight:bold;">0 1 1</td><td style="color:#22c55e;">0 1 0</td><td style="font-weight:bold;">1 0 1</td><td style="color:#d1d5db;">0 1 1</td><td style="color:#d1d5db;">0 0 0</td></tr>
+                </table>
+            </div>
+            <div class="timeline-item tl-action">
+                <h3>Cycle +4: Evaluate Local Feedback against R0</h3>
+                <p>The feedback mapping matrix completes by dynamically allocating against R0, triggering a mapped structural XOR parity adjustment!</p>
+                <table class="state-tb" style="margin-top:10px;">
+                    <tr><th style="background-color: #bfdbfe;">R3 Fully Processed</th><th></th><th style="background-color: #bbf7d0;">R2 Fully Processed</th><th></th><th style="background-color: #fef08a;">R1 Fully Processed</th><th></th><th style="background-color: #fecaca;">R0 Fully Processed</th><th></th></tr>
+                    <tr><td style="font-weight:bold;">0 0 0</td><td style="font-weight:bold;">0 0 0</td><td style="color:#22c55e; font-weight:bold;">1 0 1</td><td style="font-weight:bold;">0 1 1</td><td style="color:#22c55e; font-weight:bold;">0 1 0</td><td style="font-weight:bold;">1 0 1</td><td style="color:#22c55e; font-weight:bold;">0 1 1</td><td class="tap-hl">0 1 0</td></tr>
+                </table>
+                <p style="margin-top:15px; font-style:italic; font-size:16px;"><b>Verification Passed!</b> By breaking the hardware boundaries upfront, the CPU executed the Shifts and the Algebraic Feedbacks using 2 radically randomized timelines simultaneously—but completed mathematical parity precisely as theorized with perfect cycle matching execution!</p>
+            </div>
+        </div>
+    </div>
+
+
+</body>
+</html>

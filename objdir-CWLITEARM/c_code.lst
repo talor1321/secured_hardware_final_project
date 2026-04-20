@@ -15,463 +15,1811 @@
   15              	.Ltext0:
   16              		.cfi_sections	.debug_frame
   17              		.file 1 "c_code.c"
-  18              		.section	.text.set_seed_lfsr_low_hw,"ax",%progbits
+  18              		.section	.text.unpack_u32_le,"ax",%progbits
   19              		.align	1
-  20              		.global	set_seed_lfsr_low_hw
-  21              		.syntax unified
-  22              		.thumb
-  23              		.thumb_func
-  25              	set_seed_lfsr_low_hw:
-  26              	.LVL0:
-  27              	.LFB2:
+  20              		.syntax unified
+  21              		.thumb
+  22              		.thumb_func
+  24              	unpack_u32_le:
+  25              	.LVL0:
+  26              	.LFB2:
    1:c_code.c      **** #include "hal.h"
    2:c_code.c      **** #include "simpleserial.h"
    3:c_code.c      **** #include <stdint.h>
-   4:c_code.c      **** #include <stdlib.h>
-   5:c_code.c      **** 
-   6:c_code.c      **** static uint32_t lfsr_state_low_hw  = 0; 
-   7:c_code.c      **** static uint32_t lfsr_state_high_hw = 0;
-   8:c_code.c      **** 
-   9:c_code.c      **** uint8_t set_seed_lfsr_low_hw(uint8_t* msg, uint8_t len)
-  10:c_code.c      **** {
-  28              		.loc 1 10 1 view -0
-  29              		.cfi_startproc
-  30              		@ args = 0, pretend = 0, frame = 8
-  31              		@ frame_needed = 0, uses_anonymous_args = 0
-  11:c_code.c      ****     if(len >= 4) {
-  32              		.loc 1 11 5 view .LVU1
-  10:c_code.c      ****     if(len >= 4) {
-  33              		.loc 1 10 1 is_stmt 0 view .LVU2
-  34 0000 07B5     		push	{r0, r1, r2, lr}
-  35              	.LCFI0:
-  36              		.cfi_def_cfa_offset 16
-  37              		.cfi_offset 14, -4
-  38              		.loc 1 11 7 view .LVU3
-  39 0002 0329     		cmp	r1, #3
-  12:c_code.c      ****         lfsr_state_low_hw = ((uint32_t)msg[3] << 24) | 
-  40              		.loc 1 12 9 is_stmt 1 view .LVU4
-  41              		.loc 1 12 27 is_stmt 0 view .LVU5
-  42 0004 82BF     		ittt	hi
-  43 0006 074B     		ldrhi	r3, .L3
-  13:c_code.c      ****                             ((uint32_t)msg[2] << 16) | 
-  14:c_code.c      ****                             ((uint32_t)msg[1] << 8)  | 
-  44              		.loc 1 14 54 view .LVU6
-  45 0008 0268     		ldrhi	r2, [r0]	@ unaligned
-  12:c_code.c      ****         lfsr_state_low_hw = ((uint32_t)msg[3] << 24) | 
-  46              		.loc 1 12 27 view .LVU7
-  47 000a 1A60     		strhi	r2, [r3]
-  15:c_code.c      ****                             ((uint32_t)msg[0]);
-  16:c_code.c      ****     }
-  17:c_code.c      ****     
-  18:c_code.c      ****     // ACK
-  19:c_code.c      ****     uint8_t res = 0xAA; 
-  48              		.loc 1 19 5 is_stmt 1 view .LVU8
-  20:c_code.c      ****     simpleserial_put('r', 1, &res); 
-  49              		.loc 1 20 5 is_stmt 0 view .LVU9
-  50 000c 0121     		movs	r1, #1
-  51              	.LVL1:
-  19:c_code.c      ****     simpleserial_put('r', 1, &res); 
-  52              		.loc 1 19 13 view .LVU10
-  53 000e AA23     		movs	r3, #170
-  54              		.loc 1 20 5 view .LVU11
-  55 0010 0DF10702 		add	r2, sp, #7
-  56 0014 7220     		movs	r0, #114
-  57              	.LVL2:
-  19:c_code.c      ****     simpleserial_put('r', 1, &res); 
-  58              		.loc 1 19 13 view .LVU12
-  59 0016 8DF80730 		strb	r3, [sp, #7]
-  60              		.loc 1 20 5 is_stmt 1 view .LVU13
-  61 001a FFF7FEFF 		bl	simpleserial_put
-  62              	.LVL3:
-  21:c_code.c      ****     
-  22:c_code.c      ****     return 0x00;
-  63              		.loc 1 22 5 view .LVU14
-  23:c_code.c      **** }
-  64              		.loc 1 23 1 is_stmt 0 view .LVU15
-  65 001e 0020     		movs	r0, #0
-  66 0020 03B0     		add	sp, sp, #12
-  67              	.LCFI1:
-  68              		.cfi_def_cfa_offset 4
-  69              		@ sp needed
-  70 0022 00BD     		pop	{pc}
-  71              	.L4:
-  72              		.align	2
-  73              	.L3:
-  74 0024 00000000 		.word	.LANCHOR0
-  75              		.cfi_endproc
-  76              	.LFE2:
-  78              		.section	.text.set_seed_lfsr_high_hw,"ax",%progbits
-  79              		.align	1
-  80              		.global	set_seed_lfsr_high_hw
-  81              		.syntax unified
-  82              		.thumb
-  83              		.thumb_func
-  85              	set_seed_lfsr_high_hw:
-  86              	.LVL4:
-  87              	.LFB3:
-  24:c_code.c      **** 
-  25:c_code.c      **** uint8_t set_seed_lfsr_high_hw(uint8_t* msg, uint8_t len)
-  26:c_code.c      **** {
-  88              		.loc 1 26 1 is_stmt 1 view -0
-  89              		.cfi_startproc
-  90              		@ args = 0, pretend = 0, frame = 8
-  91              		@ frame_needed = 0, uses_anonymous_args = 0
-  27:c_code.c      ****     if(len >= 4) {
-  92              		.loc 1 27 5 view .LVU17
-  26:c_code.c      ****     if(len >= 4) {
-  93              		.loc 1 26 1 is_stmt 0 view .LVU18
-  94 0000 07B5     		push	{r0, r1, r2, lr}
-  95              	.LCFI2:
-  96              		.cfi_def_cfa_offset 16
-  97              		.cfi_offset 14, -4
-  98              		.loc 1 27 7 view .LVU19
-  99 0002 0329     		cmp	r1, #3
-  28:c_code.c      ****         lfsr_state_high_hw = ((uint32_t)msg[3] << 24) | 
- 100              		.loc 1 28 9 is_stmt 1 view .LVU20
- 101              		.loc 1 28 28 is_stmt 0 view .LVU21
- 102 0004 82BF     		ittt	hi
- 103 0006 074B     		ldrhi	r3, .L7
-  29:c_code.c      ****                              ((uint32_t)msg[2] << 16) | 
-  30:c_code.c      ****                              ((uint32_t)msg[1] << 8)  | 
- 104              		.loc 1 30 55 view .LVU22
- 105 0008 0268     		ldrhi	r2, [r0]	@ unaligned
-  28:c_code.c      ****         lfsr_state_high_hw = ((uint32_t)msg[3] << 24) | 
- 106              		.loc 1 28 28 view .LVU23
- 107 000a 5A60     		strhi	r2, [r3, #4]
-  31:c_code.c      ****                              ((uint32_t)msg[0]);
-  32:c_code.c      ****     }
-  33:c_code.c      ****     
-  34:c_code.c      ****     // ACK
-  35:c_code.c      ****     uint8_t res = 0xBB; 
- 108              		.loc 1 35 5 is_stmt 1 view .LVU24
-  36:c_code.c      ****     simpleserial_put('r', 1, &res); 
- 109              		.loc 1 36 5 is_stmt 0 view .LVU25
- 110 000c 0121     		movs	r1, #1
- 111              	.LVL5:
-  35:c_code.c      ****     simpleserial_put('r', 1, &res); 
- 112              		.loc 1 35 13 view .LVU26
- 113 000e BB23     		movs	r3, #187
- 114              		.loc 1 36 5 view .LVU27
- 115 0010 0DF10702 		add	r2, sp, #7
- 116 0014 7220     		movs	r0, #114
- 117              	.LVL6:
-  35:c_code.c      ****     simpleserial_put('r', 1, &res); 
- 118              		.loc 1 35 13 view .LVU28
- 119 0016 8DF80730 		strb	r3, [sp, #7]
- 120              		.loc 1 36 5 is_stmt 1 view .LVU29
- 121 001a FFF7FEFF 		bl	simpleserial_put
- 122              	.LVL7:
-  37:c_code.c      ****     
-  38:c_code.c      ****     return 0x00;
- 123              		.loc 1 38 5 view .LVU30
-  39:c_code.c      **** }
- 124              		.loc 1 39 1 is_stmt 0 view .LVU31
- 125 001e 0020     		movs	r0, #0
- 126 0020 03B0     		add	sp, sp, #12
- 127              	.LCFI3:
- 128              		.cfi_def_cfa_offset 4
- 129              		@ sp needed
- 130 0022 00BD     		pop	{pc}
- 131              	.L8:
- 132              		.align	2
- 133              	.L7:
- 134 0024 00000000 		.word	.LANCHOR0
- 135              		.cfi_endproc
- 136              	.LFE3:
- 138              		.section	.text.step_lfsr_low_hw,"ax",%progbits
- 139              		.align	1
- 140              		.global	step_lfsr_low_hw
- 141              		.syntax unified
- 142              		.thumb
- 143              		.thumb_func
- 145              	step_lfsr_low_hw:
- 146              	.LVL8:
- 147              	.LFB4:
-  40:c_code.c      **** uint8_t step_lfsr_low_hw(uint8_t* msg, uint8_t len)
+   4:c_code.c      **** #define FLAG_HIGH_HW   (1u << 0)
+   5:c_code.c      **** #define FLAG_MASKED    (1u << 1)
+   6:c_code.c      **** #define FLAG_SHUFFLED  (1u << 2)
+   7:c_code.c      **** 
+   8:c_code.c      **** #define POLY_LOW_HW    0xE0000200u
+   9:c_code.c      **** #define POLY_HIGH_HW   0xEDB88320u
+  10:c_code.c      **** 
+  11:c_code.c      **** static uint32_t g_lfsr_state = 0;
+  12:c_code.c      **** static uint32_t g_lfsr_mask = 0;
+  13:c_code.c      **** static uint8_t g_mode_flags = 0;
+  14:c_code.c      **** 
+  15:c_code.c      **** static uint32_t g_masked_state[4] = {0, 0, 0, 0};
+  16:c_code.c      **** static uint32_t g_interleaved_poly[4] = {0, 0, 0, 0};
+  17:c_code.c      **** static uint32_t g_shuffle_rng_state = 0;
+  18:c_code.c      **** 
+  19:c_code.c      **** static uint32_t unpack_u32_le(const uint8_t* data)
+  20:c_code.c      **** {
+  27              		.loc 1 20 1 view -0
+  28              		.cfi_startproc
+  29              		@ args = 0, pretend = 0, frame = 0
+  30              		@ frame_needed = 0, uses_anonymous_args = 0
+  31              		@ link register save eliminated.
+  21:c_code.c      ****     return ((uint32_t)data[3] << 24) |
+  32              		.loc 1 21 5 view .LVU1
+  22:c_code.c      ****            ((uint32_t)data[2] << 16) |
+  23:c_code.c      ****            ((uint32_t)data[1] << 8) |
+  24:c_code.c      ****            ((uint32_t)data[0]);
+  25:c_code.c      **** }
+  33              		.loc 1 25 1 is_stmt 0 view .LVU2
+  34 0000 0068     		ldr	r0, [r0]	@ unaligned
+  35              	.LVL1:
+  36              		.loc 1 25 1 view .LVU3
+  37 0002 7047     		bx	lr
+  38              		.cfi_endproc
+  39              	.LFE2:
+  41              		.section	.text.compute_interleaved_poly,"ax",%progbits
+  42              		.align	1
+  43              		.syntax unified
+  44              		.thumb
+  45              		.thumb_func
+  47              	compute_interleaved_poly:
+  48              	.LVL2:
+  49              	.LFB3:
+  26:c_code.c      **** 
+  27:c_code.c      **** static void compute_interleaved_poly(uint32_t poly)
+  28:c_code.c      **** {
+  50              		.loc 1 28 1 is_stmt 1 view -0
+  51              		.cfi_startproc
+  52              		@ args = 0, pretend = 0, frame = 0
+  53              		@ frame_needed = 0, uses_anonymous_args = 0
+  29:c_code.c      ****     int j, i;
+  54              		.loc 1 29 5 view .LVU5
+  30:c_code.c      ****     for (j = 0; j < 4; j++) {
+  55              		.loc 1 30 5 view .LVU6
+  56              		.loc 1 30 19 discriminator 1 view .LVU7
+  28:c_code.c      ****     int j, i;
+  57              		.loc 1 28 1 is_stmt 0 view .LVU8
+  58 0000 F8B5     		push	{r3, r4, r5, r6, r7, lr}
+  59              	.LCFI0:
+  60              		.cfi_def_cfa_offset 24
+  61              		.cfi_offset 3, -24
+  62              		.cfi_offset 4, -20
+  63              		.cfi_offset 5, -16
+  64              		.cfi_offset 6, -12
+  65              		.cfi_offset 7, -8
+  66              		.cfi_offset 14, -4
+  31:c_code.c      ****         g_interleaved_poly[j] = 0;
+  67              		.loc 1 31 31 view .LVU9
+  68 0002 1022     		movs	r2, #16
+  28:c_code.c      ****     int j, i;
+  69              		.loc 1 28 1 view .LVU10
+  70 0004 0646     		mov	r6, r0
+  71              		.loc 1 31 31 view .LVU11
+  72 0006 0021     		movs	r1, #0
+  73 0008 0E48     		ldr	r0, .L11
+  74              	.LVL3:
+  75              		.loc 1 31 31 view .LVU12
+  76 000a FFF7FEFF 		bl	memset
+  77              	.LVL4:
+  78 000e 0D4A     		ldr	r2, .L11
+  79 0010 0023     		movs	r3, #0
+  32:c_code.c      ****         for (i = 0; i < 8; i++) {
+  33:c_code.c      ****             if ((poly >> (j * 8 + i)) & 1) {
+  34:c_code.c      ****                 g_interleaved_poly[j] |= (1u << (i * 3));
+  80              		.loc 1 34 46 view .LVU13
+  81 0012 0127     		movs	r7, #1
+  82              	.LVL5:
+  83              	.L5:
+  31:c_code.c      ****         g_interleaved_poly[j] = 0;
+  84              		.loc 1 31 9 is_stmt 1 view .LVU14
+  32:c_code.c      ****         for (i = 0; i < 8; i++) {
+  85              		.loc 1 32 9 view .LVU15
+  32:c_code.c      ****         for (i = 0; i < 8; i++) {
+  86              		.loc 1 32 23 discriminator 1 view .LVU16
+  31:c_code.c      ****         g_interleaved_poly[j] = 0;
+  87              		.loc 1 31 31 is_stmt 0 view .LVU17
+  88 0014 1846     		mov	r0, r3
+  89 0016 0021     		movs	r1, #0
+  90              	.LVL6:
+  91              	.L4:
+  33:c_code.c      ****                 g_interleaved_poly[j] |= (1u << (i * 3));
+  92              		.loc 1 33 13 is_stmt 1 view .LVU18
+  33:c_code.c      ****                 g_interleaved_poly[j] |= (1u << (i * 3));
+  93              		.loc 1 33 23 is_stmt 0 view .LVU19
+  94 0018 26FA00F4 		lsr	r4, r6, r0
+  33:c_code.c      ****                 g_interleaved_poly[j] |= (1u << (i * 3));
+  95              		.loc 1 33 16 view .LVU20
+  96 001c E407     		lsls	r4, r4, #31
+  97              		.loc 1 34 17 is_stmt 1 view .LVU21
+  98              		.loc 1 34 39 is_stmt 0 view .LVU22
+  99 001e 42BF     		ittt	mi
+ 100 0020 1468     		ldrmi	r4, [r2]
+ 101              		.loc 1 34 46 view .LVU23
+ 102 0022 07FA01F5 		lslmi	r5, r7, r1
+ 103              		.loc 1 34 39 view .LVU24
+ 104 0026 2C43     		orrmi	r4, r4, r5
+  32:c_code.c      ****         for (i = 0; i < 8; i++) {
+ 105              		.loc 1 32 23 discriminator 1 view .LVU25
+ 106 0028 01F10301 		add	r1, r1, #3
+ 107              		.loc 1 34 39 view .LVU26
+ 108 002c 48BF     		it	mi
+ 109 002e 1460     		strmi	r4, [r2]
+  32:c_code.c      ****         for (i = 0; i < 8; i++) {
+ 110              		.loc 1 32 29 is_stmt 1 discriminator 2 view .LVU27
+  32:c_code.c      ****         for (i = 0; i < 8; i++) {
+ 111              		.loc 1 32 23 discriminator 1 view .LVU28
+ 112 0030 1829     		cmp	r1, #24
+ 113 0032 00F10100 		add	r0, r0, #1
+ 114 0036 EFD1     		bne	.L4
+  30:c_code.c      ****         g_interleaved_poly[j] = 0;
+ 115              		.loc 1 30 25 discriminator 2 view .LVU29
+  30:c_code.c      ****         g_interleaved_poly[j] = 0;
+ 116              		.loc 1 30 19 discriminator 1 view .LVU30
+ 117 0038 0833     		adds	r3, r3, #8
+ 118 003a 202B     		cmp	r3, #32
+ 119 003c 02F10402 		add	r2, r2, #4
+ 120 0040 E8D1     		bne	.L5
+  35:c_code.c      ****             }
+  36:c_code.c      ****         }
+  37:c_code.c      ****     }
+  38:c_code.c      **** }
+ 121              		.loc 1 38 1 is_stmt 0 view .LVU31
+ 122 0042 F8BD     		pop	{r3, r4, r5, r6, r7, pc}
+ 123              	.LVL7:
+ 124              	.L12:
+ 125              		.loc 1 38 1 view .LVU32
+ 126              		.align	2
+ 127              	.L11:
+ 128 0044 00000000 		.word	.LANCHOR0
+ 129              		.cfi_endproc
+ 130              	.LFE3:
+ 132              		.section	.text.collapse_shares,"ax",%progbits
+ 133              		.align	1
+ 134              		.syntax unified
+ 135              		.thumb
+ 136              		.thumb_func
+ 138              	collapse_shares:
+ 139              	.LFB5:
+  39:c_code.c      **** 
+  40:c_code.c      **** static void expand_seed_to_shares(uint32_t seed, uint32_t mask1, uint32_t mask2)
   41:c_code.c      **** {
- 148              		.loc 1 41 1 is_stmt 1 view -0
- 149              		.cfi_startproc
- 150              		@ args = 0, pretend = 0, frame = 8
- 151              		@ frame_needed = 0, uses_anonymous_args = 0
-  42:c_code.c      ****     // Extract number of steps from the message, default to 1 if empty
-  43:c_code.c      ****     uint8_t num_steps = (len > 0) ? msg[0] : 1;
- 152              		.loc 1 43 5 view .LVU33
-  41:c_code.c      ****     // Extract number of steps from the message, default to 1 if empty
- 153              		.loc 1 41 1 is_stmt 0 view .LVU34
- 154 0000 73B5     		push	{r0, r1, r4, r5, r6, lr}
- 155              	.LCFI4:
- 156              		.cfi_def_cfa_offset 24
- 157              		.cfi_offset 4, -16
- 158              		.cfi_offset 5, -12
- 159              		.cfi_offset 6, -8
- 160              		.cfi_offset 14, -4
- 161              		.loc 1 43 13 view .LVU35
- 162 0002 D1B1     		cbz	r1, .L14
- 163              		.loc 1 43 13 discriminator 1 view .LVU36
- 164 0004 0578     		ldrb	r5, [r0]	@ zero_extendqisi2
+  42:c_code.c      ****     int j, i;
+  43:c_code.c      ****     for (j = 0; j < 4; j++) {
+  44:c_code.c      ****         g_masked_state[j] = 0;
+  45:c_code.c      ****         for (i = 0; i < 8; i++) {
+  46:c_code.c      ****             int bit_idx = j * 8 + i;
+  47:c_code.c      ****             uint32_t s1 = (mask1 >> bit_idx) & 1;
+  48:c_code.c      ****             uint32_t s2 = (mask2 >> bit_idx) & 1;
+  49:c_code.c      ****             uint32_t s3 = ((seed >> bit_idx) & 1) ^ s1 ^ s2;
+  50:c_code.c      ****             int pos = i * 3;
+  51:c_code.c      ****             g_masked_state[j] |= (s1 << pos) | (s2 << (pos + 1)) | (s3 << (pos + 2));
+  52:c_code.c      ****         }
+  53:c_code.c      ****     }
+  54:c_code.c      **** }
+  55:c_code.c      **** 
+  56:c_code.c      **** static uint32_t collapse_shares(void)
+  57:c_code.c      **** {
+ 140              		.loc 1 57 1 is_stmt 1 view -0
+ 141              		.cfi_startproc
+ 142              		@ args = 0, pretend = 0, frame = 0
+ 143              		@ frame_needed = 0, uses_anonymous_args = 0
+  58:c_code.c      ****     uint32_t result = 0;
+ 144              		.loc 1 58 5 view .LVU34
+  59:c_code.c      ****     int j, i;
+ 145              		.loc 1 59 5 view .LVU35
+  60:c_code.c      ****     for (j = 0; j < 4; j++) {
+ 146              		.loc 1 60 5 view .LVU36
+ 147              	.LVL8:
+ 148              		.loc 1 60 19 discriminator 1 view .LVU37
+  57:c_code.c      ****     uint32_t result = 0;
+ 149              		.loc 1 57 1 is_stmt 0 view .LVU38
+ 150 0000 F0B5     		push	{r4, r5, r6, r7, lr}
+ 151              	.LCFI1:
+ 152              		.cfi_def_cfa_offset 20
+ 153              		.cfi_offset 4, -20
+ 154              		.cfi_offset 5, -16
+ 155              		.cfi_offset 6, -12
+ 156              		.cfi_offset 7, -8
+ 157              		.cfi_offset 14, -4
+ 158              	.LBB5:
+  61:c_code.c      ****         for (i = 0; i < 8; i++) {
+  62:c_code.c      ****             int pos = i * 3;
+  63:c_code.c      ****             uint32_t s1 = (g_masked_state[j] >> pos) & 1;
+ 159              		.loc 1 63 42 view .LVU39
+ 160 0002 0021     		movs	r1, #0
+ 161 0004 0E4F     		ldr	r7, .L18
+ 162              	.LBE5:
+  58:c_code.c      ****     int j, i;
+ 163              		.loc 1 58 14 view .LVU40
+ 164 0006 0846     		mov	r0, r1
  165              	.LVL9:
- 166              	.L10:
-  44:c_code.c      **** 
-  45:c_code.c      ****     trigger_high(); 
- 167              		.loc 1 45 5 is_stmt 1 view .LVU37
- 168 0006 124C     		ldr	r4, .L18
- 169 0008 FFF7FEFF 		bl	trigger_high
- 170              	.LVL10:
-  46:c_code.c      ****     
-  47:c_code.c      ****     for(uint8_t i = 0; i < num_steps; i++) {
- 171              		.loc 1 47 5 view .LVU38
- 172              	.LBB2:
- 173              		.loc 1 47 9 view .LVU39
- 174              		.loc 1 47 5 is_stmt 0 view .LVU40
- 175 000c 0022     		movs	r2, #0
- 176 000e 2368     		ldr	r3, [r4]
- 177              	.LBB3:
-  48:c_code.c      ****         uint32_t lsb = lfsr_state_low_hw & 1;
-  49:c_code.c      ****         lfsr_state_low_hw = (lfsr_state_low_hw >> 1) ^ (0xE0000200 * lsb);
- 178              		.loc 1 49 68 view .LVU41
- 179 0010 1048     		ldr	r0, .L18+4
- 180              	.LBE3:
-  47:c_code.c      ****         uint32_t lsb = lfsr_state_low_hw & 1;
- 181              		.loc 1 47 5 view .LVU42
- 182 0012 1146     		mov	r1, r2
+ 166              	.L14:
+  61:c_code.c      ****         for (i = 0; i < 8; i++) {
+ 167              		.loc 1 61 23 is_stmt 1 discriminator 1 view .LVU41
+ 168              	.LBB6:
+ 169              		.loc 1 63 42 is_stmt 0 view .LVU42
+ 170 0008 57F8045B 		ldr	r5, [r7], #4
+ 171 000c 0C46     		mov	r4, r1
+ 172 000e 0022     		movs	r2, #0
+ 173              	.LVL10:
+ 174              	.L15:
+  62:c_code.c      ****             uint32_t s1 = (g_masked_state[j] >> pos) & 1;
+ 175              		.loc 1 62 13 is_stmt 1 view .LVU43
+ 176              		.loc 1 63 13 view .LVU44
+  64:c_code.c      ****             uint32_t s2 = (g_masked_state[j] >> (pos + 1)) & 1;
+ 177              		.loc 1 64 13 view .LVU45
+  65:c_code.c      ****             uint32_t s3 = (g_masked_state[j] >> (pos + 2)) & 1;
+ 178              		.loc 1 65 13 view .LVU46
+  66:c_code.c      ****             uint32_t original = s1 ^ s2 ^ s3;
+ 179              		.loc 1 66 13 view .LVU47
+  67:c_code.c      ****             result |= (original << (j * 8 + i));
+ 180              		.loc 1 67 13 view .LVU48
+  64:c_code.c      ****             uint32_t s3 = (g_masked_state[j] >> (pos + 2)) & 1;
+ 181              		.loc 1 64 54 is_stmt 0 view .LVU49
+ 182 0010 531C     		adds	r3, r2, #1
  183              	.LVL11:
- 184              	.L11:
-  47:c_code.c      ****         uint32_t lsb = lfsr_state_low_hw & 1;
- 185              		.loc 1 47 26 is_stmt 1 discriminator 1 view .LVU43
- 186 0014 D6B2     		uxtb	r6, r2
- 187 0016 B542     		cmp	r5, r6
- 188 0018 11D8     		bhi	.L12
- 189 001a 01B1     		cbz	r1, .L13
- 190 001c 2360     		str	r3, [r4]
- 191              	.L13:
- 192              	.LBE2:
-  50:c_code.c      ****     }
-  51:c_code.c      ****     
-  52:c_code.c      ****     trigger_low(); 
- 193              		.loc 1 52 5 view .LVU44
- 194 001e FFF7FEFF 		bl	trigger_low
- 195              	.LVL12:
-  53:c_code.c      **** 
-  54:c_code.c      ****     uint8_t res = (uint8_t)(lfsr_state_low_hw & 0xFF);
- 196              		.loc 1 54 5 view .LVU45
- 197              		.loc 1 54 19 is_stmt 0 view .LVU46
- 198 0022 2368     		ldr	r3, [r4]
- 199 0024 8DF80730 		strb	r3, [sp, #7]
-  55:c_code.c      ****     simpleserial_put('r', 1, &res); 
- 200              		.loc 1 55 5 is_stmt 1 view .LVU47
- 201 0028 0DF10702 		add	r2, sp, #7
- 202 002c 0121     		movs	r1, #1
- 203 002e 7220     		movs	r0, #114
- 204 0030 FFF7FEFF 		bl	simpleserial_put
- 205              	.LVL13:
-  56:c_code.c      ****     
-  57:c_code.c      ****     return 0x00;
- 206              		.loc 1 57 5 view .LVU48
-  58:c_code.c      **** }
- 207              		.loc 1 58 1 is_stmt 0 view .LVU49
- 208 0034 0020     		movs	r0, #0
- 209 0036 02B0     		add	sp, sp, #8
- 210              	.LCFI5:
- 211              		.cfi_remember_state
- 212              		.cfi_def_cfa_offset 16
- 213              		@ sp needed
- 214 0038 70BD     		pop	{r4, r5, r6, pc}
- 215              	.LVL14:
- 216              	.L14:
- 217              	.LCFI6:
- 218              		.cfi_restore_state
-  43:c_code.c      **** 
- 219              		.loc 1 43 13 discriminator 2 view .LVU50
- 220 003a 0125     		movs	r5, #1
- 221 003c E3E7     		b	.L10
- 222              	.LVL15:
- 223              	.L12:
- 224              	.LBB6:
- 225              	.LBB4:
-  48:c_code.c      ****         lfsr_state_low_hw = (lfsr_state_low_hw >> 1) ^ (0xE0000200 * lsb);
- 226              		.loc 1 48 9 is_stmt 1 view .LVU51
-  49:c_code.c      ****     }
- 227              		.loc 1 49 9 view .LVU52
-  49:c_code.c      ****     }
- 228              		.loc 1 49 68 is_stmt 0 view .LVU53
- 229 003e 43F30001 		sbfx	r1, r3, #0, #1
- 230 0042 0140     		ands	r1, r1, r0
-  49:c_code.c      ****     }
- 231              		.loc 1 49 54 view .LVU54
- 232 0044 81EA5303 		eor	r3, r1, r3, lsr #1
- 233              	.LVL16:
-  49:c_code.c      ****     }
- 234              		.loc 1 49 54 view .LVU55
- 235              	.LBE4:
-  47:c_code.c      ****         uint32_t lsb = lfsr_state_low_hw & 1;
- 236              		.loc 1 47 40 is_stmt 1 discriminator 3 view .LVU56
-  47:c_code.c      ****         uint32_t lsb = lfsr_state_low_hw & 1;
- 237              		.loc 1 47 40 is_stmt 0 discriminator 3 view .LVU57
- 238 0048 0132     		adds	r2, r2, #1
- 239              	.LVL17:
- 240              	.LBB5:
-  49:c_code.c      ****     }
- 241              		.loc 1 49 54 view .LVU58
- 242 004a 0121     		movs	r1, #1
- 243 004c E2E7     		b	.L11
- 244              	.L19:
- 245 004e 00BF     		.align	2
- 246              	.L18:
- 247 0050 00000000 		.word	.LANCHOR0
- 248 0054 000200E0 		.word	-536870400
- 249              	.LBE5:
- 250              	.LBE6:
- 251              		.cfi_endproc
- 252              	.LFE4:
- 254              		.section	.text.step_lfsr_high_hw,"ax",%progbits
- 255              		.align	1
- 256              		.global	step_lfsr_high_hw
- 257              		.syntax unified
- 258              		.thumb
- 259              		.thumb_func
- 261              	step_lfsr_high_hw:
- 262              	.LVL18:
- 263              	.LFB5:
-  59:c_code.c      **** 
-  60:c_code.c      **** uint8_t step_lfsr_high_hw(uint8_t* msg, uint8_t len)
-  61:c_code.c      **** {
- 264              		.loc 1 61 1 is_stmt 1 view -0
- 265              		.cfi_startproc
- 266              		@ args = 0, pretend = 0, frame = 8
- 267              		@ frame_needed = 0, uses_anonymous_args = 0
-  62:c_code.c      ****     // Extract number of steps from the message, default to 1 if empty
-  63:c_code.c      ****     uint8_t num_steps = (len > 0) ? msg[0] : 1;
- 268              		.loc 1 63 5 view .LVU60
-  61:c_code.c      ****     // Extract number of steps from the message, default to 1 if empty
- 269              		.loc 1 61 1 is_stmt 0 view .LVU61
- 270 0000 37B5     		push	{r0, r1, r2, r4, r5, lr}
- 271              	.LCFI7:
- 272              		.cfi_def_cfa_offset 24
- 273              		.cfi_offset 4, -12
- 274              		.cfi_offset 5, -8
- 275              		.cfi_offset 14, -4
- 276              		.loc 1 63 13 view .LVU62
- 277 0002 C9B1     		cbz	r1, .L25
- 278              		.loc 1 63 13 discriminator 1 view .LVU63
- 279 0004 0578     		ldrb	r5, [r0]	@ zero_extendqisi2
- 280              	.LVL19:
- 281              	.L21:
-  64:c_code.c      **** 
-  65:c_code.c      ****     trigger_high(); 
- 282              		.loc 1 65 5 is_stmt 1 view .LVU64
- 283 0006 124C     		ldr	r4, .L29
- 284 0008 FFF7FEFF 		bl	trigger_high
- 285              	.LVL20:
-  66:c_code.c      ****     
-  67:c_code.c      ****     for(uint8_t i = 0; i < num_steps; i++) {
- 286              		.loc 1 67 5 view .LVU65
- 287              	.LBB7:
- 288              		.loc 1 67 9 view .LVU66
- 289              		.loc 1 67 5 is_stmt 0 view .LVU67
- 290 000c 0022     		movs	r2, #0
- 291 000e 6368     		ldr	r3, [r4, #4]
- 292 0010 1146     		mov	r1, r2
- 293              	.LVL21:
- 294              	.L22:
- 295              		.loc 1 67 26 is_stmt 1 discriminator 1 view .LVU68
- 296 0012 D0B2     		uxtb	r0, r2
- 297 0014 8542     		cmp	r5, r0
- 298 0016 11D8     		bhi	.L23
- 299 0018 01B1     		cbz	r1, .L24
- 300 001a 6360     		str	r3, [r4, #4]
- 301              	.L24:
- 302              	.LBE7:
-  68:c_code.c      ****         uint32_t lsb = lfsr_state_high_hw & 1;
-  69:c_code.c      ****         lfsr_state_high_hw = (lfsr_state_high_hw >> 1) ^ (0xEDB88320 * lsb);
-  70:c_code.c      ****     }
-  71:c_code.c      ****     
-  72:c_code.c      ****     trigger_low(); 
- 303              		.loc 1 72 5 view .LVU69
- 304 001c FFF7FEFF 		bl	trigger_low
- 305              	.LVL22:
-  73:c_code.c      **** 
-  74:c_code.c      ****     uint8_t res = (uint8_t)(lfsr_state_high_hw & 0xFF);
- 306              		.loc 1 74 5 view .LVU70
- 307              		.loc 1 74 19 is_stmt 0 view .LVU71
- 308 0020 6368     		ldr	r3, [r4, #4]
- 309 0022 8DF80730 		strb	r3, [sp, #7]
-  75:c_code.c      ****     simpleserial_put('r', 1, &res); 
- 310              		.loc 1 75 5 is_stmt 1 view .LVU72
- 311 0026 0DF10702 		add	r2, sp, #7
- 312 002a 0121     		movs	r1, #1
- 313 002c 7220     		movs	r0, #114
- 314 002e FFF7FEFF 		bl	simpleserial_put
- 315              	.LVL23:
-  76:c_code.c      ****     
-  77:c_code.c      ****     return 0x00;
- 316              		.loc 1 77 5 view .LVU73
-  78:c_code.c      **** }
- 317              		.loc 1 78 1 is_stmt 0 view .LVU74
- 318 0032 0020     		movs	r0, #0
- 319 0034 03B0     		add	sp, sp, #12
- 320              	.LCFI8:
- 321              		.cfi_remember_state
- 322              		.cfi_def_cfa_offset 12
- 323              		@ sp needed
- 324 0036 30BD     		pop	{r4, r5, pc}
- 325              	.LVL24:
- 326              	.L25:
- 327              	.LCFI9:
- 328              		.cfi_restore_state
-  63:c_code.c      **** 
- 329              		.loc 1 63 13 discriminator 2 view .LVU75
- 330 0038 0125     		movs	r5, #1
- 331 003a E4E7     		b	.L21
- 332              	.LVL25:
- 333              	.L23:
- 334              	.LBB10:
- 335              	.LBB8:
-  68:c_code.c      ****         lfsr_state_high_hw = (lfsr_state_high_hw >> 1) ^ (0xEDB88320 * lsb);
- 336              		.loc 1 68 9 is_stmt 1 view .LVU76
+  65:c_code.c      ****             uint32_t original = s1 ^ s2 ^ s3;
+ 184              		.loc 1 65 54 view .LVU50
+ 185 0012 961C     		adds	r6, r2, #2
+ 186              	.LVL12:
+  65:c_code.c      ****             uint32_t original = s1 ^ s2 ^ s3;
+ 187              		.loc 1 65 46 view .LVU51
+ 188 0014 25FA06F6 		lsr	r6, r5, r6
+ 189              	.LVL13:
+  64:c_code.c      ****             uint32_t s3 = (g_masked_state[j] >> (pos + 2)) & 1;
+ 190              		.loc 1 64 46 view .LVU52
+ 191 0018 25FA03F3 		lsr	r3, r5, r3
+ 192              	.LVL14:
+  66:c_code.c      ****             result |= (original << (j * 8 + i));
+ 193              		.loc 1 66 22 view .LVU53
+ 194 001c 7340     		eors	r3, r3, r6
+  63:c_code.c      ****             uint32_t s2 = (g_masked_state[j] >> (pos + 1)) & 1;
+ 195              		.loc 1 63 46 view .LVU54
+ 196 001e 25FA02F6 		lsr	r6, r5, r2
+  66:c_code.c      ****             result |= (original << (j * 8 + i));
+ 197              		.loc 1 66 22 view .LVU55
+ 198 0022 7340     		eors	r3, r3, r6
+ 199 0024 03F00103 		and	r3, r3, #1
+ 200              	.LBE6:
+  61:c_code.c      ****             int pos = i * 3;
+ 201              		.loc 1 61 23 discriminator 1 view .LVU56
+ 202 0028 0332     		adds	r2, r2, #3
+ 203              	.LVL15:
+ 204              	.LBB7:
+ 205              		.loc 1 67 33 view .LVU57
+ 206 002a A340     		lsls	r3, r3, r4
+ 207              	.LBE7:
+  61:c_code.c      ****             int pos = i * 3;
+ 208              		.loc 1 61 23 discriminator 1 view .LVU58
+ 209 002c 182A     		cmp	r2, #24
+ 210              	.LBB8:
+ 211              		.loc 1 67 20 view .LVU59
+ 212 002e 40EA0300 		orr	r0, r0, r3
+ 213              	.LVL16:
+ 214              		.loc 1 67 20 view .LVU60
+ 215              	.LBE8:
+  61:c_code.c      ****             int pos = i * 3;
+ 216              		.loc 1 61 29 is_stmt 1 discriminator 3 view .LVU61
+  61:c_code.c      ****             int pos = i * 3;
+ 217              		.loc 1 61 23 discriminator 1 view .LVU62
+ 218 0032 04F10104 		add	r4, r4, #1
+ 219 0036 EBD1     		bne	.L15
+  60:c_code.c      ****         for (i = 0; i < 8; i++) {
+ 220              		.loc 1 60 25 discriminator 2 view .LVU63
+  60:c_code.c      ****         for (i = 0; i < 8; i++) {
+ 221              		.loc 1 60 19 discriminator 1 view .LVU64
+ 222 0038 0831     		adds	r1, r1, #8
+ 223 003a 2029     		cmp	r1, #32
+ 224 003c E4D1     		bne	.L14
+  68:c_code.c      ****         }
   69:c_code.c      ****     }
- 337              		.loc 1 69 9 view .LVU77
-  69:c_code.c      ****     }
- 338              		.loc 1 69 70 is_stmt 0 view .LVU78
- 339 003c 0549     		ldr	r1, .L29+4
- 340 003e 43F30000 		sbfx	r0, r3, #0, #1
- 341 0042 0140     		ands	r1, r1, r0
-  69:c_code.c      ****     }
- 342              		.loc 1 69 56 view .LVU79
- 343 0044 81EA5303 		eor	r3, r1, r3, lsr #1
- 344              	.LVL26:
-  69:c_code.c      ****     }
- 345              		.loc 1 69 56 view .LVU80
- 346              	.LBE8:
-  67:c_code.c      ****         uint32_t lsb = lfsr_state_high_hw & 1;
- 347              		.loc 1 67 40 is_stmt 1 discriminator 3 view .LVU81
-  67:c_code.c      ****         uint32_t lsb = lfsr_state_high_hw & 1;
- 348              		.loc 1 67 40 is_stmt 0 discriminator 3 view .LVU82
- 349 0048 0132     		adds	r2, r2, #1
- 350              	.LVL27:
- 351              	.LBB9:
-  69:c_code.c      ****     }
- 352              		.loc 1 69 56 view .LVU83
- 353 004a 0121     		movs	r1, #1
- 354 004c E1E7     		b	.L22
- 355              	.L30:
- 356 004e 00BF     		.align	2
- 357              	.L29:
- 358 0050 00000000 		.word	.LANCHOR0
- 359 0054 2083B8ED 		.word	-306674912
- 360              	.LBE9:
- 361              	.LBE10:
- 362              		.cfi_endproc
- 363              	.LFE5:
- 365              		.section	.text.change_ok_led,"ax",%progbits
- 366              		.align	1
- 367              		.weak	change_ok_led
- 368              		.syntax unified
- 369              		.thumb
- 370              		.thumb_func
- 372              	change_ok_led:
- 373              	.LFB8:
- 374              		.cfi_startproc
- 375              		.file 2 "../../firmware/mcu/hal/hal.h"
+  70:c_code.c      ****     return result;
+  71:c_code.c      **** }
+ 225              		.loc 1 71 1 is_stmt 0 view .LVU65
+ 226 003e F0BD     		pop	{r4, r5, r6, r7, pc}
+ 227              	.LVL17:
+ 228              	.L19:
+ 229              		.loc 1 71 1 view .LVU66
+ 230              		.align	2
+ 231              	.L18:
+ 232 0040 10000000 		.word	.LANCHOR0+16
+ 233              		.cfi_endproc
+ 234              	.LFE5:
+ 236              		.section	.text.set_mode_flags,"ax",%progbits
+ 237              		.align	1
+ 238              		.global	set_mode_flags
+ 239              		.syntax unified
+ 240              		.thumb
+ 241              		.thumb_func
+ 243              	set_mode_flags:
+ 244              	.LVL18:
+ 245              	.LFB15:
+  72:c_code.c      **** 
+  73:c_code.c      **** static uint32_t step_plain_v1(uint8_t num_steps, uint32_t polynomial);
+  74:c_code.c      **** static uint32_t step_plain_v2(uint8_t num_steps, uint32_t polynomial);
+  75:c_code.c      **** static uint32_t step_plain_v3(uint8_t num_steps, uint32_t polynomial);
+  76:c_code.c      **** 
+  77:c_code.c      **** static uint32_t step_plain(uint8_t num_steps, uint32_t polynomial)
+  78:c_code.c      **** {
+  79:c_code.c      ****     return step_plain_v3(num_steps, polynomial);
+  80:c_code.c      **** }
+  81:c_code.c      **** 
+  82:c_code.c      **** static uint32_t step_plain_v3(uint8_t num_steps, uint32_t polynomial)
+  83:c_code.c      **** {
+  84:c_code.c      ****     uint32_t lsb, temp, garbage; 
+  85:c_code.c      ****     
+  86:c_code.c      ****     trigger_high();
+  87:c_code.c      **** 
+  88:c_code.c      ****     __asm__ volatile (
+  89:c_code.c      ****         "cmp %[steps], #0 \n\t"               
+  90:c_code.c      ****         "beq 2f \n"                           
+  91:c_code.c      ****         "1: \n\t"                             
+  92:c_code.c      ****         
+  93:c_code.c      ****         // 1. Extract LSB and shift state right
+  94:c_code.c      ****         "and %[lsb], %[state], #1 \n\t"       
+  95:c_code.c      ****         "lsr %[state], %[state], #1 \n\t"     
+  96:c_code.c      ****         
+  97:c_code.c      ****         // 2. Unconditional XOR into a temporary register
+  98:c_code.c      ****         "eor %[temp], %[state], %[poly] \n\t" 
+  99:c_code.c      ****         
+ 100:c_code.c      ****         // 3. Register routing based on LSB
+ 101:c_code.c      ****         "cmp %[lsb], #1 \n\t"                 // Compare LSB to 1
+ 102:c_code.c      ****         "ite eq \n\t"                         // If-Then-Else block (Condition: Equal)
+ 103:c_code.c      ****         "moveq %[state], %[temp] \n\t"        // THEN (LSB=1): Copy temp to state
+ 104:c_code.c      ****         "movne %[garb], %[temp] \n\t"         // ELSE (LSB=0): Copy temp to garbage
+ 105:c_code.c      ****         
+ 106:c_code.c      ****         // --- Loop Control ---
+ 107:c_code.c      ****         "subs %[steps], %[steps], #1 \n\t"    
+ 108:c_code.c      ****         "bne 1b \n"                           
+ 109:c_code.c      ****         "2: \n"                               
+ 110:c_code.c      ****         
+ 111:c_code.c      ****         : [state] "+r" (g_lfsr_state),
+ 112:c_code.c      ****           [steps] "+r" (num_steps),
+ 113:c_code.c      ****           [lsb]   "=&r" (lsb),
+ 114:c_code.c      ****           [temp]  "=&r" (temp),
+ 115:c_code.c      ****           [garb]  "=&r" (garbage)
+ 116:c_code.c      ****         : [poly]  "r"  (polynomial)
+ 117:c_code.c      ****         : "cc"                                
+ 118:c_code.c      ****     );
+ 119:c_code.c      **** 
+ 120:c_code.c      ****     trigger_low();
+ 121:c_code.c      ****     return g_lfsr_state;
+ 122:c_code.c      **** }
+ 123:c_code.c      **** 
+ 124:c_code.c      **** static uint32_t step_plain_v2(uint8_t num_steps, uint32_t polynomial)
+ 125:c_code.c      **** {
+ 126:c_code.c      ****     uint32_t mask; 
+ 127:c_code.c      ****     
+ 128:c_code.c      ****     trigger_high();
+ 129:c_code.c      **** 
+ 130:c_code.c      ****     __asm__ volatile (
+ 131:c_code.c      ****         "cmp %[steps], #0 \n\t"               
+ 132:c_code.c      ****         "beq 2f \n"                           
+ 133:c_code.c      ****         "1: \n\t"                             
+ 134:c_code.c      ****         
+ 135:c_code.c      ****         // --- Data Processing (No 's' -> No Flag Updates) ---
+ 136:c_code.c      ****         "and %[mask], %[state], #1 \n\t"      // Extract LSB
+ 137:c_code.c      ****         "lsr %[state], %[state], #1 \n\t"     // Shift state right
+ 138:c_code.c      ****         "rsb %[mask], %[mask], #0 \n\t"       // Mask expansion (0 - LSB)
+ 139:c_code.c      ****         "and %[mask], %[mask], %[poly] \n\t"  // Mask the polynomial
+ 140:c_code.c      ****         "eor %[state], %[state], %[mask] \n\t"// Apply XOR feedback
+ 141:c_code.c      ****         
+ 142:c_code.c      ****         // --- Loop Control (Keep 's' -> Updates Z flag) ---
+ 143:c_code.c      ****         "subs %[steps], %[steps], #1 \n\t"    // Decrement counter
+ 144:c_code.c      ****         "bne 1b \n"                           // Branch if Z flag != 1
+ 145:c_code.c      ****         "2: \n"                               
+ 146:c_code.c      ****         
+ 147:c_code.c      ****         : [state] "+r" (g_lfsr_state),
+ 148:c_code.c      ****           [steps] "+r" (num_steps),
+ 149:c_code.c      ****           [mask]  "=&r" (mask)                
+ 150:c_code.c      ****         : [poly]  "r"  (polynomial)
+ 151:c_code.c      ****         : "cc"                                // We still clobber CC because of subs/cmp
+ 152:c_code.c      ****     );
+ 153:c_code.c      **** 
+ 154:c_code.c      ****     trigger_low();
+ 155:c_code.c      ****     return g_lfsr_state;
+ 156:c_code.c      **** }
+ 157:c_code.c      **** 
+ 158:c_code.c      **** static uint32_t step_plain_v1(uint8_t num_steps, uint32_t polynomial)
+ 159:c_code.c      **** {
+ 160:c_code.c      ****     trigger_high();
+ 161:c_code.c      **** 
+ 162:c_code.c      ****     __asm__ volatile (
+ 163:c_code.c      ****         "cmp %[steps], #0 \n\t"               // Check if num_steps is 0
+ 164:c_code.c      ****         "beq 2f \n"                           // If 0, jump forward to label 2
+ 165:c_code.c      ****         "1: \n\t"                             // Loop start
+ 166:c_code.c      ****         "lsrs %[state], %[state], #1 \n\t"    // Shift state right by 1. LSB goes into Carry flag
+ 167:c_code.c      ****         "bcc 3f \n\t"                         // If Carry is Clear (LSB was 0), skip the XOR
+ 168:c_code.c      ****         "eors %[state], %[state], %[poly] \n" // XOR state with polynomial
+ 169:c_code.c      ****         "3: \n\t"
+ 170:c_code.c      ****         "subs %[steps], %[steps], #1 \n\t"    // Decrement steps
+ 171:c_code.c      ****         "bne 1b \n"                           // If steps != 0, branch backward to label 1
+ 172:c_code.c      ****         "2: \n"                               // Loop end
+ 173:c_code.c      ****         
+ 174:c_code.c      ****         // --- Output Operands ---
+ 175:c_code.c      ****         : [state] "+r" (g_lfsr_state),        // '+' means read and write
+ 176:c_code.c      ****           [steps] "+r" (num_steps)
+ 177:c_code.c      ****           
+ 178:c_code.c      ****         // --- Input Operands ---
+ 179:c_code.c      ****         : [poly]  "r"  (polynomial)           // 'r' means put in a general register
+ 180:c_code.c      ****         
+ 181:c_code.c      ****         // --- Clobbers ---
+ 182:c_code.c      ****         : "cc"                                // Tells compiler we modify condition flags
+ 183:c_code.c      ****     );
+ 184:c_code.c      **** 
+ 185:c_code.c      ****     trigger_low();
+ 186:c_code.c      ****     return g_lfsr_state;
+ 187:c_code.c      **** }
+ 188:c_code.c      **** 
+ 189:c_code.c      **** static uint32_t step_shuffled(uint8_t num_steps, uint32_t polynomial)
+ 190:c_code.c      **** {
+ 191:c_code.c      ****     uint8_t i;
+ 192:c_code.c      ****     trigger_high();
+ 193:c_code.c      ****     for(i = 0; i < num_steps; i++) {
+ 194:c_code.c      ****         uint32_t lsb = g_lfsr_state & 1u;
+ 195:c_code.c      ****         g_lfsr_state = (g_lfsr_state >> 1) ^ (polynomial & (0u - lsb));
+ 196:c_code.c      ****     }
+ 197:c_code.c      ****     trigger_low();
+ 198:c_code.c      ****     return g_lfsr_state;
+ 199:c_code.c      **** }
+ 200:c_code.c      **** 
+ 201:c_code.c      **** static uint32_t step_masked(uint8_t num_steps, uint32_t polynomial)
+ 202:c_code.c      **** {
+ 203:c_code.c      ****     uint8_t i;
+ 204:c_code.c      ****     trigger_high();
+ 205:c_code.c      ****     for(i = 0; i < num_steps; i++) {
+ 206:c_code.c      ****         uint32_t lsb_state = g_lfsr_state & 1u;
+ 207:c_code.c      ****         uint32_t lsb_mask = g_lfsr_mask & 1u;
+ 208:c_code.c      ****         g_lfsr_state = (g_lfsr_state >> 1) ^ (polynomial * lsb_state);
+ 209:c_code.c      ****         g_lfsr_mask = (g_lfsr_mask >> 1) ^ (polynomial * lsb_mask);
+ 210:c_code.c      ****     }
+ 211:c_code.c      ****     trigger_low();
+ 212:c_code.c      ****     return g_lfsr_state ^ g_lfsr_mask;
+ 213:c_code.c      **** }
+ 214:c_code.c      **** 
+ 215:c_code.c      **** static uint32_t step_masked_shuffled(uint8_t num_steps, uint32_t polynomial)
+ 216:c_code.c      **** {
+ 217:c_code.c      ****     uint8_t i;
+ 218:c_code.c      ****     trigger_high();
+ 219:c_code.c      ****     for(i = 0; i < num_steps; i++) {
+ 220:c_code.c      ****         uint32_t lsb_state = g_lfsr_state & 1u;
+ 221:c_code.c      ****         uint32_t lsb_mask = g_lfsr_mask & 1u;
+ 222:c_code.c      ****         g_lfsr_state = (g_lfsr_state >> 1) ^ (polynomial & (0u - lsb_state));
+ 223:c_code.c      ****         g_lfsr_mask = (g_lfsr_mask >> 1) ^ (polynomial & (0u - lsb_mask));
+ 224:c_code.c      ****     }
+ 225:c_code.c      ****     trigger_low();
+ 226:c_code.c      ****     return g_lfsr_state ^ g_lfsr_mask;
+ 227:c_code.c      **** }
+ 228:c_code.c      **** 
+ 229:c_code.c      **** static uint32_t step_masked_interleaved_asm(uint8_t num_steps, uint32_t polynomial)
+ 230:c_code.c      **** {
+ 231:c_code.c      ****     uint32_t lsb, mask1_val, mask2_val, mask3_val, temp, poly_val;
+ 232:c_code.c      **** 
+ 233:c_code.c      ****     /* Precompute interleaved polynomial (outside the sensitive region) */
+ 234:c_code.c      ****     compute_interleaved_poly(polynomial);
+ 235:c_code.c      **** 
+ 236:c_code.c      ****     trigger_high();
+ 237:c_code.c      **** 
+ 238:c_code.c      ****     __asm__ volatile (
+ 239:c_code.c      ****         "cmp %[steps], #0 \n\t"
+ 240:c_code.c      ****         "beq 2f \n"
+ 241:c_code.c      ****         "1: \n\t"
+ 242:c_code.c      **** 
+ 243:c_code.c      ****         /* Step A: Extract LSB group (3 bits from bottom of reg0) */
+ 244:c_code.c      ****         "and %[lsb], %[r0], #7 \n\t"
+ 245:c_code.c      **** 
+ 246:c_code.c      ****         /* Step B: Multi-register right shift by 3 */
+ 247:c_code.c      ****         /* reg0 = (reg0 >> 3) | ((reg1 & 7) << 21) */
+ 248:c_code.c      ****         "lsr %[r0], %[r0], #3 \n\t"
+ 249:c_code.c      ****         "and %[temp], %[r1], #7 \n\t"
+ 250:c_code.c      ****         "orr %[r0], %[r0], %[temp], lsl #21 \n\t"
+ 251:c_code.c      **** 
+ 252:c_code.c      ****         /* reg1 = (reg1 >> 3) | ((reg2 & 7) << 21) */
+ 253:c_code.c      ****         "lsr %[r1], %[r1], #3 \n\t"
+ 254:c_code.c      ****         "and %[temp], %[r2], #7 \n\t"
+ 255:c_code.c      ****         "orr %[r1], %[r1], %[temp], lsl #21 \n\t"
+ 256:c_code.c      **** 
+ 257:c_code.c      ****         /* reg2 = (reg2 >> 3) | ((reg3 & 7) << 21) */
+ 258:c_code.c      ****         "lsr %[r2], %[r2], #3 \n\t"
+ 259:c_code.c      ****         "and %[temp], %[r3], #7 \n\t"
+ 260:c_code.c      ****         "orr %[r2], %[r2], %[temp], lsl #21 \n\t"
+ 261:c_code.c      **** 
+ 262:c_code.c      ****         /* reg3 = reg3 >> 3 */
+ 263:c_code.c      ****         "lsr %[r3], %[r3], #3 \n\t"
+ 264:c_code.c      **** 
+ 265:c_code.c      ****         /* Step C: Expand each share LSB to a full 32-bit mask */
+ 266:c_code.c      ****         /* mask1 = -(lsb & 1)  : 0x00000000 or 0xFFFFFFFF */
+ 267:c_code.c      ****         "and %[mask1], %[lsb], #1 \n\t"
+ 268:c_code.c      ****         "rsb %[mask1], %[mask1], #0 \n\t"
+ 269:c_code.c      **** 
+ 270:c_code.c      ****         /* mask2 = -((lsb >> 1) & 1) */
+ 271:c_code.c      ****         "ubfx %[mask2], %[lsb], #1, #1 \n\t"
+ 272:c_code.c      ****         "rsb %[mask2], %[mask2], #0 \n\t"
+ 273:c_code.c      **** 
+ 274:c_code.c      ****         /* mask3 = -((lsb >> 2) & 1) */
+ 275:c_code.c      ****         "ubfx %[mask3], %[lsb], #2, #1 \n\t"
+ 276:c_code.c      ****         "rsb %[mask3], %[mask3], #0 \n\t"
+ 277:c_code.c      **** 
+ 278:c_code.c      ****         /* Step D: Polynomial feedback for each register                  */
+ 279:c_code.c      ****         /* feedback = (poly & mask1) | ((poly<<1) & mask2) | ((poly<<2) & mask3) */
+ 280:c_code.c      ****         /* [lsb] is reused as the feedback accumulator (original lsb no longer needed) */
+ 281:c_code.c      **** 
+ 282:c_code.c      ****         /* ---- reg0 feedback ---- */
+ 283:c_code.c      ****         "ldr %[poly], [%[pptr], #0] \n\t"
+ 284:c_code.c      ****         "and %[lsb], %[poly], %[mask1] \n\t"
+ 285:c_code.c      ****         "and %[temp], %[mask2], %[poly], lsl #1 \n\t"
+ 286:c_code.c      ****         "orr %[lsb], %[lsb], %[temp] \n\t"
+ 287:c_code.c      ****         "and %[temp], %[mask3], %[poly], lsl #2 \n\t"
+ 288:c_code.c      ****         "orr %[lsb], %[lsb], %[temp] \n\t"
+ 289:c_code.c      ****         "eor %[r0], %[r0], %[lsb] \n\t"
+ 290:c_code.c      **** 
+ 291:c_code.c      ****         /* ---- reg1 feedback ---- */
+ 292:c_code.c      ****         "ldr %[poly], [%[pptr], #4] \n\t"
+ 293:c_code.c      ****         "and %[lsb], %[poly], %[mask1] \n\t"
+ 294:c_code.c      ****         "and %[temp], %[mask2], %[poly], lsl #1 \n\t"
+ 295:c_code.c      ****         "orr %[lsb], %[lsb], %[temp] \n\t"
+ 296:c_code.c      ****         "and %[temp], %[mask3], %[poly], lsl #2 \n\t"
+ 297:c_code.c      ****         "orr %[lsb], %[lsb], %[temp] \n\t"
+ 298:c_code.c      ****         "eor %[r1], %[r1], %[lsb] \n\t"
+ 299:c_code.c      **** 
+ 300:c_code.c      ****         /* ---- reg2 feedback ---- */
+ 301:c_code.c      ****         "ldr %[poly], [%[pptr], #8] \n\t"
+ 302:c_code.c      ****         "and %[lsb], %[poly], %[mask1] \n\t"
+ 303:c_code.c      ****         "and %[temp], %[mask2], %[poly], lsl #1 \n\t"
+ 304:c_code.c      ****         "orr %[lsb], %[lsb], %[temp] \n\t"
+ 305:c_code.c      ****         "and %[temp], %[mask3], %[poly], lsl #2 \n\t"
+ 306:c_code.c      ****         "orr %[lsb], %[lsb], %[temp] \n\t"
+ 307:c_code.c      ****         "eor %[r2], %[r2], %[lsb] \n\t"
+ 308:c_code.c      **** 
+ 309:c_code.c      ****         /* ---- reg3 feedback ---- */
+ 310:c_code.c      ****         "ldr %[poly], [%[pptr], #12] \n\t"
+ 311:c_code.c      ****         "and %[lsb], %[poly], %[mask1] \n\t"
+ 312:c_code.c      ****         "and %[temp], %[mask2], %[poly], lsl #1 \n\t"
+ 313:c_code.c      ****         "orr %[lsb], %[lsb], %[temp] \n\t"
+ 314:c_code.c      ****         "and %[temp], %[mask3], %[poly], lsl #2 \n\t"
+ 315:c_code.c      ****         "orr %[lsb], %[lsb], %[temp] \n\t"
+ 316:c_code.c      ****         "eor %[r3], %[r3], %[lsb] \n\t"
+ 317:c_code.c      **** 
+ 318:c_code.c      ****         /* Step E: Loop control */
+ 319:c_code.c      ****         "subs %[steps], %[steps], #1 \n\t"
+ 320:c_code.c      ****         "bne 1b \n"
+ 321:c_code.c      ****         "2: \n"
+ 322:c_code.c      **** 
+ 323:c_code.c      ****         : [r0]    "+r" (g_masked_state[0]),
+ 324:c_code.c      ****           [r1]    "+r" (g_masked_state[1]),
+ 325:c_code.c      ****           [r2]    "+r" (g_masked_state[2]),
+ 326:c_code.c      ****           [r3]    "+r" (g_masked_state[3]),
+ 327:c_code.c      ****           [steps] "+r" (num_steps),
+ 328:c_code.c      ****           [lsb]   "=&r" (lsb),
+ 329:c_code.c      ****           [mask1] "=&r" (mask1_val),
+ 330:c_code.c      ****           [mask2] "=&r" (mask2_val),
+ 331:c_code.c      ****           [mask3] "=&r" (mask3_val),
+ 332:c_code.c      ****           [temp]  "=&r" (temp),
+ 333:c_code.c      ****           [poly]  "=&r" (poly_val)
+ 334:c_code.c      ****         : [pptr]  "r"  (g_interleaved_poly)
+ 335:c_code.c      ****         : "cc", "memory"
+ 336:c_code.c      ****     );
+ 337:c_code.c      **** 
+ 338:c_code.c      ****     trigger_low();
+ 339:c_code.c      **** 
+ 340:c_code.c      ****     return collapse_shares();
+ 341:c_code.c      **** }
+ 342:c_code.c      **** 
+ 343:c_code.c      **** #define FB_R0 \
+ 344:c_code.c      ****     "ldr %[poly], [%[pptr], #0] \n\t" \
+ 345:c_code.c      ****     "and %[lsb], %[poly], %[t1_m1] \n\t" \
+ 346:c_code.c      ****     "and %[temp], %[t2_m2], %[poly], lsl #1 \n\t" \
+ 347:c_code.c      ****     "orr %[lsb], %[lsb], %[temp] \n\t" \
+ 348:c_code.c      ****     "and %[temp], %[t3_m3], %[poly], lsl #2 \n\t" \
+ 349:c_code.c      ****     "orr %[lsb], %[lsb], %[temp] \n\t" \
+ 350:c_code.c      ****     "eor %[r0], %[r0], %[lsb] \n\t"
+ 351:c_code.c      **** 
+ 352:c_code.c      **** #define FB_R1 \
+ 353:c_code.c      ****     "ldr %[poly], [%[pptr], #4] \n\t" \
+ 354:c_code.c      ****     "and %[lsb], %[poly], %[t1_m1] \n\t" \
+ 355:c_code.c      ****     "and %[temp], %[t2_m2], %[poly], lsl #1 \n\t" \
+ 356:c_code.c      ****     "orr %[lsb], %[lsb], %[temp] \n\t" \
+ 357:c_code.c      ****     "and %[temp], %[t3_m3], %[poly], lsl #2 \n\t" \
+ 358:c_code.c      ****     "orr %[lsb], %[lsb], %[temp] \n\t" \
+ 359:c_code.c      ****     "eor %[r1], %[r1], %[lsb] \n\t"
+ 360:c_code.c      **** 
+ 361:c_code.c      **** #define FB_R2 \
+ 362:c_code.c      ****     "ldr %[poly], [%[pptr], #8] \n\t" \
+ 363:c_code.c      ****     "and %[lsb], %[poly], %[t1_m1] \n\t" \
+ 364:c_code.c      ****     "and %[temp], %[t2_m2], %[poly], lsl #1 \n\t" \
+ 365:c_code.c      ****     "orr %[lsb], %[lsb], %[temp] \n\t" \
+ 366:c_code.c      ****     "and %[temp], %[t3_m3], %[poly], lsl #2 \n\t" \
+ 367:c_code.c      ****     "orr %[lsb], %[lsb], %[temp] \n\t" \
+ 368:c_code.c      ****     "eor %[r2], %[r2], %[lsb] \n\t"
+ 369:c_code.c      **** 
+ 370:c_code.c      **** #define FB_R3 \
+ 371:c_code.c      ****     "ldr %[poly], [%[pptr], #12] \n\t" \
+ 372:c_code.c      ****     "and %[lsb], %[poly], %[t1_m1] \n\t" \
+ 373:c_code.c      ****     "and %[temp], %[t2_m2], %[poly], lsl #1 \n\t" \
+ 374:c_code.c      ****     "orr %[lsb], %[lsb], %[temp] \n\t" \
+ 375:c_code.c      ****     "and %[temp], %[t3_m3], %[poly], lsl #2 \n\t" \
+ 376:c_code.c      ****     "orr %[lsb], %[lsb], %[temp] \n\t" \
+ 377:c_code.c      ****     "eor %[r3], %[r3], %[lsb] \n\t"
+ 378:c_code.c      **** 
+ 379:c_code.c      **** static uint32_t step_masked_interleaved_shuffled_asm(uint8_t num_steps, uint32_t polynomial)
+ 380:c_code.c      **** {
+ 381:c_code.c      ****     uint32_t lsb, t1_m1, t2_m2, t3_m3, temp, poly_val;
+ 382:c_code.c      ****     uint32_t rng = g_shuffle_rng_state;
+ 383:c_code.c      **** 
+ 384:c_code.c      ****     compute_interleaved_poly(polynomial);
+ 385:c_code.c      ****     trigger_high();
+ 386:c_code.c      **** 
+ 387:c_code.c      ****     __asm__ volatile (
+ 388:c_code.c      ****         "cmp %[steps], #0 \n\t"
+ 389:c_code.c      ****         "beq 99f \n"
+ 390:c_code.c      ****         "1: \n\t"
+ 391:c_code.c      **** 
+ 392:c_code.c      ****         /* Extract LSB group */
+ 393:c_code.c      ****         "and %[lsb], %[r0], #7 \n\t"
+ 394:c_code.c      **** 
+ 395:c_code.c      ****         /* Extract boundary bits (pre-extraction breaks strict dependencies) */
+ 396:c_code.c      ****         "and %[t1_m1], %[r1], #7 \n\t"
+ 397:c_code.c      ****         "and %[t2_m2], %[r2], #7 \n\t"
+ 398:c_code.c      ****         "and %[t3_m3], %[r3], #7 \n\t"
+ 399:c_code.c      **** 
+ 400:c_code.c      ****         /* Advance RNG (xorshift32) */
+ 401:c_code.c      ****         "eor %[rng], %[rng], %[rng], lsl #13 \n\t"
+ 402:c_code.c      ****         "eor %[rng], %[rng], %[rng], lsr #17 \n\t"
+ 403:c_code.c      ****         "eor %[rng], %[rng], %[rng], lsl #5 \n\t"
+ 404:c_code.c      **** 
+ 405:c_code.c      ****         /* Shuffled Shifts Selector (bits 0,1) */
+ 406:c_code.c      ****         "and %[temp], %[rng], #3 \n\t"
+ 407:c_code.c      ****         "cmp %[temp], #0 \n\t"
+ 408:c_code.c      ****         "beq 10f \n\t"
+ 409:c_code.c      ****         "cmp %[temp], #1 \n\t"
+ 410:c_code.c      ****         "beq 11f \n\t"
+ 411:c_code.c      ****         "cmp %[temp], #2 \n\t"
+ 412:c_code.c      ****         "beq 12f \n\t"
+ 413:c_code.c      ****         "b 13f \n\t"
+ 414:c_code.c      **** 
+ 415:c_code.c      ****         "10: \n\t" /* Pad: 5 NOPs to equalize cycle count with branch 13f */
+ 416:c_code.c      ****         "nop; nop; nop; nop; nop \n\t"
+ 417:c_code.c      ****         "lsr %[r0], %[r0], #3 \n\t" "orr %[r0], %[r0], %[t1_m1], lsl #21 \n\t"
+ 418:c_code.c      ****         "lsr %[r1], %[r1], #3 \n\t" "orr %[r1], %[r1], %[t2_m2], lsl #21 \n\t"
+ 419:c_code.c      ****         "lsr %[r2], %[r2], #3 \n\t" "orr %[r2], %[r2], %[t3_m3], lsl #21 \n\t"
+ 420:c_code.c      ****         "lsr %[r3], %[r3], #3 \n\t"
+ 421:c_code.c      ****         "b 20f \n\t"
+ 422:c_code.c      **** 
+ 423:c_code.c      ****         "11: \n\t" /* Pad: 3 NOPs */
+ 424:c_code.c      ****         "nop; nop; nop \n\t"
+ 425:c_code.c      ****         "lsr %[r1], %[r1], #3 \n\t" "orr %[r1], %[r1], %[t2_m2], lsl #21 \n\t"
+ 426:c_code.c      ****         "lsr %[r2], %[r2], #3 \n\t" "orr %[r2], %[r2], %[t3_m3], lsl #21 \n\t"
+ 427:c_code.c      ****         "lsr %[r3], %[r3], #3 \n\t"
+ 428:c_code.c      ****         "lsr %[r0], %[r0], #3 \n\t" "orr %[r0], %[r0], %[t1_m1], lsl #21 \n\t"
+ 429:c_code.c      ****         "b 20f \n\t"
+ 430:c_code.c      **** 
+ 431:c_code.c      ****         "12: \n\t" /* Pad: 1 NOP */
+ 432:c_code.c      ****         "nop \n\t"
+ 433:c_code.c      ****         "lsr %[r2], %[r2], #3 \n\t" "orr %[r2], %[r2], %[t3_m3], lsl #21 \n\t"
+ 434:c_code.c      ****         "lsr %[r3], %[r3], #3 \n\t"
+ 435:c_code.c      ****         "lsr %[r0], %[r0], #3 \n\t" "orr %[r0], %[r0], %[t1_m1], lsl #21 \n\t"
+ 436:c_code.c      ****         "lsr %[r1], %[r1], #3 \n\t" "orr %[r1], %[r1], %[t2_m2], lsl #21 \n\t"
+ 437:c_code.c      ****         "b 20f \n\t"
+ 438:c_code.c      **** 
+ 439:c_code.c      ****         "13: \n\t" /* No padding needed */
+ 440:c_code.c      ****         "lsr %[r3], %[r3], #3 \n\t"
+ 441:c_code.c      ****         "lsr %[r0], %[r0], #3 \n\t" "orr %[r0], %[r0], %[t1_m1], lsl #21 \n\t"
+ 442:c_code.c      ****         "lsr %[r1], %[r1], #3 \n\t" "orr %[r1], %[r1], %[t2_m2], lsl #21 \n\t"
+ 443:c_code.c      ****         "lsr %[r2], %[r2], #3 \n\t" "orr %[r2], %[r2], %[t3_m3], lsl #21 \n\t"
+ 444:c_code.c      ****         "b 20f \n\t"
+ 445:c_code.c      **** 
+ 446:c_code.c      ****         "20: \n\t"
+ 447:c_code.c      ****         /* --- Shifts Done --- */
+ 448:c_code.c      **** 
+ 449:c_code.c      ****         /* Mask expansion (we re-use t1_m1 etc. to hold expanded masks) */
+ 450:c_code.c      ****         "and %[t1_m1], %[lsb], #1 \n\t"
+ 451:c_code.c      ****         "rsb %[t1_m1], %[t1_m1], #0 \n\t"
+ 452:c_code.c      ****         "ubfx %[t2_m2], %[lsb], #1, #1 \n\t"
+ 453:c_code.c      ****         "rsb %[t2_m2], %[t2_m2], #0 \n\t"
+ 454:c_code.c      ****         "ubfx %[t3_m3], %[lsb], #2, #1 \n\t"
+ 455:c_code.c      ****         "rsb %[t3_m3], %[t3_m3], #0 \n\t"
+ 456:c_code.c      **** 
+ 457:c_code.c      ****         /* Shuffled Feedback Selector (bits 2,3) */
+ 458:c_code.c      ****         "ubfx %[temp], %[rng], #2, #2 \n\t"
+ 459:c_code.c      ****         "cmp %[temp], #0 \n\t"
+ 460:c_code.c      ****         "beq 30f \n\t"
+ 461:c_code.c      ****         "cmp %[temp], #1 \n\t"
+ 462:c_code.c      ****         "beq 31f \n\t"
+ 463:c_code.c      ****         "cmp %[temp], #2 \n\t"
+ 464:c_code.c      ****         "beq 32f \n\t"
+ 465:c_code.c      ****         "b 33f \n\t"
+ 466:c_code.c      **** 
+ 467:c_code.c      ****         "30: \n\t"
+ 468:c_code.c      ****         "nop; nop; nop; nop; nop \n\t"
+ 469:c_code.c      ****         FB_R0 FB_R1 FB_R2 FB_R3
+ 470:c_code.c      ****         "b 40f \n\t"
+ 471:c_code.c      **** 
+ 472:c_code.c      ****         "31: \n\t"
+ 473:c_code.c      ****         "nop; nop; nop \n\t"
+ 474:c_code.c      ****         FB_R1 FB_R2 FB_R3 FB_R0
+ 475:c_code.c      ****         "b 40f \n\t"
+ 476:c_code.c      **** 
+ 477:c_code.c      ****         "32: \n\t"
+ 478:c_code.c      ****         "nop \n\t"
+ 479:c_code.c      ****         FB_R2 FB_R3 FB_R0 FB_R1
+ 480:c_code.c      ****         "b 40f \n\t"
+ 481:c_code.c      **** 
+ 482:c_code.c      ****         "33: \n\t"
+ 483:c_code.c      ****         FB_R3 FB_R0 FB_R1 FB_R2
+ 484:c_code.c      ****         "b 40f \n\t"
+ 485:c_code.c      **** 
+ 486:c_code.c      ****         "40: \n\t"
+ 487:c_code.c      ****         "subs %[steps], %[steps], #1 \n\t"
+ 488:c_code.c      ****         "bne 1b \n"
+ 489:c_code.c      ****         "99: \n"
+ 490:c_code.c      **** 
+ 491:c_code.c      ****         : [r0]    "+r" (g_masked_state[0]),
+ 492:c_code.c      ****           [r1]    "+r" (g_masked_state[1]),
+ 493:c_code.c      ****           [r2]    "+r" (g_masked_state[2]),
+ 494:c_code.c      ****           [r3]    "+r" (g_masked_state[3]),
+ 495:c_code.c      ****           [steps] "+r" (num_steps),
+ 496:c_code.c      ****           [rng]   "+r" (rng),
+ 497:c_code.c      ****           [lsb]   "=&r" (lsb),
+ 498:c_code.c      ****           [t1_m1] "=&r" (t1_m1),
+ 499:c_code.c      ****           [t2_m2] "=&r" (t2_m2),
+ 500:c_code.c      ****           [t3_m3] "=&r" (t3_m3),
+ 501:c_code.c      ****           [temp]  "=&r" (temp),
+ 502:c_code.c      ****           [poly]  "=&r" (poly_val)
+ 503:c_code.c      ****         : [pptr]  "r"  (g_interleaved_poly)
+ 504:c_code.c      ****         : "cc", "memory"
+ 505:c_code.c      ****     );
+ 506:c_code.c      **** 
+ 507:c_code.c      ****     trigger_low();
+ 508:c_code.c      **** 
+ 509:c_code.c      ****     g_shuffle_rng_state = rng;
+ 510:c_code.c      ****     return collapse_shares();
+ 511:c_code.c      **** }
+ 512:c_code.c      **** 
+ 513:c_code.c      **** uint8_t set_mode_flags(uint8_t* msg, uint8_t len)
+ 514:c_code.c      **** {
+ 246              		.loc 1 514 1 is_stmt 1 view -0
+ 247              		.cfi_startproc
+ 248              		@ args = 0, pretend = 0, frame = 0
+ 249              		@ frame_needed = 0, uses_anonymous_args = 0
+ 515:c_code.c      ****     if(len >= 1) {
+ 250              		.loc 1 515 5 view .LVU68
+ 514:c_code.c      ****     if(len >= 1) {
+ 251              		.loc 1 514 1 is_stmt 0 view .LVU69
+ 252 0000 08B5     		push	{r3, lr}
+ 253              	.LCFI2:
+ 254              		.cfi_def_cfa_offset 8
+ 255              		.cfi_offset 3, -8
+ 256              		.cfi_offset 14, -4
+ 257              		.loc 1 515 7 view .LVU70
+ 258 0002 29B1     		cbz	r1, .L21
+ 516:c_code.c      ****         g_mode_flags = msg[0] & (FLAG_HIGH_HW | FLAG_MASKED | FLAG_SHUFFLED);
+ 259              		.loc 1 516 9 is_stmt 1 view .LVU71
+ 260              		.loc 1 516 31 is_stmt 0 view .LVU72
+ 261 0004 0378     		ldrb	r3, [r0]	@ zero_extendqisi2
+ 262              		.loc 1 516 22 view .LVU73
+ 263 0006 064A     		ldr	r2, .L25
+ 264              		.loc 1 516 31 view .LVU74
+ 265 0008 03F00703 		and	r3, r3, #7
+ 266              		.loc 1 516 22 view .LVU75
+ 267 000c 82F82030 		strb	r3, [r2, #32]
+ 268              	.L21:
+ 517:c_code.c      ****     }
+ 518:c_code.c      **** 
+ 519:c_code.c      ****     simpleserial_put('r', 1, &g_mode_flags);
+ 269              		.loc 1 519 5 is_stmt 1 view .LVU76
+ 270 0010 044A     		ldr	r2, .L25+4
+ 271 0012 0121     		movs	r1, #1
+ 272              	.LVL19:
+ 273              		.loc 1 519 5 is_stmt 0 view .LVU77
+ 274 0014 7220     		movs	r0, #114
+ 275              	.LVL20:
+ 276              		.loc 1 519 5 view .LVU78
+ 277 0016 FFF7FEFF 		bl	simpleserial_put
+ 278              	.LVL21:
+ 520:c_code.c      ****     return 0x00;
+ 279              		.loc 1 520 5 is_stmt 1 view .LVU79
+ 521:c_code.c      **** }
+ 280              		.loc 1 521 1 is_stmt 0 view .LVU80
+ 281 001a 0020     		movs	r0, #0
+ 282 001c 08BD     		pop	{r3, pc}
+ 283              	.L26:
+ 284 001e 00BF     		.align	2
+ 285              	.L25:
+ 286 0020 00000000 		.word	.LANCHOR0
+ 287 0024 20000000 		.word	.LANCHOR0+32
+ 288              		.cfi_endproc
+ 289              	.LFE15:
+ 291              		.section	.text.set_seed_lfsr,"ax",%progbits
+ 292              		.align	1
+ 293              		.global	set_seed_lfsr
+ 294              		.syntax unified
+ 295              		.thumb
+ 296              		.thumb_func
+ 298              	set_seed_lfsr:
+ 299              	.LVL22:
+ 300              	.LFB16:
+ 522:c_code.c      **** 
+ 523:c_code.c      **** uint8_t set_seed_lfsr(uint8_t* msg, uint8_t len)
+ 524:c_code.c      **** {
+ 301              		.loc 1 524 1 is_stmt 1 view -0
+ 302              		.cfi_startproc
+ 303              		@ args = 0, pretend = 0, frame = 8
+ 304              		@ frame_needed = 0, uses_anonymous_args = 0
+ 525:c_code.c      ****     if(len >= 4) {
+ 305              		.loc 1 525 5 view .LVU82
+ 306              		.loc 1 525 7 is_stmt 0 view .LVU83
+ 307 0000 0329     		cmp	r1, #3
+ 524:c_code.c      ****     if(len >= 4) {
+ 308              		.loc 1 524 1 view .LVU84
+ 309 0002 2DE9F74F 		push	{r0, r1, r2, r4, r5, r6, r7, r8, r9, r10, fp, lr}
+ 310              	.LCFI3:
+ 311              		.cfi_def_cfa_offset 48
+ 312              		.cfi_offset 4, -36
+ 313              		.cfi_offset 5, -32
+ 314              		.cfi_offset 6, -28
+ 315              		.cfi_offset 7, -24
+ 316              		.cfi_offset 8, -20
+ 317              		.cfi_offset 9, -16
+ 318              		.cfi_offset 10, -12
+ 319              		.cfi_offset 11, -8
+ 320              		.cfi_offset 14, -4
+ 321 0006 324B     		ldr	r3, .L41
+ 524:c_code.c      ****     if(len >= 4) {
+ 322              		.loc 1 524 1 view .LVU85
+ 323 0008 8046     		mov	r8, r0
+ 324              		.loc 1 525 7 view .LVU86
+ 325 000a 02D9     		bls	.L28
+ 526:c_code.c      ****         g_lfsr_state = unpack_u32_le(msg);
+ 326              		.loc 1 526 9 is_stmt 1 view .LVU87
+ 327              		.loc 1 526 24 is_stmt 0 view .LVU88
+ 328 000c FFF7FEFF 		bl	unpack_u32_le
+ 329              	.LVL23:
+ 330              		.loc 1 526 22 discriminator 1 view .LVU89
+ 331 0010 5862     		str	r0, [r3, #36]
+ 332              	.L28:
+ 527:c_code.c      ****     }
+ 528:c_code.c      **** 
+ 529:c_code.c      ****     if((g_mode_flags & FLAG_MASKED) && (len >= 12)) {
+ 333              		.loc 1 529 5 is_stmt 1 view .LVU90
+ 334              		.loc 1 529 22 is_stmt 0 view .LVU91
+ 335 0012 93F82020 		ldrb	r2, [r3, #32]	@ zero_extendqisi2
+ 336              		.loc 1 529 7 view .LVU92
+ 337 0016 9307     		lsls	r3, r2, #30
+ 338 0018 46D5     		bpl	.L29
+ 339              		.loc 1 529 37 discriminator 1 view .LVU93
+ 340 001a 0B29     		cmp	r1, #11
+ 341 001c 44D9     		bls	.L29
+ 342              	.LBB14:
+ 530:c_code.c      ****         uint32_t seed = unpack_u32_le(msg);
+ 343              		.loc 1 530 9 is_stmt 1 view .LVU94
+ 344              		.loc 1 530 25 is_stmt 0 view .LVU95
+ 345 001e 4046     		mov	r0, r8
+ 346 0020 FFF7FEFF 		bl	unpack_u32_le
+ 347              	.LVL24:
+ 348 0024 0546     		mov	r5, r0
+ 349              	.LVL25:
+ 531:c_code.c      ****         uint32_t m1 = unpack_u32_le(msg + 4);
+ 350              		.loc 1 531 9 is_stmt 1 view .LVU96
+ 351              		.loc 1 531 23 is_stmt 0 view .LVU97
+ 352 0026 08F10400 		add	r0, r8, #4
+ 353              	.LVL26:
+ 354              		.loc 1 531 23 view .LVU98
+ 355 002a FFF7FEFF 		bl	unpack_u32_le
+ 356              	.LVL27:
+ 357 002e 8146     		mov	r9, r0
+ 358              	.LVL28:
+ 532:c_code.c      ****         uint32_t m2 = unpack_u32_le(msg + 8);
+ 359              		.loc 1 532 9 is_stmt 1 view .LVU99
+ 360              		.loc 1 532 23 is_stmt 0 view .LVU100
+ 361 0030 08F10800 		add	r0, r8, #8
+ 362              	.LVL29:
+ 363              		.loc 1 532 23 view .LVU101
+ 364 0034 FFF7FEFF 		bl	unpack_u32_le
+ 365              	.LVL30:
+ 533:c_code.c      ****         expand_seed_to_shares(seed, m1, m2);
+ 366              		.loc 1 533 9 is_stmt 1 view .LVU102
+ 367              	.LBB15:
+ 368              	.LBI15:
+  40:c_code.c      **** {
+ 369              		.loc 1 40 13 view .LVU103
+ 370              	.LBB16:
+  42:c_code.c      ****     for (j = 0; j < 4; j++) {
+ 371              		.loc 1 42 5 view .LVU104
+  43:c_code.c      ****         g_masked_state[j] = 0;
+ 372              		.loc 1 43 5 view .LVU105
+  43:c_code.c      ****         g_masked_state[j] = 0;
+ 373              		.loc 1 43 19 discriminator 1 view .LVU106
+ 374              	.LBB17:
+  49:c_code.c      ****             int pos = i * 3;
+ 375              		.loc 1 49 22 is_stmt 0 view .LVU107
+ 376 0038 85EA0905 		eor	r5, r5, r9
+ 377              	.LVL31:
+  49:c_code.c      ****             int pos = i * 3;
+ 378              		.loc 1 49 22 view .LVU108
+ 379 003c DFF894A0 		ldr	r10, .L41+4
+ 380              	.LBE17:
+ 381              	.LBE16:
+ 382              	.LBE15:
+ 532:c_code.c      ****         expand_seed_to_shares(seed, m1, m2);
+ 383              		.loc 1 532 23 view .LVU109
+ 384 0040 4FF0000C 		mov	ip, #0
+ 385              	.LBB24:
+ 386              	.LBB22:
+ 387              	.LBB18:
+  49:c_code.c      ****             int pos = i * 3;
+ 388              		.loc 1 49 22 view .LVU110
+ 389 0044 4540     		eors	r5, r5, r0
+ 390              	.LVL32:
+ 391              	.L31:
+  49:c_code.c      ****             int pos = i * 3;
+ 392              		.loc 1 49 22 view .LVU111
+ 393              	.LBE18:
+  44:c_code.c      ****         for (i = 0; i < 8; i++) {
+ 394              		.loc 1 44 9 is_stmt 1 view .LVU112
+  45:c_code.c      ****             int bit_idx = j * 8 + i;
+ 395              		.loc 1 45 9 view .LVU113
+  45:c_code.c      ****             int bit_idx = j * 8 + i;
+ 396              		.loc 1 45 23 discriminator 1 view .LVU114
+ 397              	.LBE22:
+ 398              	.LBE24:
+ 532:c_code.c      ****         expand_seed_to_shares(seed, m1, m2);
+ 399              		.loc 1 532 23 is_stmt 0 view .LVU115
+ 400 0046 0024     		movs	r4, #0
+ 401 0048 6646     		mov	r6, ip
+ 402 004a A646     		mov	lr, r4
+ 403              	.LVL33:
+ 404              	.L30:
+ 405              	.LBB25:
+ 406              	.LBB23:
+ 407              	.LBB19:
+  46:c_code.c      ****             uint32_t s1 = (mask1 >> bit_idx) & 1;
+ 408              		.loc 1 46 13 is_stmt 1 view .LVU116
+  47:c_code.c      ****             uint32_t s2 = (mask2 >> bit_idx) & 1;
+ 409              		.loc 1 47 13 view .LVU117
+  48:c_code.c      ****             uint32_t s3 = ((seed >> bit_idx) & 1) ^ s1 ^ s2;
+ 410              		.loc 1 48 13 view .LVU118
+  49:c_code.c      ****             int pos = i * 3;
+ 411              		.loc 1 49 13 view .LVU119
+  50:c_code.c      ****             g_masked_state[j] |= (s1 << pos) | (s2 << (pos + 1)) | (s3 << (pos + 2));
+ 412              		.loc 1 50 13 view .LVU120
+  51:c_code.c      ****         }
+ 413              		.loc 1 51 13 view .LVU121
+  48:c_code.c      ****             uint32_t s3 = ((seed >> bit_idx) & 1) ^ s1 ^ s2;
+ 414              		.loc 1 48 34 is_stmt 0 view .LVU122
+ 415 004c 20FA06F3 		lsr	r3, r0, r6
+  51:c_code.c      ****         }
+ 416              		.loc 1 51 60 view .LVU123
+ 417 0050 671C     		adds	r7, r4, #1
+  48:c_code.c      ****             uint32_t s3 = ((seed >> bit_idx) & 1) ^ s1 ^ s2;
+ 418              		.loc 1 48 22 view .LVU124
+ 419 0052 03F00103 		and	r3, r3, #1
+ 420              	.LVL34:
+  51:c_code.c      ****         }
+ 421              		.loc 1 51 52 view .LVU125
+ 422 0056 BB40     		lsls	r3, r3, r7
+ 423              	.LVL35:
+  47:c_code.c      ****             uint32_t s2 = (mask2 >> bit_idx) & 1;
+ 424              		.loc 1 47 34 view .LVU126
+ 425 0058 29FA06F7 		lsr	r7, r9, r6
+  47:c_code.c      ****             uint32_t s2 = (mask2 >> bit_idx) & 1;
+ 426              		.loc 1 47 22 view .LVU127
+ 427 005c 07F00107 		and	r7, r7, #1
+ 428              	.LVL36:
+  51:c_code.c      ****         }
+ 429              		.loc 1 51 38 view .LVU128
+ 430 0060 A740     		lsls	r7, r7, r4
+ 431              	.LVL37:
+  51:c_code.c      ****         }
+ 432              		.loc 1 51 31 view .LVU129
+ 433 0062 3B43     		orrs	r3, r3, r7
+  49:c_code.c      ****             int pos = i * 3;
+ 434              		.loc 1 49 22 view .LVU130
+ 435 0064 25FA06F7 		lsr	r7, r5, r6
+  51:c_code.c      ****         }
+ 436              		.loc 1 51 80 view .LVU131
+ 437 0068 04F1020B 		add	fp, r4, #2
+  49:c_code.c      ****             int pos = i * 3;
+ 438              		.loc 1 49 22 view .LVU132
+ 439 006c 07F00107 		and	r7, r7, #1
+  51:c_code.c      ****         }
+ 440              		.loc 1 51 72 view .LVU133
+ 441 0070 07FA0BF7 		lsl	r7, r7, fp
+ 442              	.LBE19:
+  45:c_code.c      ****             int bit_idx = j * 8 + i;
+ 443              		.loc 1 45 23 discriminator 1 view .LVU134
+ 444 0074 0334     		adds	r4, r4, #3
+ 445              	.LVL38:
+ 446              	.LBB20:
+  51:c_code.c      ****         }
+ 447              		.loc 1 51 31 view .LVU135
+ 448 0076 3B43     		orrs	r3, r3, r7
+ 449              	.LBE20:
+  45:c_code.c      ****             int bit_idx = j * 8 + i;
+ 450              		.loc 1 45 23 discriminator 1 view .LVU136
+ 451 0078 182C     		cmp	r4, #24
+ 452              	.LBB21:
+  51:c_code.c      ****         }
+ 453              		.loc 1 51 31 view .LVU137
+ 454 007a 4EEA030E 		orr	lr, lr, r3
+ 455              	.LBE21:
+  45:c_code.c      ****             int bit_idx = j * 8 + i;
+ 456              		.loc 1 45 29 is_stmt 1 discriminator 3 view .LVU138
+  45:c_code.c      ****             int bit_idx = j * 8 + i;
+ 457              		.loc 1 45 23 discriminator 1 view .LVU139
+ 458 007e 06F10106 		add	r6, r6, #1
+ 459              	.LVL39:
+  45:c_code.c      ****             int bit_idx = j * 8 + i;
+ 460              		.loc 1 45 23 is_stmt 0 discriminator 1 view .LVU140
+ 461 0082 E3D1     		bne	.L30
+  43:c_code.c      ****         g_masked_state[j] = 0;
+ 462              		.loc 1 43 19 discriminator 1 view .LVU141
+ 463 0084 0CF1080C 		add	ip, ip, #8
+ 464 0088 BCF1200F 		cmp	ip, #32
+ 465 008c 4AF804EB 		str	lr, [r10], #4
+  43:c_code.c      ****         g_masked_state[j] = 0;
+ 466              		.loc 1 43 25 is_stmt 1 discriminator 2 view .LVU142
+  43:c_code.c      ****         g_masked_state[j] = 0;
+ 467              		.loc 1 43 19 discriminator 1 view .LVU143
+ 468 0090 D9D1     		bne	.L31
+ 469              	.LVL40:
+  43:c_code.c      ****         g_masked_state[j] = 0;
+ 470              		.loc 1 43 19 is_stmt 0 discriminator 1 view .LVU144
+ 471              	.LBE23:
+ 472              	.LBE25:
+ 534:c_code.c      ****         
+ 535:c_code.c      ****         if((g_mode_flags & FLAG_SHUFFLED) && (len >= 16)) {
+ 473              		.loc 1 535 9 is_stmt 1 view .LVU145
+ 474              		.loc 1 535 11 is_stmt 0 view .LVU146
+ 475 0092 12F0040F 		tst	r2, #4
+ 476 0096 0E4B     		ldr	r3, .L41
+ 477 0098 16D0     		beq	.L32
+ 478              		.loc 1 535 43 discriminator 1 view .LVU147
+ 479 009a 0F29     		cmp	r1, #15
+ 480 009c 14D9     		bls	.L32
+ 536:c_code.c      ****             g_shuffle_rng_state = unpack_u32_le(msg + 12);
+ 481              		.loc 1 536 13 is_stmt 1 view .LVU148
+ 482              		.loc 1 536 35 is_stmt 0 view .LVU149
+ 483 009e 08F10C00 		add	r0, r8, #12
+ 484              	.LVL41:
+ 485              		.loc 1 536 35 view .LVU150
+ 486 00a2 FFF7FEFF 		bl	unpack_u32_le
+ 487              	.LVL42:
+ 488              		.loc 1 536 33 discriminator 1 view .LVU151
+ 489 00a6 9862     		str	r0, [r3, #40]
+ 490              	.LVL43:
+ 491              	.L29:
+ 492              		.loc 1 536 33 discriminator 1 view .LVU152
+ 493              	.LBE14:
+ 494              	.LBB26:
+ 537:c_code.c      ****         } else {
+ 538:c_code.c      ****             g_shuffle_rng_state = 12345;
+ 539:c_code.c      ****         }
+ 540:c_code.c      ****     } else if(!(g_mode_flags & FLAG_MASKED)) {
+ 541:c_code.c      ****         g_lfsr_mask = 0;
+ 542:c_code.c      ****     }
+ 543:c_code.c      **** 
+ 544:c_code.c      ****     {
+ 545:c_code.c      ****         uint8_t ack = 0xA0 | (g_mode_flags & 0x07);
+ 495              		.loc 1 545 9 is_stmt 1 view .LVU153
+ 496              		.loc 1 545 17 is_stmt 0 view .LVU154
+ 497 00a8 02F00702 		and	r2, r2, #7
+ 498 00ac 62F05F02 		orn	r2, r2, #95
+ 499 00b0 8DF80720 		strb	r2, [sp, #7]
+ 546:c_code.c      ****         simpleserial_put('r', 1, &ack);
+ 500              		.loc 1 546 9 is_stmt 1 view .LVU155
+ 501 00b4 0121     		movs	r1, #1
+ 502 00b6 0DF10702 		add	r2, sp, #7
+ 503 00ba 7220     		movs	r0, #114
+ 504 00bc FFF7FEFF 		bl	simpleserial_put
+ 505              	.LVL44:
+ 506              	.LBE26:
+ 547:c_code.c      ****     }
+ 548:c_code.c      **** 
+ 549:c_code.c      ****     return 0x00;
+ 507              		.loc 1 549 5 view .LVU156
+ 550:c_code.c      **** }
+ 508              		.loc 1 550 1 is_stmt 0 view .LVU157
+ 509 00c0 0020     		movs	r0, #0
+ 510 00c2 03B0     		add	sp, sp, #12
+ 511              	.LCFI4:
+ 512              		.cfi_remember_state
+ 513              		.cfi_def_cfa_offset 36
+ 514              		@ sp needed
+ 515 00c4 BDE8F08F 		pop	{r4, r5, r6, r7, r8, r9, r10, fp, pc}
+ 516              	.LVL45:
+ 517              	.L32:
+ 518              	.LCFI5:
+ 519              		.cfi_restore_state
+ 520              	.LBB27:
+ 538:c_code.c      ****         }
+ 521              		.loc 1 538 13 is_stmt 1 view .LVU158
+ 538:c_code.c      ****         }
+ 522              		.loc 1 538 33 is_stmt 0 view .LVU159
+ 523 00c8 43F23901 		movw	r1, #12345
+ 524              	.LVL46:
+ 538:c_code.c      ****         }
+ 525              		.loc 1 538 33 view .LVU160
+ 526 00cc 9962     		str	r1, [r3, #40]
+ 527 00ce EBE7     		b	.L29
+ 528              	.L42:
+ 529              		.align	2
+ 530              	.L41:
+ 531 00d0 00000000 		.word	.LANCHOR0
+ 532 00d4 10000000 		.word	.LANCHOR0+16
+ 533              	.LBE27:
+ 534              		.cfi_endproc
+ 535              	.LFE16:
+ 537              		.section	.text.step_lfsr,"ax",%progbits
+ 538              		.align	1
+ 539              		.global	step_lfsr
+ 540              		.syntax unified
+ 541              		.thumb
+ 542              		.thumb_func
+ 544              	step_lfsr:
+ 545              	.LVL47:
+ 546              	.LFB17:
+ 551:c_code.c      **** 
+ 552:c_code.c      **** uint8_t step_lfsr(uint8_t* msg, uint8_t len)
+ 553:c_code.c      **** {
+ 547              		.loc 1 553 1 is_stmt 1 view -0
+ 548              		.cfi_startproc
+ 549              		@ args = 0, pretend = 0, frame = 8
+ 550              		@ frame_needed = 0, uses_anonymous_args = 0
+ 554:c_code.c      ****     uint8_t num_steps = (len > 0) ? msg[0] : 1;
+ 551              		.loc 1 554 5 view .LVU162
+ 553:c_code.c      ****     uint8_t num_steps = (len > 0) ? msg[0] : 1;
+ 552              		.loc 1 553 1 is_stmt 0 view .LVU163
+ 553 0000 2DE9F347 		push	{r0, r1, r4, r5, r6, r7, r8, r9, r10, lr}
+ 554              	.LCFI6:
+ 555              		.cfi_def_cfa_offset 40
+ 556              		.cfi_offset 4, -32
+ 557              		.cfi_offset 5, -28
+ 558              		.cfi_offset 6, -24
+ 559              		.cfi_offset 7, -20
+ 560              		.cfi_offset 8, -16
+ 561              		.cfi_offset 9, -12
+ 562              		.cfi_offset 10, -8
+ 563              		.cfi_offset 14, -4
+ 564              		.loc 1 554 13 view .LVU164
+ 565 0004 0029     		cmp	r1, #0
+ 566 0006 00F09C81 		beq	.L53
+ 567              		.loc 1 554 13 discriminator 1 view .LVU165
+ 568 000a 0578     		ldrb	r5, [r0]	@ zero_extendqisi2
+ 569              	.LVL48:
+ 570              	.L44:
+ 555:c_code.c      ****     uint32_t polynomial = (g_mode_flags & FLAG_HIGH_HW) ? POLY_HIGH_HW : POLY_LOW_HW;
+ 571              		.loc 1 555 5 is_stmt 1 view .LVU166
+ 572              		.loc 1 555 41 is_stmt 0 view .LVU167
+ 573 000c CE4C     		ldr	r4, .L60
+ 574              		.loc 1 555 14 discriminator 1 view .LVU168
+ 575 000e CF4A     		ldr	r2, .L60+4
+ 576              		.loc 1 555 41 view .LVU169
+ 577 0010 94F82030 		ldrb	r3, [r4, #32]	@ zero_extendqisi2
+ 578              		.loc 1 555 14 discriminator 1 view .LVU170
+ 579 0014 CE4F     		ldr	r7, .L60+8
+ 580 0016 13F0010F 		tst	r3, #1
+ 581 001a 18BF     		it	ne
+ 582 001c 1746     		movne	r7, r2
+ 583              	.LVL49:
+ 556:c_code.c      ****     uint32_t logical_state;
+ 584              		.loc 1 556 5 is_stmt 1 view .LVU171
+ 557:c_code.c      **** 
+ 558:c_code.c      ****     if(g_mode_flags & FLAG_MASKED) {
+ 585              		.loc 1 558 5 view .LVU172
+ 586              		.loc 1 558 7 is_stmt 0 view .LVU173
+ 587 001e 13F00206 		ands	r6, r3, #2
+ 588 0022 03F00402 		and	r2, r3, #4
+ 589 0026 00F00382 		beq	.L46
+ 559:c_code.c      ****         if(g_mode_flags & FLAG_SHUFFLED) {
+ 590              		.loc 1 559 9 is_stmt 1 view .LVU174
+ 591              		.loc 1 559 11 is_stmt 0 view .LVU175
+ 592 002a 002A     		cmp	r2, #0
+ 593 002c 00F09281 		beq	.L47
+ 560:c_code.c      ****             logical_state = step_masked_interleaved_shuffled_asm(num_steps, polynomial);
+ 594              		.loc 1 560 13 is_stmt 1 view .LVU176
+ 595              	.LVL50:
+ 596              	.LBB40:
+ 597              	.LBI40:
+ 379:c_code.c      **** {
+ 598              		.loc 1 379 17 view .LVU177
+ 599              	.LBB41:
+ 381:c_code.c      ****     uint32_t rng = g_shuffle_rng_state;
+ 600              		.loc 1 381 5 view .LVU178
+ 382:c_code.c      **** 
+ 601              		.loc 1 382 5 view .LVU179
+ 384:c_code.c      ****     trigger_high();
+ 602              		.loc 1 384 5 is_stmt 0 view .LVU180
+ 603 0030 3846     		mov	r0, r7
+ 604              	.LVL51:
+ 382:c_code.c      **** 
+ 605              		.loc 1 382 14 view .LVU181
+ 606 0032 A66A     		ldr	r6, [r4, #40]
+ 607              	.LVL52:
+ 384:c_code.c      ****     trigger_high();
+ 608              		.loc 1 384 5 is_stmt 1 view .LVU182
+ 609 0034 FFF7FEFF 		bl	compute_interleaved_poly
+ 610              	.LVL53:
+ 385:c_code.c      **** 
+ 611              		.loc 1 385 5 view .LVU183
+ 612 0038 FFF7FEFF 		bl	trigger_high
+ 613              	.LVL54:
+ 387:c_code.c      ****         "cmp %[steps], #0 \n\t"
+ 614              		.loc 1 387 5 view .LVU184
+ 615 003c D4E90403 		ldrd	r0, r3, [r4, #16]
+ 616 0040 D4E90612 		ldrd	r1, r2, [r4, #24]
+ 617              		.syntax unified
+ 618              	@ 387 "c_code.c" 1
+ 619 0044 002D     		cmp r5, #0 
+ 620 0046 00F06781 		beq 99f 
+ 621              	1: 
+ 622 004a 00F00707 		and r7, r0, #7 
+ 623 004e 03F0070C 		and ip, r3, #7 
+ 624 0052 01F0070E 		and lr, r1, #7 
+ 625 0056 02F00708 		and r8, r2, #7 
+ 626 005a 86EA4636 		eor r6, r6, r6, lsl #13 
+ 627 005e 86EA5646 		eor r6, r6, r6, lsr #17 
+ 628 0062 86EA4616 		eor r6, r6, r6, lsl #5 
+ 629 0066 06F00309 		and r9, r6, #3 
+ 630 006a B9F1000F 		cmp r9, #0 
+ 631 006e 06D0     		beq 10f 
+ 632 0070 B9F1010F 		cmp r9, #1 
+ 633 0074 17D0     		beq 11f 
+ 634 0076 B9F1020F 		cmp r9, #2 
+ 635 007a 26D0     		beq 12f 
+ 636 007c 35E0     		b 13f 
+ 637              		10: 
+ 638 007e 00BF00BF 		nop; nop; nop; nop; nop 
+ 638      00BF00BF 
+ 638      00BF
+ 639 0088 4FEAD000 		lsr r0, r0, #3 
+ 640 008c 40EA4C50 		orr r0, r0, ip, lsl #21 
+ 641 0090 4FEAD303 		lsr r3, r3, #3 
+ 642 0094 43EA4E53 		orr r3, r3, lr, lsl #21 
+ 643 0098 4FEAD101 		lsr r1, r1, #3 
+ 644 009c 41EA4851 		orr r1, r1, r8, lsl #21 
+ 645 00a0 4FEAD202 		lsr r2, r2, #3 
+ 646 00a4 30E0     		b 20f 
+ 647              		11: 
+ 648 00a6 00BF00BF 		nop; nop; nop 
+ 648      00BF
+ 649 00ac 4FEAD303 		lsr r3, r3, #3 
+ 650 00b0 43EA4E53 		orr r3, r3, lr, lsl #21 
+ 651 00b4 4FEAD101 		lsr r1, r1, #3 
+ 652 00b8 41EA4851 		orr r1, r1, r8, lsl #21 
+ 653 00bc 4FEAD202 		lsr r2, r2, #3 
+ 654 00c0 4FEAD000 		lsr r0, r0, #3 
+ 655 00c4 40EA4C50 		orr r0, r0, ip, lsl #21 
+ 656 00c8 1EE0     		b 20f 
+ 657              		12: 
+ 658 00ca 00BF     		nop 
+ 659 00cc 4FEAD101 		lsr r1, r1, #3 
+ 660 00d0 41EA4851 		orr r1, r1, r8, lsl #21 
+ 661 00d4 4FEAD202 		lsr r2, r2, #3 
+ 662 00d8 4FEAD000 		lsr r0, r0, #3 
+ 663 00dc 40EA4C50 		orr r0, r0, ip, lsl #21 
+ 664 00e0 4FEAD303 		lsr r3, r3, #3 
+ 665 00e4 43EA4E53 		orr r3, r3, lr, lsl #21 
+ 666 00e8 0EE0     		b 20f 
+ 667              		13: 
+ 668 00ea 4FEAD202 		lsr r2, r2, #3 
+ 669 00ee 4FEAD000 		lsr r0, r0, #3 
+ 670 00f2 40EA4C50 		orr r0, r0, ip, lsl #21 
+ 671 00f6 4FEAD303 		lsr r3, r3, #3 
+ 672 00fa 43EA4E53 		orr r3, r3, lr, lsl #21 
+ 673 00fe 4FEAD101 		lsr r1, r1, #3 
+ 674 0102 41EA4851 		orr r1, r1, r8, lsl #21 
+ 675 0106 FFE7     		b 20f 
+ 676              		20: 
+ 677 0108 07F0010C 		and ip, r7, #1 
+ 678 010c CCF1000C 		rsb ip, ip, #0 
+ 679 0110 C7F3400E 		ubfx lr, r7, #1, #1 
+ 680 0114 CEF1000E 		rsb lr, lr, #0 
+ 681 0118 C7F38008 		ubfx r8, r7, #2, #1 
+ 682 011c C8F10008 		rsb r8, r8, #0 
+ 683 0120 C6F38109 		ubfx r9, r6, #2, #2 
+ 684 0124 B9F1000F 		cmp r9, #0 
+ 685 0128 06D0     		beq 30f 
+ 686 012a B9F1010F 		cmp r9, #1 
+ 687 012e 41D0     		beq 31f 
+ 688 0130 B9F1020F 		cmp r9, #2 
+ 689 0134 7AD0     		beq 32f 
+ 690 0136 B3E0     		b 33f 
+ 691              		30: 
+ 692 0138 00BF00BF 		nop; nop; nop; nop; nop 
+ 692      00BF00BF 
+ 692      00BF
+ 693 0142 D4F800A0 		ldr r10, [r4, #0] 
+ 694 0146 0AEA0C07 		and r7, r10, ip 
+ 695 014a 0EEA4A09 		and r9, lr, r10, lsl #1 
+ 696 014e 47EA0907 		orr r7, r7, r9 
+ 697 0152 08EA8A09 		and r9, r8, r10, lsl #2 
+ 698 0156 47EA0907 		orr r7, r7, r9 
+ 699 015a 80EA0700 		eor r0, r0, r7 
+ 700 015e D4F804A0 		ldr r10, [r4, #4] 
+ 701 0162 0AEA0C07 		and r7, r10, ip 
+ 702 0166 0EEA4A09 		and r9, lr, r10, lsl #1 
+ 703 016a 47EA0907 		orr r7, r7, r9 
+ 704 016e 08EA8A09 		and r9, r8, r10, lsl #2 
+ 705 0172 47EA0907 		orr r7, r7, r9 
+ 706 0176 83EA0703 		eor r3, r3, r7 
+ 707 017a D4F808A0 		ldr r10, [r4, #8] 
+ 708 017e 0AEA0C07 		and r7, r10, ip 
+ 709 0182 0EEA4A09 		and r9, lr, r10, lsl #1 
+ 710 0186 47EA0907 		orr r7, r7, r9 
+ 711 018a 08EA8A09 		and r9, r8, r10, lsl #2 
+ 712 018e 47EA0907 		orr r7, r7, r9 
+ 713 0192 81EA0701 		eor r1, r1, r7 
+ 714 0196 D4F80CA0 		ldr r10, [r4, #12] 
+ 715 019a 0AEA0C07 		and r7, r10, ip 
+ 716 019e 0EEA4A09 		and r9, lr, r10, lsl #1 
+ 717 01a2 47EA0907 		orr r7, r7, r9 
+ 718 01a6 08EA8A09 		and r9, r8, r10, lsl #2 
+ 719 01aa 47EA0907 		orr r7, r7, r9 
+ 720 01ae 82EA0702 		eor r2, r2, r7 
+ 721 01b2 AEE0     		b 40f 
+ 722              		31: 
+ 723 01b4 00BF00BF 		nop; nop; nop 
+ 723      00BF
+ 724 01ba D4F804A0 		ldr r10, [r4, #4] 
+ 725 01be 0AEA0C07 		and r7, r10, ip 
+ 726 01c2 0EEA4A09 		and r9, lr, r10, lsl #1 
+ 727 01c6 47EA0907 		orr r7, r7, r9 
+ 728 01ca 08EA8A09 		and r9, r8, r10, lsl #2 
+ 729 01ce 47EA0907 		orr r7, r7, r9 
+ 730 01d2 83EA0703 		eor r3, r3, r7 
+ 731 01d6 D4F808A0 		ldr r10, [r4, #8] 
+ 732 01da 0AEA0C07 		and r7, r10, ip 
+ 733 01de 0EEA4A09 		and r9, lr, r10, lsl #1 
+ 734 01e2 47EA0907 		orr r7, r7, r9 
+ 735 01e6 08EA8A09 		and r9, r8, r10, lsl #2 
+ 736 01ea 47EA0907 		orr r7, r7, r9 
+ 737 01ee 81EA0701 		eor r1, r1, r7 
+ 738 01f2 D4F80CA0 		ldr r10, [r4, #12] 
+ 739 01f6 0AEA0C07 		and r7, r10, ip 
+ 740 01fa 0EEA4A09 		and r9, lr, r10, lsl #1 
+ 741 01fe 47EA0907 		orr r7, r7, r9 
+ 742 0202 08EA8A09 		and r9, r8, r10, lsl #2 
+ 743 0206 47EA0907 		orr r7, r7, r9 
+ 744 020a 82EA0702 		eor r2, r2, r7 
+ 745 020e D4F800A0 		ldr r10, [r4, #0] 
+ 746 0212 0AEA0C07 		and r7, r10, ip 
+ 747 0216 0EEA4A09 		and r9, lr, r10, lsl #1 
+ 748 021a 47EA0907 		orr r7, r7, r9 
+ 749 021e 08EA8A09 		and r9, r8, r10, lsl #2 
+ 750 0222 47EA0907 		orr r7, r7, r9 
+ 751 0226 80EA0700 		eor r0, r0, r7 
+ 752 022a 72E0     		b 40f 
+ 753              		32: 
+ 754 022c 00BF     		nop 
+ 755 022e D4F808A0 		ldr r10, [r4, #8] 
+ 756 0232 0AEA0C07 		and r7, r10, ip 
+ 757 0236 0EEA4A09 		and r9, lr, r10, lsl #1 
+ 758 023a 47EA0907 		orr r7, r7, r9 
+ 759 023e 08EA8A09 		and r9, r8, r10, lsl #2 
+ 760 0242 47EA0907 		orr r7, r7, r9 
+ 761 0246 81EA0701 		eor r1, r1, r7 
+ 762 024a D4F80CA0 		ldr r10, [r4, #12] 
+ 763 024e 0AEA0C07 		and r7, r10, ip 
+ 764 0252 0EEA4A09 		and r9, lr, r10, lsl #1 
+ 765 0256 47EA0907 		orr r7, r7, r9 
+ 766 025a 08EA8A09 		and r9, r8, r10, lsl #2 
+ 767 025e 47EA0907 		orr r7, r7, r9 
+ 768 0262 82EA0702 		eor r2, r2, r7 
+ 769 0266 D4F800A0 		ldr r10, [r4, #0] 
+ 770 026a 0AEA0C07 		and r7, r10, ip 
+ 771 026e 0EEA4A09 		and r9, lr, r10, lsl #1 
+ 772 0272 47EA0907 		orr r7, r7, r9 
+ 773 0276 08EA8A09 		and r9, r8, r10, lsl #2 
+ 774 027a 47EA0907 		orr r7, r7, r9 
+ 775 027e 80EA0700 		eor r0, r0, r7 
+ 776 0282 D4F804A0 		ldr r10, [r4, #4] 
+ 777 0286 0AEA0C07 		and r7, r10, ip 
+ 778 028a 0EEA4A09 		and r9, lr, r10, lsl #1 
+ 779 028e 47EA0907 		orr r7, r7, r9 
+ 780 0292 08EA8A09 		and r9, r8, r10, lsl #2 
+ 781 0296 47EA0907 		orr r7, r7, r9 
+ 782 029a 83EA0703 		eor r3, r3, r7 
+ 783 029e 38E0     		b 40f 
+ 784              		33: 
+ 785 02a0 D4F80CA0 		ldr r10, [r4, #12] 
+ 786 02a4 0AEA0C07 		and r7, r10, ip 
+ 787 02a8 0EEA4A09 		and r9, lr, r10, lsl #1 
+ 788 02ac 47EA0907 		orr r7, r7, r9 
+ 789 02b0 08EA8A09 		and r9, r8, r10, lsl #2 
+ 790 02b4 47EA0907 		orr r7, r7, r9 
+ 791 02b8 82EA0702 		eor r2, r2, r7 
+ 792 02bc D4F800A0 		ldr r10, [r4, #0] 
+ 793 02c0 0AEA0C07 		and r7, r10, ip 
+ 794 02c4 0EEA4A09 		and r9, lr, r10, lsl #1 
+ 795 02c8 47EA0907 		orr r7, r7, r9 
+ 796 02cc 08EA8A09 		and r9, r8, r10, lsl #2 
+ 797 02d0 47EA0907 		orr r7, r7, r9 
+ 798 02d4 80EA0700 		eor r0, r0, r7 
+ 799 02d8 D4F804A0 		ldr r10, [r4, #4] 
+ 800 02dc 0AEA0C07 		and r7, r10, ip 
+ 801 02e0 0EEA4A09 		and r9, lr, r10, lsl #1 
+ 802 02e4 47EA0907 		orr r7, r7, r9 
+ 803 02e8 08EA8A09 		and r9, r8, r10, lsl #2 
+ 804 02ec 47EA0907 		orr r7, r7, r9 
+ 805 02f0 83EA0703 		eor r3, r3, r7 
+ 806 02f4 D4F808A0 		ldr r10, [r4, #8] 
+ 807 02f8 0AEA0C07 		and r7, r10, ip 
+ 808 02fc 0EEA4A09 		and r9, lr, r10, lsl #1 
+ 809 0300 47EA0907 		orr r7, r7, r9 
+ 810 0304 08EA8A09 		and r9, r8, r10, lsl #2 
+ 811 0308 47EA0907 		orr r7, r7, r9 
+ 812 030c 81EA0701 		eor r1, r1, r7 
+ 813 0310 FFE7     		b 40f 
+ 814              		40: 
+ 815 0312 013D     		subs r5, r5, #1 
+ 816 0314 7FF499AE 		bne 1b 
+ 817              	99: 
+ 818              	
+ 819              	@ 0 "" 2
+ 820              	.LVL55:
+ 387:c_code.c      ****         "cmp %[steps], #0 \n\t"
+ 821              		.loc 1 387 5 is_stmt 0 view .LVU185
+ 822              		.thumb
+ 823              		.syntax unified
+ 824 0318 C4E90403 		strd	r0, r3, [r4, #16]
+ 825 031c C4E90612 		strd	r1, r2, [r4, #24]
+ 826              	.LVL56:
+ 507:c_code.c      **** 
+ 827              		.loc 1 507 5 is_stmt 1 view .LVU186
+ 828 0320 FFF7FEFF 		bl	trigger_low
+ 829              	.LVL57:
+ 509:c_code.c      ****     return collapse_shares();
+ 830              		.loc 1 509 5 view .LVU187
+ 509:c_code.c      ****     return collapse_shares();
+ 831              		.loc 1 509 25 is_stmt 0 view .LVU188
+ 832 0324 A662     		str	r6, [r4, #40]
+ 510:c_code.c      **** }
+ 833              		.loc 1 510 5 is_stmt 1 view .LVU189
+ 834              	.LVL58:
+ 835              	.L58:
+ 510:c_code.c      **** }
+ 836              		.loc 1 510 5 is_stmt 0 view .LVU190
+ 837              	.LBE41:
+ 838              	.LBE40:
+ 839              	.LBB42:
+ 840              	.LBB43:
+ 340:c_code.c      **** }
+ 841              		.loc 1 340 5 is_stmt 1 view .LVU191
+ 340:c_code.c      **** }
+ 842              		.loc 1 340 12 is_stmt 0 view .LVU192
+ 843 0326 FFF7FEFF 		bl	collapse_shares
+ 844              	.LVL59:
+ 845              	.L48:
+ 340:c_code.c      **** }
+ 846              		.loc 1 340 12 view .LVU193
+ 847              	.LBE43:
+ 848              	.LBE42:
+ 849              	.LBB45:
+ 561:c_code.c      ****         } else {
+ 562:c_code.c      ****             logical_state = step_masked_interleaved_asm(num_steps, polynomial);
+ 563:c_code.c      ****         }
+ 564:c_code.c      ****     } else {
+ 565:c_code.c      ****         if(g_mode_flags & FLAG_SHUFFLED) {
+ 566:c_code.c      ****             logical_state = step_shuffled(num_steps, polynomial);
+ 567:c_code.c      ****         } else {
+ 568:c_code.c      ****             logical_state = step_plain(num_steps, polynomial);
+ 569:c_code.c      ****         }
+ 570:c_code.c      ****     }
+ 571:c_code.c      **** 
+ 572:c_code.c      ****     {
+ 573:c_code.c      ****         uint8_t res = (uint8_t)(logical_state & 0xFFu);
+ 850              		.loc 1 573 9 is_stmt 1 view .LVU194
+ 851              		.loc 1 573 23 is_stmt 0 view .LVU195
+ 852 032a 8DF80700 		strb	r0, [sp, #7]
+ 574:c_code.c      ****         simpleserial_put('r', 1, &res);
+ 853              		.loc 1 574 9 is_stmt 1 view .LVU196
+ 854 032e 0DF10702 		add	r2, sp, #7
+ 855 0332 0121     		movs	r1, #1
+ 856 0334 7220     		movs	r0, #114
+ 857              	.LVL60:
+ 858              		.loc 1 574 9 is_stmt 0 view .LVU197
+ 859 0336 FFF7FEFF 		bl	simpleserial_put
+ 860              	.LVL61:
+ 861              	.LBE45:
+ 575:c_code.c      ****     }
+ 576:c_code.c      **** 
+ 577:c_code.c      ****     return 0x00;
+ 862              		.loc 1 577 5 is_stmt 1 view .LVU198
+ 578:c_code.c      **** }
+ 863              		.loc 1 578 1 is_stmt 0 view .LVU199
+ 864 033a 0020     		movs	r0, #0
+ 865 033c 02B0     		add	sp, sp, #8
+ 866              	.LCFI7:
+ 867              		.cfi_remember_state
+ 868              		.cfi_def_cfa_offset 32
+ 869              		@ sp needed
+ 870 033e BDE8F087 		pop	{r4, r5, r6, r7, r8, r9, r10, pc}
+ 871              	.LVL62:
+ 872              	.L53:
+ 873              	.LCFI8:
+ 874              		.cfi_restore_state
+ 554:c_code.c      ****     uint32_t polynomial = (g_mode_flags & FLAG_HIGH_HW) ? POLY_HIGH_HW : POLY_LOW_HW;
+ 875              		.loc 1 554 13 discriminator 2 view .LVU200
+ 876 0342 0125     		movs	r5, #1
+ 877 0344 62E6     		b	.L44
+ 878              	.L61:
+ 879 0346 00BF     		.align	2
+ 880              	.L60:
+ 881 0348 00000000 		.word	.LANCHOR0
+ 882 034c 2083B8ED 		.word	-306674912
+ 883 0350 000200E0 		.word	-536870400
+ 884              	.LVL63:
+ 885              	.L47:
+ 562:c_code.c      ****         }
+ 886              		.loc 1 562 13 is_stmt 1 view .LVU201
+ 887              	.LBB46:
+ 888              	.LBI42:
+ 229:c_code.c      **** {
+ 889              		.loc 1 229 17 view .LVU202
+ 890              	.LBB44:
+ 231:c_code.c      **** 
+ 891              		.loc 1 231 5 view .LVU203
+ 234:c_code.c      **** 
+ 892              		.loc 1 234 5 view .LVU204
+ 893 0354 3846     		mov	r0, r7
+ 894              	.LVL64:
+ 234:c_code.c      **** 
+ 895              		.loc 1 234 5 is_stmt 0 view .LVU205
+ 896 0356 FFF7FEFF 		bl	compute_interleaved_poly
+ 897              	.LVL65:
+ 236:c_code.c      **** 
+ 898              		.loc 1 236 5 is_stmt 1 view .LVU206
+ 899 035a FFF7FEFF 		bl	trigger_high
+ 900              	.LVL66:
+ 238:c_code.c      ****         "cmp %[steps], #0 \n\t"
+ 901              		.loc 1 238 5 view .LVU207
+ 902 035e D4E90401 		ldrd	r0, r1, [r4, #16]
+ 903 0362 D4E90623 		ldrd	r2, r3, [r4, #24]
+ 904              		.syntax unified
+ 905              	@ 238 "c_code.c" 1
+ 906 0366 002D     		cmp r5, #0 
+ 907 0368 5BD0     		beq 2f 
+ 908              	1: 
+ 909 036a 00F00706 		and r6, r0, #7 
+ 910 036e 4FEAD000 		lsr r0, r0, #3 
+ 911 0372 01F00708 		and r8, r1, #7 
+ 912 0376 40EA4850 		orr r0, r0, r8, lsl #21 
+ 913 037a 4FEAD101 		lsr r1, r1, #3 
+ 914 037e 02F00708 		and r8, r2, #7 
+ 915 0382 41EA4851 		orr r1, r1, r8, lsl #21 
+ 916 0386 4FEAD202 		lsr r2, r2, #3 
+ 917 038a 03F00708 		and r8, r3, #7 
+ 918 038e 42EA4852 		orr r2, r2, r8, lsl #21 
+ 919 0392 4FEAD303 		lsr r3, r3, #3 
+ 920 0396 06F00107 		and r7, r6, #1 
+ 921 039a C7F10007 		rsb r7, r7, #0 
+ 922 039e C6F3400C 		ubfx ip, r6, #1, #1 
+ 923 03a2 CCF1000C 		rsb ip, ip, #0 
+ 924 03a6 C6F3800E 		ubfx lr, r6, #2, #1 
+ 925 03aa CEF1000E 		rsb lr, lr, #0 
+ 926 03ae D4F80090 		ldr r9, [r4, #0] 
+ 927 03b2 09EA0706 		and r6, r9, r7 
+ 928 03b6 0CEA4908 		and r8, ip, r9, lsl #1 
+ 929 03ba 46EA0806 		orr r6, r6, r8 
+ 930 03be 0EEA8908 		and r8, lr, r9, lsl #2 
+ 931 03c2 46EA0806 		orr r6, r6, r8 
+ 932 03c6 80EA0600 		eor r0, r0, r6 
+ 933 03ca D4F80490 		ldr r9, [r4, #4] 
+ 934 03ce 09EA0706 		and r6, r9, r7 
+ 935 03d2 0CEA4908 		and r8, ip, r9, lsl #1 
+ 936 03d6 46EA0806 		orr r6, r6, r8 
+ 937 03da 0EEA8908 		and r8, lr, r9, lsl #2 
+ 938 03de 46EA0806 		orr r6, r6, r8 
+ 939 03e2 81EA0601 		eor r1, r1, r6 
+ 940 03e6 D4F80890 		ldr r9, [r4, #8] 
+ 941 03ea 09EA0706 		and r6, r9, r7 
+ 942 03ee 0CEA4908 		and r8, ip, r9, lsl #1 
+ 943 03f2 46EA0806 		orr r6, r6, r8 
+ 944 03f6 0EEA8908 		and r8, lr, r9, lsl #2 
+ 945 03fa 46EA0806 		orr r6, r6, r8 
+ 946 03fe 82EA0602 		eor r2, r2, r6 
+ 947 0402 D4F80C90 		ldr r9, [r4, #12] 
+ 948 0406 09EA0706 		and r6, r9, r7 
+ 949 040a 0CEA4908 		and r8, ip, r9, lsl #1 
+ 950 040e 46EA0806 		orr r6, r6, r8 
+ 951 0412 0EEA8908 		and r8, lr, r9, lsl #2 
+ 952 0416 46EA0806 		orr r6, r6, r8 
+ 953 041a 83EA0603 		eor r3, r3, r6 
+ 954 041e 013D     		subs r5, r5, #1 
+ 955 0420 A3D1     		bne 1b 
+ 956              	2: 
+ 957              	
+ 958              	@ 0 "" 2
+ 959              	.LVL67:
+ 238:c_code.c      ****         "cmp %[steps], #0 \n\t"
+ 960              		.loc 1 238 5 is_stmt 0 view .LVU208
+ 961              		.thumb
+ 962              		.syntax unified
+ 963 0422 C4E90401 		strd	r0, r1, [r4, #16]
+ 964 0426 C4E90623 		strd	r2, r3, [r4, #24]
+ 965              	.LVL68:
+ 338:c_code.c      **** 
+ 966              		.loc 1 338 5 is_stmt 1 view .LVU209
+ 967 042a FFF7FEFF 		bl	trigger_low
+ 968              	.LVL69:
+ 969 042e 7AE7     		b	.L58
+ 970              	.LVL70:
+ 971              	.L46:
+ 338:c_code.c      **** 
+ 972              		.loc 1 338 5 is_stmt 0 view .LVU210
+ 973              	.LBE44:
+ 974              	.LBE46:
+ 565:c_code.c      ****             logical_state = step_shuffled(num_steps, polynomial);
+ 975              		.loc 1 565 9 is_stmt 1 view .LVU211
+ 565:c_code.c      ****             logical_state = step_shuffled(num_steps, polynomial);
+ 976              		.loc 1 565 11 is_stmt 0 view .LVU212
+ 977 0430 AAB1     		cbz	r2, .L49
+ 566:c_code.c      ****         } else {
+ 978              		.loc 1 566 13 is_stmt 1 view .LVU213
+ 979              	.LVL71:
+ 980              	.LBB47:
+ 981              	.LBI47:
+ 189:c_code.c      **** {
+ 982              		.loc 1 189 17 view .LVU214
+ 983              	.LBB48:
+ 191:c_code.c      ****     trigger_high();
+ 984              		.loc 1 191 5 view .LVU215
+ 192:c_code.c      ****     for(i = 0; i < num_steps; i++) {
+ 985              		.loc 1 192 5 view .LVU216
+ 986 0432 FFF7FEFF 		bl	trigger_high
+ 987              	.LVL72:
+ 193:c_code.c      ****         uint32_t lsb = g_lfsr_state & 1u;
+ 988              		.loc 1 193 5 view .LVU217
+ 193:c_code.c      ****         uint32_t lsb = g_lfsr_state & 1u;
+ 989              		.loc 1 193 5 is_stmt 0 view .LVU218
+ 990 0436 626A     		ldr	r2, [r4, #36]
+ 991 0438 3346     		mov	r3, r6
+ 992 043a 3146     		mov	r1, r6
+ 993              	.LVL73:
+ 994              	.L50:
+ 193:c_code.c      ****         uint32_t lsb = g_lfsr_state & 1u;
+ 995              		.loc 1 193 18 is_stmt 1 discriminator 1 view .LVU219
+ 996 043c D8B2     		uxtb	r0, r3
+ 997 043e 8542     		cmp	r5, r0
+ 998 0440 05D8     		bhi	.L51
+ 999 0442 01B1     		cbz	r1, .L59
+ 1000 0444 6262     		str	r2, [r4, #36]
+ 197:c_code.c      ****     return g_lfsr_state;
+ 1001              		.loc 1 197 5 view .LVU220
+ 1002              	.LVL74:
+ 1003              	.L59:
+ 197:c_code.c      ****     return g_lfsr_state;
+ 1004              		.loc 1 197 5 is_stmt 0 view .LVU221
+ 1005              	.LBE48:
+ 1006              	.LBE47:
+ 1007              	.LBB52:
+ 1008              	.LBB53:
+ 1009              	.LBB54:
+ 120:c_code.c      ****     return g_lfsr_state;
+ 1010              		.loc 1 120 5 is_stmt 1 view .LVU222
+ 1011 0446 FFF7FEFF 		bl	trigger_low
+ 1012              	.LVL75:
+ 121:c_code.c      **** }
+ 1013              		.loc 1 121 5 view .LVU223
+ 121:c_code.c      **** }
+ 1014              		.loc 1 121 12 is_stmt 0 view .LVU224
+ 1015 044a 606A     		ldr	r0, [r4, #36]
+ 1016              	.LVL76:
+ 121:c_code.c      **** }
+ 1017              		.loc 1 121 12 view .LVU225
+ 1018 044c 6DE7     		b	.L48
+ 1019              	.LVL77:
+ 1020              	.L51:
+ 121:c_code.c      **** }
+ 1021              		.loc 1 121 12 view .LVU226
+ 1022              	.LBE54:
+ 1023              	.LBE53:
+ 1024              	.LBE52:
+ 1025              	.LBB57:
+ 1026              	.LBB51:
+ 1027              	.LBB49:
+ 194:c_code.c      ****         g_lfsr_state = (g_lfsr_state >> 1) ^ (polynomial & (0u - lsb));
+ 1028              		.loc 1 194 9 is_stmt 1 view .LVU227
+ 195:c_code.c      ****     }
+ 1029              		.loc 1 195 9 view .LVU228
+ 194:c_code.c      ****         g_lfsr_state = (g_lfsr_state >> 1) ^ (polynomial & (0u - lsb));
+ 1030              		.loc 1 194 18 is_stmt 0 view .LVU229
+ 1031 044e 02F00101 		and	r1, r2, #1
+ 1032              	.LVL78:
+ 195:c_code.c      ****     }
+ 1033              		.loc 1 195 58 view .LVU230
+ 1034 0452 7943     		muls	r1, r7, r1
+ 1035              	.LVL79:
+ 195:c_code.c      ****     }
+ 1036              		.loc 1 195 44 view .LVU231
+ 1037 0454 81EA5202 		eor	r2, r1, r2, lsr #1
+ 1038              	.LVL80:
+ 195:c_code.c      ****     }
+ 1039              		.loc 1 195 44 view .LVU232
+ 1040              	.LBE49:
+ 193:c_code.c      ****         uint32_t lsb = g_lfsr_state & 1u;
+ 1041              		.loc 1 193 32 is_stmt 1 discriminator 3 view .LVU233
+ 193:c_code.c      ****         uint32_t lsb = g_lfsr_state & 1u;
+ 1042              		.loc 1 193 32 is_stmt 0 discriminator 3 view .LVU234
+ 1043 0458 0133     		adds	r3, r3, #1
+ 1044              	.LVL81:
+ 1045              	.LBB50:
+ 195:c_code.c      ****     }
+ 1046              		.loc 1 195 44 view .LVU235
+ 1047 045a 0121     		movs	r1, #1
+ 1048 045c EEE7     		b	.L50
+ 1049              	.LVL82:
+ 1050              	.L49:
+ 195:c_code.c      ****     }
+ 1051              		.loc 1 195 44 view .LVU236
+ 1052              	.LBE50:
+ 1053              	.LBE51:
+ 1054              	.LBE57:
+ 568:c_code.c      ****         }
+ 1055              		.loc 1 568 13 is_stmt 1 view .LVU237
+ 1056              	.LBB58:
+ 1057              	.LBI52:
+  77:c_code.c      **** {
+ 1058              		.loc 1 77 17 view .LVU238
+  79:c_code.c      **** }
+ 1059              		.loc 1 79 5 view .LVU239
+ 1060              	.LBB56:
+ 1061              	.LBI53:
+  82:c_code.c      **** {
+ 1062              		.loc 1 82 17 view .LVU240
+ 1063              	.LBB55:
+  84:c_code.c      ****     
+ 1064              		.loc 1 84 5 view .LVU241
+  86:c_code.c      **** 
+ 1065              		.loc 1 86 5 view .LVU242
+ 1066 045e FFF7FEFF 		bl	trigger_high
+ 1067              	.LVL83:
+  88:c_code.c      ****         "cmp %[steps], #0 \n\t"               
+ 1068              		.loc 1 88 5 view .LVU243
+ 1069 0462 636A     		ldr	r3, [r4, #36]
+ 1070              		.syntax unified
+ 1071              	@ 88 "c_code.c" 1
+ 1072 0464 002D     		cmp r5, #0 
+ 1073 0466 0BD0     		beq 2f 
+ 1074              	1: 
+ 1075 0468 03F00102 		and r2, r3, #1 
+ 1076 046c 4FEA5303 		lsr r3, r3, #1 
+ 1077 0470 83EA0701 		eor r1, r3, r7 
+ 1078 0474 012A     		cmp r2, #1 
+ 1079 0476 0CBF     		ite eq 
+ 1080 0478 0B46     		moveq r3, r1 
+ 1081 047a 0846     		movne r0, r1 
+ 1082 047c 013D     		subs r5, r5, #1 
+ 1083 047e F3D1     		bne 1b 
+ 1084              	2: 
+ 1085              	
+ 1086              	@ 0 "" 2
+ 1087              	.LVL84:
+  88:c_code.c      ****         "cmp %[steps], #0 \n\t"               
+ 1088              		.loc 1 88 5 is_stmt 0 view .LVU244
+ 1089              		.thumb
+ 1090              		.syntax unified
+ 1091 0480 6362     		str	r3, [r4, #36]
+ 1092 0482 E0E7     		b	.L59
+ 1093              	.LBE55:
+ 1094              	.LBE56:
+ 1095              	.LBE58:
+ 1096              		.cfi_endproc
+ 1097              	.LFE17:
+ 1099              		.section	.text.change_ok_led,"ax",%progbits
+ 1100              		.align	1
+ 1101              		.weak	change_ok_led
+ 1102              		.syntax unified
+ 1103              		.thumb
+ 1104              		.thumb_func
+ 1106              	change_ok_led:
+ 1107              	.LFB20:
+ 1108              		.cfi_startproc
+ 1109              		.file 2 "../../firmware/mcu/hal/hal.h"
    1:../../firmware/mcu/hal/hal.h **** /*
    2:../../firmware/mcu/hal/hal.h ****     This file is part of the ChipWhisperer Example Targets
    3:../../firmware/mcu/hal/hal.h ****     Copyright (C) 2012-2015 NewAE Technology Inc.
@@ -672,165 +2020,182 @@
  198:../../firmware/mcu/hal/hal.h **** #endif
  199:../../firmware/mcu/hal/hal.h **** 
  200:../../firmware/mcu/hal/hal.h **** __attribute__((weak)) void led_ok(unsigned int status)
- 376              		.loc 2 200 28 is_stmt 1 view -0
- 377              		@ args = 0, pretend = 0, frame = 0
- 378              		@ frame_needed = 0, uses_anonymous_args = 0
- 379              		@ link register save eliminated.
- 380 0000 7047     		bx	lr
- 381              		.cfi_endproc
- 382              	.LFE8:
- 384              		.section	.text.change_err_led,"ax",%progbits
- 385              		.align	1
- 386              		.weak	change_err_led
- 387              		.syntax unified
- 388              		.thumb
- 389              		.thumb_func
- 391              	change_err_led:
- 392              	.LVL28:
- 393              	.LFB1:
+ 1110              		.loc 2 200 28 is_stmt 1 view -0
+ 1111              		@ args = 0, pretend = 0, frame = 0
+ 1112              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1113              		@ link register save eliminated.
+ 1114 0000 7047     		bx	lr
+ 1115              		.cfi_endproc
+ 1116              	.LFE20:
+ 1118              		.section	.text.change_err_led,"ax",%progbits
+ 1119              		.align	1
+ 1120              		.weak	change_err_led
+ 1121              		.syntax unified
+ 1122              		.thumb
+ 1123              		.thumb_func
+ 1125              	change_err_led:
+ 1126              	.LVL85:
+ 1127              	.LFB1:
  201:../../firmware/mcu/hal/hal.h **** {
  202:../../firmware/mcu/hal/hal.h **** }
  203:../../firmware/mcu/hal/hal.h **** 
  204:../../firmware/mcu/hal/hal.h **** __attribute__((weak)) void led_error(unsigned int status)
  205:../../firmware/mcu/hal/hal.h **** {
- 394              		.loc 2 205 1 view -0
- 395              		.cfi_startproc
- 396              		@ args = 0, pretend = 0, frame = 0
- 397              		@ frame_needed = 0, uses_anonymous_args = 0
- 398              		@ link register save eliminated.
+ 1128              		.loc 2 205 1 view -0
+ 1129              		.cfi_startproc
+ 1130              		@ args = 0, pretend = 0, frame = 0
+ 1131              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1132              		@ link register save eliminated.
  206:../../firmware/mcu/hal/hal.h **** }
- 399              		.loc 2 206 1 view .LVU86
- 400 0000 7047     		bx	lr
- 401              		.cfi_endproc
- 402              	.LFE1:
- 404              		.section	.text.startup.main,"ax",%progbits
- 405              		.align	1
- 406              		.global	main
- 407              		.syntax unified
- 408              		.thumb
- 409              		.thumb_func
- 411              	main:
- 412              	.LFB6:
-  79:c_code.c      **** 
-  80:c_code.c      **** int main(void)
-  81:c_code.c      **** {
- 413              		.loc 1 81 1 view -0
- 414              		.cfi_startproc
- 415              		@ Volatile: function does not return.
- 416              		@ args = 0, pretend = 0, frame = 0
- 417              		@ frame_needed = 0, uses_anonymous_args = 0
-  82:c_code.c      ****     platform_init();
- 418              		.loc 1 82 5 view .LVU88
-  81:c_code.c      ****     platform_init();
- 419              		.loc 1 81 1 is_stmt 0 view .LVU89
- 420 0000 08B5     		push	{r3, lr}
- 421              	.LCFI10:
- 422              		.cfi_def_cfa_offset 8
- 423              		.cfi_offset 3, -8
- 424              		.cfi_offset 14, -4
- 425              		.loc 1 82 5 view .LVU90
- 426 0002 FFF7FEFF 		bl	platform_init
- 427              	.LVL29:
-  83:c_code.c      ****     init_uart();
- 428              		.loc 1 83 5 is_stmt 1 view .LVU91
- 429 0006 FFF7FEFF 		bl	init_uart
- 430              	.LVL30:
-  84:c_code.c      ****     trigger_setup();
- 431              		.loc 1 84 5 view .LVU92
- 432 000a FFF7FEFF 		bl	trigger_setup
- 433              	.LVL31:
-  85:c_code.c      **** 	simpleserial_init();
- 434              		.loc 1 85 2 view .LVU93
- 435 000e FFF7FEFF 		bl	simpleserial_init
- 436              	.LVL32:
-  86:c_code.c      ****     
-  87:c_code.c      ****     simpleserial_addcmd('a', 4, set_seed_lfsr_low_hw);
- 437              		.loc 1 87 5 view .LVU94
- 438 0012 0B4A     		ldr	r2, .L35
- 439 0014 0421     		movs	r1, #4
- 440 0016 6120     		movs	r0, #97
- 441 0018 FFF7FEFF 		bl	simpleserial_addcmd
- 442              	.LVL33:
-  88:c_code.c      ****     simpleserial_addcmd('b', 4, set_seed_lfsr_high_hw);
- 443              		.loc 1 88 5 view .LVU95
- 444 001c 094A     		ldr	r2, .L35+4
- 445 001e 0421     		movs	r1, #4
- 446 0020 6220     		movs	r0, #98
- 447 0022 FFF7FEFF 		bl	simpleserial_addcmd
- 448              	.LVL34:
-  89:c_code.c      ****     simpleserial_addcmd('c', 1, step_lfsr_low_hw);
- 449              		.loc 1 89 5 view .LVU96
- 450 0026 084A     		ldr	r2, .L35+8
- 451 0028 0121     		movs	r1, #1
- 452 002a 6320     		movs	r0, #99
- 453 002c FFF7FEFF 		bl	simpleserial_addcmd
- 454              	.LVL35:
-  90:c_code.c      ****     simpleserial_addcmd('d', 1, step_lfsr_high_hw);
- 455              		.loc 1 90 5 view .LVU97
- 456 0030 064A     		ldr	r2, .L35+12
- 457 0032 0121     		movs	r1, #1
- 458 0034 6420     		movs	r0, #100
- 459 0036 FFF7FEFF 		bl	simpleserial_addcmd
- 460              	.LVL36:
- 461              	.L34:
-  91:c_code.c      ****     
-  92:c_code.c      ****     while(1)
- 462              		.loc 1 92 5 view .LVU98
-  93:c_code.c      ****         simpleserial_get();
- 463              		.loc 1 93 9 discriminator 2 view .LVU99
- 464 003a FFF7FEFF 		bl	simpleserial_get
- 465              	.LVL37:
-  92:c_code.c      ****         simpleserial_get();
- 466              		.loc 1 92 10 view .LVU100
- 467 003e FCE7     		b	.L34
- 468              	.L36:
- 469              		.align	2
- 470              	.L35:
- 471 0040 00000000 		.word	set_seed_lfsr_low_hw
- 472 0044 00000000 		.word	set_seed_lfsr_high_hw
- 473 0048 00000000 		.word	step_lfsr_low_hw
- 474 004c 00000000 		.word	step_lfsr_high_hw
- 475              		.cfi_endproc
- 476              	.LFE6:
- 478              		.bss
- 479              		.align	2
- 480              		.set	.LANCHOR0,. + 0
- 483              	lfsr_state_low_hw:
- 484 0000 00000000 		.space	4
- 487              	lfsr_state_high_hw:
- 488 0004 00000000 		.space	4
- 489              		.text
- 490              	.Letext0:
- 491              		.file 3 "/Applications/ArmGNUToolchain/15.2.rel1/arm-none-eabi/arm-none-eabi/include/machine/_defa
- 492              		.file 4 "/Applications/ArmGNUToolchain/15.2.rel1/arm-none-eabi/arm-none-eabi/include/sys/_stdint.h
- 493              		.file 5 "../../firmware/mcu/simpleserial/simpleserial.h"
- 494              		.file 6 "../../firmware/mcu/hal/stm32f3/stm32f3_hal.h"
+ 1133              		.loc 2 206 1 view .LVU247
+ 1134 0000 7047     		bx	lr
+ 1135              		.cfi_endproc
+ 1136              	.LFE1:
+ 1138              		.section	.text.startup.main,"ax",%progbits
+ 1139              		.align	1
+ 1140              		.global	main
+ 1141              		.syntax unified
+ 1142              		.thumb
+ 1143              		.thumb_func
+ 1145              	main:
+ 1146              	.LFB18:
+ 579:c_code.c      **** 
+ 580:c_code.c      **** int main(void)
+ 581:c_code.c      **** {
+ 1147              		.loc 1 581 1 view -0
+ 1148              		.cfi_startproc
+ 1149              		@ Volatile: function does not return.
+ 1150              		@ args = 0, pretend = 0, frame = 0
+ 1151              		@ frame_needed = 0, uses_anonymous_args = 0
+ 582:c_code.c      ****     platform_init();
+ 1152              		.loc 1 582 5 view .LVU249
+ 581:c_code.c      ****     platform_init();
+ 1153              		.loc 1 581 1 is_stmt 0 view .LVU250
+ 1154 0000 08B5     		push	{r3, lr}
+ 1155              	.LCFI9:
+ 1156              		.cfi_def_cfa_offset 8
+ 1157              		.cfi_offset 3, -8
+ 1158              		.cfi_offset 14, -4
+ 1159              		.loc 1 582 5 view .LVU251
+ 1160 0002 FFF7FEFF 		bl	platform_init
+ 1161              	.LVL86:
+ 583:c_code.c      ****     init_uart();
+ 1162              		.loc 1 583 5 is_stmt 1 view .LVU252
+ 1163 0006 FFF7FEFF 		bl	init_uart
+ 1164              	.LVL87:
+ 584:c_code.c      ****     trigger_setup();
+ 1165              		.loc 1 584 5 view .LVU253
+ 1166 000a FFF7FEFF 		bl	trigger_setup
+ 1167              	.LVL88:
+ 585:c_code.c      **** 	simpleserial_init();
+ 1168              		.loc 1 585 2 view .LVU254
+ 1169 000e FFF7FEFF 		bl	simpleserial_init
+ 1170              	.LVL89:
+ 586:c_code.c      **** 
+ 587:c_code.c      ****     // 'f': set flags, 's': set seed(+optional mask), 'c': step
+ 588:c_code.c      ****     simpleserial_addcmd('f', 1, set_mode_flags);
+ 1171              		.loc 1 588 5 view .LVU255
+ 1172 0012 094A     		ldr	r2, .L66
+ 1173 0014 0121     		movs	r1, #1
+ 1174 0016 6620     		movs	r0, #102
+ 1175 0018 FFF7FEFF 		bl	simpleserial_addcmd
+ 1176              	.LVL90:
+ 589:c_code.c      ****     simpleserial_addcmd('s', 16, set_seed_lfsr);
+ 1177              		.loc 1 589 5 view .LVU256
+ 1178 001c 074A     		ldr	r2, .L66+4
+ 1179 001e 1021     		movs	r1, #16
+ 1180 0020 7320     		movs	r0, #115
+ 1181 0022 FFF7FEFF 		bl	simpleserial_addcmd
+ 1182              	.LVL91:
+ 590:c_code.c      ****     simpleserial_addcmd('c', 1, step_lfsr);
+ 1183              		.loc 1 590 5 view .LVU257
+ 1184 0026 064A     		ldr	r2, .L66+8
+ 1185 0028 0121     		movs	r1, #1
+ 1186 002a 6320     		movs	r0, #99
+ 1187 002c FFF7FEFF 		bl	simpleserial_addcmd
+ 1188              	.LVL92:
+ 1189              	.L65:
+ 591:c_code.c      ****     
+ 592:c_code.c      ****     while(1)
+ 1190              		.loc 1 592 5 view .LVU258
+ 593:c_code.c      ****         simpleserial_get();
+ 1191              		.loc 1 593 9 discriminator 2 view .LVU259
+ 1192 0030 FFF7FEFF 		bl	simpleserial_get
+ 1193              	.LVL93:
+ 592:c_code.c      ****         simpleserial_get();
+ 1194              		.loc 1 592 10 view .LVU260
+ 1195 0034 FCE7     		b	.L65
+ 1196              	.L67:
+ 1197 0036 00BF     		.align	2
+ 1198              	.L66:
+ 1199 0038 00000000 		.word	set_mode_flags
+ 1200 003c 00000000 		.word	set_seed_lfsr
+ 1201 0040 00000000 		.word	step_lfsr
+ 1202              		.cfi_endproc
+ 1203              	.LFE18:
+ 1205              		.bss
+ 1206              		.align	2
+ 1207              		.set	.LANCHOR0,. + 0
+ 1210              	g_interleaved_poly:
+ 1211 0000 00000000 		.space	16
+ 1211      00000000 
+ 1211      00000000 
+ 1211      00000000 
+ 1214              	g_masked_state:
+ 1215 0010 00000000 		.space	16
+ 1215      00000000 
+ 1215      00000000 
+ 1215      00000000 
+ 1218              	g_mode_flags:
+ 1219 0020 00       		.space	1
+ 1220 0021 000000   		.space	3
+ 1223              	g_lfsr_state:
+ 1224 0024 00000000 		.space	4
+ 1227              	g_shuffle_rng_state:
+ 1228 0028 00000000 		.space	4
+ 1229              		.text
+ 1230              	.Letext0:
+ 1231              		.file 3 "/Applications/ArmGNUToolchain/15.2.rel1/arm-none-eabi/arm-none-eabi/include/machine/_defa
+ 1232              		.file 4 "/Applications/ArmGNUToolchain/15.2.rel1/arm-none-eabi/arm-none-eabi/include/sys/_stdint.h
+ 1233              		.file 5 "../../firmware/mcu/simpleserial/simpleserial.h"
+ 1234              		.file 6 "../../firmware/mcu/hal/stm32f3/stm32f3_hal.h"
+ 1235              		.file 7 "<built-in>"
 DEFINED SYMBOLS
                             *ABS*:00000000 c_code.c
-/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccxG2iuV.s:19     .text.set_seed_lfsr_low_hw:00000000 $t
-/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccxG2iuV.s:25     .text.set_seed_lfsr_low_hw:00000000 set_seed_lfsr_low_hw
-/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccxG2iuV.s:74     .text.set_seed_lfsr_low_hw:00000024 $d
-/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccxG2iuV.s:79     .text.set_seed_lfsr_high_hw:00000000 $t
-/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccxG2iuV.s:85     .text.set_seed_lfsr_high_hw:00000000 set_seed_lfsr_high_hw
-/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccxG2iuV.s:134    .text.set_seed_lfsr_high_hw:00000024 $d
-/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccxG2iuV.s:139    .text.step_lfsr_low_hw:00000000 $t
-/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccxG2iuV.s:145    .text.step_lfsr_low_hw:00000000 step_lfsr_low_hw
-/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccxG2iuV.s:247    .text.step_lfsr_low_hw:00000050 $d
-/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccxG2iuV.s:255    .text.step_lfsr_high_hw:00000000 $t
-/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccxG2iuV.s:261    .text.step_lfsr_high_hw:00000000 step_lfsr_high_hw
-/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccxG2iuV.s:358    .text.step_lfsr_high_hw:00000050 $d
-/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccxG2iuV.s:366    .text.change_ok_led:00000000 $t
-/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccxG2iuV.s:372    .text.change_ok_led:00000000 change_ok_led
-/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccxG2iuV.s:385    .text.change_err_led:00000000 $t
-/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccxG2iuV.s:391    .text.change_err_led:00000000 change_err_led
-/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccxG2iuV.s:405    .text.startup.main:00000000 $t
-/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccxG2iuV.s:411    .text.startup.main:00000000 main
-/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccxG2iuV.s:471    .text.startup.main:00000040 $d
-/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccxG2iuV.s:479    .bss:00000000 $d
-/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccxG2iuV.s:483    .bss:00000000 lfsr_state_low_hw
-/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccxG2iuV.s:487    .bss:00000004 lfsr_state_high_hw
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccza81EL.s:19     .text.unpack_u32_le:00000000 $t
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccza81EL.s:24     .text.unpack_u32_le:00000000 unpack_u32_le
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccza81EL.s:42     .text.compute_interleaved_poly:00000000 $t
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccza81EL.s:47     .text.compute_interleaved_poly:00000000 compute_interleaved_poly
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccza81EL.s:128    .text.compute_interleaved_poly:00000044 $d
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccza81EL.s:133    .text.collapse_shares:00000000 $t
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccza81EL.s:138    .text.collapse_shares:00000000 collapse_shares
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccza81EL.s:232    .text.collapse_shares:00000040 $d
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccza81EL.s:237    .text.set_mode_flags:00000000 $t
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccza81EL.s:243    .text.set_mode_flags:00000000 set_mode_flags
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccza81EL.s:286    .text.set_mode_flags:00000020 $d
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccza81EL.s:292    .text.set_seed_lfsr:00000000 $t
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccza81EL.s:298    .text.set_seed_lfsr:00000000 set_seed_lfsr
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccza81EL.s:531    .text.set_seed_lfsr:000000d0 $d
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccza81EL.s:538    .text.step_lfsr:00000000 $t
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccza81EL.s:544    .text.step_lfsr:00000000 step_lfsr
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccza81EL.s:881    .text.step_lfsr:00000348 $d
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccza81EL.s:893    .text.step_lfsr:00000354 $t
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccza81EL.s:1100   .text.change_ok_led:00000000 $t
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccza81EL.s:1106   .text.change_ok_led:00000000 change_ok_led
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccza81EL.s:1119   .text.change_err_led:00000000 $t
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccza81EL.s:1125   .text.change_err_led:00000000 change_err_led
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccza81EL.s:1139   .text.startup.main:00000000 $t
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccza81EL.s:1145   .text.startup.main:00000000 main
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccza81EL.s:1199   .text.startup.main:00000038 $d
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccza81EL.s:1206   .bss:00000000 $d
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccza81EL.s:1210   .bss:00000000 g_interleaved_poly
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccza81EL.s:1214   .bss:00000010 g_masked_state
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccza81EL.s:1218   .bss:00000020 g_mode_flags
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccza81EL.s:1223   .bss:00000024 g_lfsr_state
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccza81EL.s:1227   .bss:00000028 g_shuffle_rng_state
 
 UNDEFINED SYMBOLS
+memset
 simpleserial_put
 trigger_high
 trigger_low

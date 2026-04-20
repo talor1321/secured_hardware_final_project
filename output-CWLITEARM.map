@@ -114,7 +114,7 @@ Discarded input sections
                 0x00000000       0x20 objdir-CWLITEARM/stm32f3_sysmem.o
  .debug_ranges  0x00000000       0x10 objdir-CWLITEARM/stm32f3_sysmem.o
  .debug_line    0x00000000      0x10b objdir-CWLITEARM/stm32f3_sysmem.o
- .debug_str     0x00000000      0x1e3 objdir-CWLITEARM/stm32f3_sysmem.o
+ .debug_str     0x00000000      0x1f5 objdir-CWLITEARM/stm32f3_sysmem.o
  .comment       0x00000000       0x46 objdir-CWLITEARM/stm32f3_sysmem.o
  .debug_frame   0x00000000       0x28 objdir-CWLITEARM/stm32f3_sysmem.o
  .ARM.attributes
@@ -153,7 +153,7 @@ Discarded input sections
                 0x00000000       0x80 objdir-CWLITEARM/aes.o
  .debug_ranges  0x00000000      0x140 objdir-CWLITEARM/aes.o
  .debug_line    0x00000000      0x8c2 objdir-CWLITEARM/aes.o
- .debug_str     0x00000000      0x310 objdir-CWLITEARM/aes.o
+ .debug_str     0x00000000      0x322 objdir-CWLITEARM/aes.o
  .comment       0x00000000       0x46 objdir-CWLITEARM/aes.o
  .debug_frame   0x00000000      0x180 objdir-CWLITEARM/aes.o
  .ARM.attributes
@@ -184,7 +184,7 @@ Discarded input sections
                 0x00000000       0x58 objdir-CWLITEARM/aes-independant.o
  .debug_ranges  0x00000000       0x48 objdir-CWLITEARM/aes-independant.o
  .debug_line    0x00000000      0x20c objdir-CWLITEARM/aes-independant.o
- .debug_str     0x00000000      0x27d objdir-CWLITEARM/aes-independant.o
+ .debug_str     0x00000000      0x28f objdir-CWLITEARM/aes-independant.o
  .comment       0x00000000       0x46 objdir-CWLITEARM/aes-independant.o
  .debug_frame   0x00000000       0x90 objdir-CWLITEARM/aes-independant.o
  .ARM.attributes
@@ -241,10 +241,6 @@ Discarded input sections
  .text          0x00000000        0x0 /Applications/ArmGNUToolchain/15.2.rel1/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/15.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp/libg_nano.a(libc_a-memset.o)
  .data          0x00000000        0x0 /Applications/ArmGNUToolchain/15.2.rel1/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/15.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp/libg_nano.a(libc_a-memset.o)
  .bss           0x00000000        0x0 /Applications/ArmGNUToolchain/15.2.rel1/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/15.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp/libg_nano.a(libc_a-memset.o)
- .text.memset   0x00000000       0x10 /Applications/ArmGNUToolchain/15.2.rel1/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/15.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp/libg_nano.a(libc_a-memset.o)
- .debug_frame   0x00000000       0x20 /Applications/ArmGNUToolchain/15.2.rel1/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/15.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp/libg_nano.a(libc_a-memset.o)
- .ARM.attributes
-                0x00000000       0x2e /Applications/ArmGNUToolchain/15.2.rel1/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/15.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp/libg_nano.a(libc_a-memset.o)
  .text          0x00000000        0x0 /Applications/ArmGNUToolchain/15.2.rel1/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/15.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp/libg_nano.a(libc_a-errno.o)
  .data          0x00000000        0x0 /Applications/ArmGNUToolchain/15.2.rel1/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/15.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp/libg_nano.a(libc_a-errno.o)
  .bss           0x00000000        0x0 /Applications/ArmGNUToolchain/15.2.rel1/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/15.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp/libg_nano.a(libc_a-errno.o)
@@ -512,7 +508,7 @@ LOAD /Applications/ArmGNUToolchain/15.2.rel1/arm-none-eabi/bin/../lib/gcc/arm-no
                 0x08000000                g_pfnVectors
                 0x08000188                        . = ALIGN (0x4)
 
-.text           0x08000188     0x11d4
+.text           0x08000188     0x16ec
                 0x08000188                        . = ALIGN (0x4)
  *(.text)
  *(.text*)
@@ -524,196 +520,201 @@ LOAD /Applications/ArmGNUToolchain/15.2.rel1/arm-none-eabi/bin/../lib/gcc/arm-no
                 0x080001c8       0x28 /Applications/ArmGNUToolchain/15.2.rel1/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/15.2.1/thumb/v7e-m/nofp/crtbegin.o
  .text.frame_dummy
                 0x080001f0       0x24 /Applications/ArmGNUToolchain/15.2.rel1/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/15.2.1/thumb/v7e-m/nofp/crtbegin.o
- .text.set_seed_lfsr_low_hw
-                0x08000214       0x28 objdir-CWLITEARM/c_code.o
-                0x08000214                set_seed_lfsr_low_hw
- .text.set_seed_lfsr_high_hw
-                0x0800023c       0x28 objdir-CWLITEARM/c_code.o
-                0x0800023c                set_seed_lfsr_high_hw
- .text.step_lfsr_low_hw
-                0x08000264       0x58 objdir-CWLITEARM/c_code.o
-                0x08000264                step_lfsr_low_hw
- .text.step_lfsr_high_hw
-                0x080002bc       0x58 objdir-CWLITEARM/c_code.o
-                0x080002bc                step_lfsr_high_hw
+ .text.unpack_u32_le
+                0x08000214        0x4 objdir-CWLITEARM/c_code.o
+ .text.compute_interleaved_poly
+                0x08000218       0x48 objdir-CWLITEARM/c_code.o
+ .text.collapse_shares
+                0x08000260       0x44 objdir-CWLITEARM/c_code.o
+ .text.set_mode_flags
+                0x080002a4       0x28 objdir-CWLITEARM/c_code.o
+                0x080002a4                set_mode_flags
+ .text.set_seed_lfsr
+                0x080002cc       0xd8 objdir-CWLITEARM/c_code.o
+                0x080002cc                set_seed_lfsr
+ .text.step_lfsr
+                0x080003a4      0x484 objdir-CWLITEARM/c_code.o
+                0x080003a4                step_lfsr
  .text.startup.main
-                0x08000314       0x50 objdir-CWLITEARM/c_code.o
-                0x08000314                main
+                0x08000828       0x44 objdir-CWLITEARM/c_code.o
+                0x08000828                main
  .text.check_version
-                0x08000364        0x4 objdir-CWLITEARM/simpleserial.o
-                0x08000364                check_version
+                0x0800086c        0x4 objdir-CWLITEARM/simpleserial.o
+                0x0800086c                check_version
  .text.hex_decode
-                0x08000368       0x78 objdir-CWLITEARM/simpleserial.o
-                0x08000368                hex_decode
+                0x08000870       0x78 objdir-CWLITEARM/simpleserial.o
+                0x08000870                hex_decode
  .text.simpleserial_addcmd_flags
-                0x080003e0       0x2c objdir-CWLITEARM/simpleserial.o
-                0x080003e0                simpleserial_addcmd_flags
+                0x080008e8       0x2c objdir-CWLITEARM/simpleserial.o
+                0x080008e8                simpleserial_addcmd_flags
  .text.simpleserial_addcmd
-                0x0800040c        0x6 objdir-CWLITEARM/simpleserial.o
-                0x0800040c                simpleserial_addcmd
- *fill*         0x08000412        0x2 
+                0x08000914        0x6 objdir-CWLITEARM/simpleserial.o
+                0x08000914                simpleserial_addcmd
+ *fill*         0x0800091a        0x2 
  .text.simpleserial_init
-                0x08000414       0x2c objdir-CWLITEARM/simpleserial.o
-                0x08000414                simpleserial_init
+                0x0800091c       0x2c objdir-CWLITEARM/simpleserial.o
+                0x0800091c                simpleserial_init
  .text.simpleserial_put
-                0x08000440       0x48 objdir-CWLITEARM/simpleserial.o
-                0x08000440                simpleserial_put
+                0x08000948       0x48 objdir-CWLITEARM/simpleserial.o
+                0x08000948                simpleserial_put
  .text.ss_num_commands
-                0x08000488       0x20 objdir-CWLITEARM/simpleserial.o
-                0x08000488                ss_num_commands
+                0x08000990       0x20 objdir-CWLITEARM/simpleserial.o
+                0x08000990                ss_num_commands
  .text.ss_get_commands
-                0x080004a8       0x4c objdir-CWLITEARM/simpleserial.o
-                0x080004a8                ss_get_commands
+                0x080009b0       0x4c objdir-CWLITEARM/simpleserial.o
+                0x080009b0                ss_get_commands
  .text.simpleserial_get
-                0x080004f4       0xc4 objdir-CWLITEARM/simpleserial.o
-                0x080004f4                simpleserial_get
+                0x080009fc       0xc4 objdir-CWLITEARM/simpleserial.o
+                0x080009fc                simpleserial_get
  .text.platform_init
-                0x080005b8       0x7c objdir-CWLITEARM/stm32f3_hal.o
-                0x080005b8                platform_init
+                0x08000ac0       0x7c objdir-CWLITEARM/stm32f3_hal.o
+                0x08000ac0                platform_init
  .text.init_uart
-                0x08000634       0x7c objdir-CWLITEARM/stm32f3_hal.o
-                0x08000634                init_uart
+                0x08000b3c       0x7c objdir-CWLITEARM/stm32f3_hal.o
+                0x08000b3c                init_uart
  .text.trigger_setup
-                0x080006b0       0x48 objdir-CWLITEARM/stm32f3_hal.o
-                0x080006b0                trigger_setup
+                0x08000bb8       0x48 objdir-CWLITEARM/stm32f3_hal.o
+                0x08000bb8                trigger_setup
  .text.trigger_high
-                0x080006f8        0xe objdir-CWLITEARM/stm32f3_hal.o
-                0x080006f8                trigger_high
+                0x08000c00        0xe objdir-CWLITEARM/stm32f3_hal.o
+                0x08000c00                trigger_high
  .text.trigger_low
-                0x08000706        0xe objdir-CWLITEARM/stm32f3_hal.o
-                0x08000706                trigger_low
- .text.getch    0x08000714       0x30 objdir-CWLITEARM/stm32f3_hal.o
-                0x08000714                getch
- .text.putch    0x08000744       0x20 objdir-CWLITEARM/stm32f3_hal.o
-                0x08000744                putch
+                0x08000c0e        0xe objdir-CWLITEARM/stm32f3_hal.o
+                0x08000c0e                trigger_low
+ .text.getch    0x08000c1c       0x30 objdir-CWLITEARM/stm32f3_hal.o
+                0x08000c1c                getch
+ .text.putch    0x08000c4c       0x20 objdir-CWLITEARM/stm32f3_hal.o
+                0x08000c4c                putch
  .text.HAL_GetTick
-                0x08000764       0x10 objdir-CWLITEARM/stm32f3_hal_lowlevel.o
-                0x08000764                HAL_GetTick
+                0x08000c6c       0x10 objdir-CWLITEARM/stm32f3_hal_lowlevel.o
+                0x08000c6c                HAL_GetTick
  .text.HAL_RCC_OscConfig
-                0x08000774      0x48c objdir-CWLITEARM/stm32f3_hal_lowlevel.o
-                0x08000774                HAL_RCC_OscConfig
+                0x08000c7c      0x48c objdir-CWLITEARM/stm32f3_hal_lowlevel.o
+                0x08000c7c                HAL_RCC_OscConfig
  .text.HAL_RCC_ClockConfig
-                0x08000c00      0x140 objdir-CWLITEARM/stm32f3_hal_lowlevel.o
-                0x08000c00                HAL_RCC_ClockConfig
+                0x08001108      0x140 objdir-CWLITEARM/stm32f3_hal_lowlevel.o
+                0x08001108                HAL_RCC_ClockConfig
  .text.HAL_GPIO_Init
-                0x08000d40      0x174 objdir-CWLITEARM/stm32f3_hal_lowlevel.o
-                0x08000d40                HAL_GPIO_Init
+                0x08001248      0x174 objdir-CWLITEARM/stm32f3_hal_lowlevel.o
+                0x08001248                HAL_GPIO_Init
  .text.HAL_GPIO_WritePin
-                0x08000eb4        0xa objdir-CWLITEARM/stm32f3_hal_lowlevel.o
-                0x08000eb4                HAL_GPIO_WritePin
- *fill*         0x08000ebe        0x2 
+                0x080013bc        0xa objdir-CWLITEARM/stm32f3_hal_lowlevel.o
+                0x080013bc                HAL_GPIO_WritePin
+ *fill*         0x080013c6        0x2 
  .text.UART_SetConfig
-                0x08000ec0      0x15c objdir-CWLITEARM/stm32f3_hal_lowlevel.o
-                0x08000ec0                UART_SetConfig
+                0x080013c8      0x15c objdir-CWLITEARM/stm32f3_hal_lowlevel.o
+                0x080013c8                UART_SetConfig
  .text.UART_WaitOnFlagUntilTimeout
-                0x0800101c       0x5c objdir-CWLITEARM/stm32f3_hal_lowlevel.o
-                0x0800101c                UART_WaitOnFlagUntilTimeout
+                0x08001524       0x5c objdir-CWLITEARM/stm32f3_hal_lowlevel.o
+                0x08001524                UART_WaitOnFlagUntilTimeout
  .text.UART_CheckIdleState
-                0x08001078       0x62 objdir-CWLITEARM/stm32f3_hal_lowlevel.o
-                0x08001078                UART_CheckIdleState
+                0x08001580       0x62 objdir-CWLITEARM/stm32f3_hal_lowlevel.o
+                0x08001580                UART_CheckIdleState
  .text.HAL_UART_Init
-                0x080010da       0x54 objdir-CWLITEARM/stm32f3_hal_lowlevel.o
-                0x080010da                HAL_UART_Init
+                0x080015e2       0x54 objdir-CWLITEARM/stm32f3_hal_lowlevel.o
+                0x080015e2                HAL_UART_Init
  .text.HAL_UART_Transmit
-                0x0800112e       0xaa objdir-CWLITEARM/stm32f3_hal_lowlevel.o
-                0x0800112e                HAL_UART_Transmit
+                0x08001636       0xaa objdir-CWLITEARM/stm32f3_hal_lowlevel.o
+                0x08001636                HAL_UART_Transmit
  .text.HAL_UART_Receive
-                0x080011d8       0xd8 objdir-CWLITEARM/stm32f3_hal_lowlevel.o
-                0x080011d8                HAL_UART_Receive
+                0x080016e0       0xd8 objdir-CWLITEARM/stm32f3_hal_lowlevel.o
+                0x080016e0                HAL_UART_Receive
  .text.Reset_Handler
-                0x080012b0       0x48 objdir-CWLITEARM/stm32f3_startup.o
-                0x080012b0                Reset_Handler
+                0x080017b8       0x48 objdir-CWLITEARM/stm32f3_startup.o
+                0x080017b8                Reset_Handler
  .text.Default_Handler
-                0x080012f8        0x2 objdir-CWLITEARM/stm32f3_startup.o
-                0x080012f8                BusFault_Handler
-                0x080012f8                HardFault_Handler
-                0x080012f8                SysTick_Handler
-                0x080012f8                PendSV_Handler
-                0x080012f8                NMI_Handler
-                0x080012f8                UsageFault_Handler
-                0x080012f8                Default_Handler
-                0x080012f8                MemManage_Handler
-                0x080012f8                SVC_Handler
-                0x080012f8                DebugMon_Handler
- *fill*         0x080012fa        0x2 
+                0x08001800        0x2 objdir-CWLITEARM/stm32f3_startup.o
+                0x08001800                BusFault_Handler
+                0x08001800                HardFault_Handler
+                0x08001800                SysTick_Handler
+                0x08001800                PendSV_Handler
+                0x08001800                NMI_Handler
+                0x08001800                UsageFault_Handler
+                0x08001800                Default_Handler
+                0x08001800                MemManage_Handler
+                0x08001800                SVC_Handler
+                0x08001800                DebugMon_Handler
+ .text.memset   0x08001802       0x10 /Applications/ArmGNUToolchain/15.2.rel1/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/15.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp/libg_nano.a(libc_a-memset.o)
+                0x08001802                memset
+ *fill*         0x08001812        0x2 
  .text.__libc_init_array
-                0x080012fc       0x48 /Applications/ArmGNUToolchain/15.2.rel1/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/15.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp/libg_nano.a(libc_a-init.o)
-                0x080012fc                __libc_init_array
+                0x08001814       0x48 /Applications/ArmGNUToolchain/15.2.rel1/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/15.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp/libg_nano.a(libc_a-init.o)
+                0x08001814                __libc_init_array
  *(.glue_7)
- .glue_7        0x08001344        0x0 linker stubs
+ .glue_7        0x0800185c        0x0 linker stubs
  *(.glue_7t)
- .glue_7t       0x08001344        0x0 linker stubs
+ .glue_7t       0x0800185c        0x0 linker stubs
  *(.eh_frame)
- .eh_frame      0x08001344        0x0 /Applications/ArmGNUToolchain/15.2.rel1/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/15.2.1/thumb/v7e-m/nofp/crtbegin.o
+ .eh_frame      0x0800185c        0x0 /Applications/ArmGNUToolchain/15.2.rel1/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/15.2.1/thumb/v7e-m/nofp/crtbegin.o
  *(.init)
- .init          0x08001344        0x4 /Applications/ArmGNUToolchain/15.2.rel1/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/15.2.1/thumb/v7e-m/nofp/crti.o
-                0x08001344                _init
- .init          0x08001348        0x8 /Applications/ArmGNUToolchain/15.2.rel1/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/15.2.1/thumb/v7e-m/nofp/crtn.o
+ .init          0x0800185c        0x4 /Applications/ArmGNUToolchain/15.2.rel1/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/15.2.1/thumb/v7e-m/nofp/crti.o
+                0x0800185c                _init
+ .init          0x08001860        0x8 /Applications/ArmGNUToolchain/15.2.rel1/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/15.2.1/thumb/v7e-m/nofp/crtn.o
  *(.fini)
- .fini          0x08001350        0x4 /Applications/ArmGNUToolchain/15.2.rel1/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/15.2.1/thumb/v7e-m/nofp/crti.o
-                0x08001350                _fini
- .fini          0x08001354        0x8 /Applications/ArmGNUToolchain/15.2.rel1/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/15.2.1/thumb/v7e-m/nofp/crtn.o
-                0x0800135c                        . = ALIGN (0x4)
-                0x0800135c                        _etext = .
+ .fini          0x08001868        0x4 /Applications/ArmGNUToolchain/15.2.rel1/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/15.2.1/thumb/v7e-m/nofp/crti.o
+                0x08001868                _fini
+ .fini          0x0800186c        0x8 /Applications/ArmGNUToolchain/15.2.rel1/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/15.2.1/thumb/v7e-m/nofp/crtn.o
+                0x08001874                        . = ALIGN (0x4)
+                0x08001874                        _etext = .
 
-.vfp11_veneer   0x0800135c        0x0
- .vfp11_veneer  0x0800135c        0x0 linker stubs
+.vfp11_veneer   0x08001874        0x0
+ .vfp11_veneer  0x08001874        0x0 linker stubs
 
-.v4_bx          0x0800135c        0x0
- .v4_bx         0x0800135c        0x0 linker stubs
+.v4_bx          0x08001874        0x0
+ .v4_bx         0x08001874        0x0 linker stubs
 
-.iplt           0x0800135c        0x0
- .iplt          0x0800135c        0x0 /Applications/ArmGNUToolchain/15.2.rel1/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/15.2.1/thumb/v7e-m/nofp/crtbegin.o
+.iplt           0x08001874        0x0
+ .iplt          0x08001874        0x0 /Applications/ArmGNUToolchain/15.2.rel1/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/15.2.1/thumb/v7e-m/nofp/crtbegin.o
 
-.rodata         0x0800135c      0x110
-                0x0800135c                        . = ALIGN (0x4)
+.rodata         0x08001874      0x110
+                0x08001874                        . = ALIGN (0x4)
  *(.rodata)
- .rodata        0x0800135c      0x110 objdir-CWLITEARM/simpleserial.o
+ .rodata        0x08001874      0x110 objdir-CWLITEARM/simpleserial.o
  *(.rodata*)
-                0x0800146c                        . = ALIGN (0x4)
+                0x08001984                        . = ALIGN (0x4)
 
-.rel.dyn        0x0800146c        0x0
- .rel.iplt      0x0800146c        0x0 /Applications/ArmGNUToolchain/15.2.rel1/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/15.2.1/thumb/v7e-m/nofp/crtbegin.o
+.rel.dyn        0x08001984        0x0
+ .rel.iplt      0x08001984        0x0 /Applications/ArmGNUToolchain/15.2.rel1/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/15.2.1/thumb/v7e-m/nofp/crtbegin.o
 
-.ARM.extab      0x0800146c        0x0
-                0x0800146c                        . = ALIGN (0x4)
+.ARM.extab      0x08001984        0x0
+                0x08001984                        . = ALIGN (0x4)
  *(.ARM.extab* .gnu.linkonce.armextab.*)
-                0x0800146c                        . = ALIGN (0x4)
+                0x08001984                        . = ALIGN (0x4)
 
-.ARM            0x0800146c        0x0
-                0x0800146c                        . = ALIGN (0x4)
-                0x0800146c                        __exidx_start = .
+.ARM            0x08001984        0x0
+                0x08001984                        . = ALIGN (0x4)
+                0x08001984                        __exidx_start = .
  *(.ARM.exidx*)
-                0x0800146c                        __exidx_end = .
-                0x0800146c                        . = ALIGN (0x4)
+                0x08001984                        __exidx_end = .
+                0x08001984                        . = ALIGN (0x4)
 
-.preinit_array  0x0800146c        0x0
-                0x0800146c                        . = ALIGN (0x4)
-                0x0800146c                        PROVIDE (__preinit_array_start = .)
+.preinit_array  0x08001984        0x0
+                0x08001984                        . = ALIGN (0x4)
+                0x08001984                        PROVIDE (__preinit_array_start = .)
  *(.preinit_array*)
-                0x0800146c                        PROVIDE (__preinit_array_end = .)
-                0x0800146c                        . = ALIGN (0x4)
+                0x08001984                        PROVIDE (__preinit_array_end = .)
+                0x08001984                        . = ALIGN (0x4)
 
-.init_array     0x0800146c        0x4
-                0x0800146c                        . = ALIGN (0x4)
-                0x0800146c                        PROVIDE (__init_array_start = .)
+.init_array     0x08001984        0x4
+                0x08001984                        . = ALIGN (0x4)
+                0x08001984                        PROVIDE (__init_array_start = .)
  *(SORT_BY_NAME(.init_array.*))
  *(.init_array*)
- .init_array    0x0800146c        0x4 /Applications/ArmGNUToolchain/15.2.rel1/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/15.2.1/thumb/v7e-m/nofp/crtbegin.o
-                0x08001470                        PROVIDE (__init_array_end = .)
-                0x08001470                        . = ALIGN (0x4)
+ .init_array    0x08001984        0x4 /Applications/ArmGNUToolchain/15.2.rel1/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/15.2.1/thumb/v7e-m/nofp/crtbegin.o
+                0x08001988                        PROVIDE (__init_array_end = .)
+                0x08001988                        . = ALIGN (0x4)
 
-.fini_array     0x08001470        0x4
-                0x08001470                        . = ALIGN (0x4)
+.fini_array     0x08001988        0x4
+                0x08001988                        . = ALIGN (0x4)
                 [!provide]                        PROVIDE (__fini_array_start = .)
  *(SORT_BY_NAME(.fini_array.*))
  *(.fini_array*)
- .fini_array    0x08001470        0x4 /Applications/ArmGNUToolchain/15.2.rel1/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/15.2.1/thumb/v7e-m/nofp/crtbegin.o
+ .fini_array    0x08001988        0x4 /Applications/ArmGNUToolchain/15.2.rel1/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/15.2.1/thumb/v7e-m/nofp/crtbegin.o
                 [!provide]                        PROVIDE (__fini_array_end = .)
-                0x08001474                        . = ALIGN (0x4)
-                0x08001474                        _sidata = LOADADDR (.data)
+                0x0800198c                        . = ALIGN (0x4)
+                0x0800198c                        _sidata = LOADADDR (.data)
 
-.data           0x20000000        0x0 load address 0x08001474
+.data           0x20000000        0x0 load address 0x0800198c
                 0x20000000                        . = ALIGN (0x4)
                 0x20000000                        _sdata = .
  *(.data)
@@ -722,46 +723,47 @@ LOAD /Applications/ArmGNUToolchain/15.2.rel1/arm-none-eabi/bin/../lib/gcc/arm-no
                 0x20000000                        _edata = .
 
 .tm_clone_table
-                0x20000000        0x0 load address 0x08001474
+                0x20000000        0x0 load address 0x0800198c
  .tm_clone_table
                 0x20000000        0x0 /Applications/ArmGNUToolchain/15.2.rel1/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/15.2.1/thumb/v7e-m/nofp/crtbegin.o
  .tm_clone_table
                 0x20000000        0x0 /Applications/ArmGNUToolchain/15.2.rel1/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/15.2.1/thumb/v7e-m/nofp/crtend.o
 
-.igot.plt       0x20000000        0x0 load address 0x08001474
+.igot.plt       0x20000000        0x0 load address 0x0800198c
  .igot.plt      0x20000000        0x0 /Applications/ArmGNUToolchain/15.2.rel1/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/15.2.1/thumb/v7e-m/nofp/crtbegin.o
                 0x20000000                        . = ALIGN (0x4)
 
-.bss            0x20000000      0x1a0 load address 0x08001474
+.bss            0x20000000      0x1c4 load address 0x0800198c
                 0x20000000                        _sbss = .
                 0x20000000                        __bss_start__ = _sbss
  *(.bss)
- .bss           0x20000000        0x8 objdir-CWLITEARM/c_code.o
- .bss           0x20000008      0x104 objdir-CWLITEARM/simpleserial.o
- .bss           0x2000010c       0x70 objdir-CWLITEARM/stm32f3_hal.o
-                0x2000010c                UartHandle
- .bss           0x2000017c        0x8 objdir-CWLITEARM/stm32f3_hal_lowlevel.o
-                0x2000017c                hal_sys_tick
-                0x20000180                uwTick
+ .bss           0x20000000       0x2c objdir-CWLITEARM/c_code.o
+ .bss           0x2000002c      0x104 objdir-CWLITEARM/simpleserial.o
+ .bss           0x20000130       0x70 objdir-CWLITEARM/stm32f3_hal.o
+                0x20000130                UartHandle
+ .bss           0x200001a0        0x8 objdir-CWLITEARM/stm32f3_hal_lowlevel.o
+                0x200001a0                hal_sys_tick
+                0x200001a4                uwTick
  *(.bss*)
  .bss.completed.1
-                0x20000184        0x1 /Applications/ArmGNUToolchain/15.2.rel1/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/15.2.1/thumb/v7e-m/nofp/crtbegin.o
- *fill*         0x20000185        0x3 
- .bss.object.0  0x20000188       0x18 /Applications/ArmGNUToolchain/15.2.rel1/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/15.2.1/thumb/v7e-m/nofp/crtbegin.o
+                0x200001a8        0x1 /Applications/ArmGNUToolchain/15.2.rel1/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/15.2.1/thumb/v7e-m/nofp/crtbegin.o
+ *fill*         0x200001a9        0x3 
+ .bss.object.0  0x200001ac       0x18 /Applications/ArmGNUToolchain/15.2.rel1/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/15.2.1/thumb/v7e-m/nofp/crtbegin.o
  *(COMMON)
-                0x200001a0                        . = ALIGN (0x4)
-                0x200001a0                        _ebss = .
-                0x200001a0                        __bss_end__ = _ebss
+                0x200001c4                        . = ALIGN (0x4)
+                0x200001c4                        _ebss = .
+                0x200001c4                        __bss_end__ = _ebss
 
 ._user_heap_stack
-                0x200001a0      0x400 load address 0x08001474
-                0x200001a0                        . = ALIGN (0x8)
-                0x200001a0                        PROVIDE (end = .)
+                0x200001c4      0x404 load address 0x0800198c
+                0x200001c8                        . = ALIGN (0x8)
+ *fill*         0x200001c4        0x4 
+                0x200001c8                        PROVIDE (end = .)
                 [!provide]                        PROVIDE (_end = .)
-                0x200001a0                        . = (. + _Min_Heap_Size)
-                0x200005a0                        . = (. + _Min_Stack_Size)
- *fill*         0x200001a0      0x400 
-                0x200005a0                        . = ALIGN (0x8)
+                0x200001c8                        . = (. + _Min_Heap_Size)
+                0x200005c8                        . = (. + _Min_Stack_Size)
+ *fill*         0x200001c8      0x400 
+                0x200005c8                        . = ALIGN (0x8)
 
 /DISCARD/
  libc.a(*)
@@ -786,66 +788,68 @@ LOAD /Applications/ArmGNUToolchain/15.2.rel1/arm-none-eabi/bin/../lib/gcc/arm-no
  .ARM.attributes
                 0x00000104       0x21 objdir-CWLITEARM/stm32f3_startup.o
  .ARM.attributes
-                0x00000125       0x2e /Applications/ArmGNUToolchain/15.2.rel1/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/15.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp/libg_nano.a(libc_a-init.o)
+                0x00000125       0x2e /Applications/ArmGNUToolchain/15.2.rel1/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/15.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp/libg_nano.a(libc_a-memset.o)
  .ARM.attributes
-                0x00000153       0x2e /Applications/ArmGNUToolchain/15.2.rel1/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/15.2.1/thumb/v7e-m/nofp/crtend.o
+                0x00000153       0x2e /Applications/ArmGNUToolchain/15.2.rel1/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/15.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp/libg_nano.a(libc_a-init.o)
  .ARM.attributes
-                0x00000181       0x1e /Applications/ArmGNUToolchain/15.2.rel1/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/15.2.1/thumb/v7e-m/nofp/crtn.o
+                0x00000181       0x2e /Applications/ArmGNUToolchain/15.2.rel1/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/15.2.1/thumb/v7e-m/nofp/crtend.o
+ .ARM.attributes
+                0x000001af       0x1e /Applications/ArmGNUToolchain/15.2.rel1/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/15.2.1/thumb/v7e-m/nofp/crtn.o
 OUTPUT(output-CWLITEARM.elf elf32-littlearm)
 LOAD linker stubs
 LOAD /Applications/ArmGNUToolchain/15.2.rel1/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/15.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp/libc.a
 LOAD /Applications/ArmGNUToolchain/15.2.rel1/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/15.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp/libm.a
 LOAD /Applications/ArmGNUToolchain/15.2.rel1/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/15.2.1/thumb/v7e-m/nofp/libgcc.a
 
-.debug_info     0x00000000     0x406d
- .debug_info    0x00000000      0x510 objdir-CWLITEARM/c_code.o
- .debug_info    0x00000510      0x81b objdir-CWLITEARM/simpleserial.o
- .debug_info    0x00000d2b      0xf54 objdir-CWLITEARM/stm32f3_hal.o
- .debug_info    0x00001c7f     0x23ee objdir-CWLITEARM/stm32f3_hal_lowlevel.o
+.debug_info     0x00000000     0x46a3
+ .debug_info    0x00000000      0xb46 objdir-CWLITEARM/c_code.o
+ .debug_info    0x00000b46      0x81b objdir-CWLITEARM/simpleserial.o
+ .debug_info    0x00001361      0xf54 objdir-CWLITEARM/stm32f3_hal.o
+ .debug_info    0x000022b5     0x23ee objdir-CWLITEARM/stm32f3_hal_lowlevel.o
 
-.debug_abbrev   0x00000000      0xb44
- .debug_abbrev  0x00000000      0x19d objdir-CWLITEARM/c_code.o
- .debug_abbrev  0x0000019d      0x2f2 objdir-CWLITEARM/simpleserial.o
- .debug_abbrev  0x0000048f      0x24c objdir-CWLITEARM/stm32f3_hal.o
- .debug_abbrev  0x000006db      0x469 objdir-CWLITEARM/stm32f3_hal_lowlevel.o
+.debug_abbrev   0x00000000      0xd20
+ .debug_abbrev  0x00000000      0x379 objdir-CWLITEARM/c_code.o
+ .debug_abbrev  0x00000379      0x2f2 objdir-CWLITEARM/simpleserial.o
+ .debug_abbrev  0x0000066b      0x24c objdir-CWLITEARM/stm32f3_hal.o
+ .debug_abbrev  0x000008b7      0x469 objdir-CWLITEARM/stm32f3_hal_lowlevel.o
 
-.debug_loc      0x00000000     0x2156
- .debug_loc     0x00000000      0x3eb objdir-CWLITEARM/c_code.o
- .debug_loc     0x000003eb      0x6c6 objdir-CWLITEARM/simpleserial.o
- .debug_loc     0x00000ab1      0x1b6 objdir-CWLITEARM/stm32f3_hal.o
- .debug_loc     0x00000c67     0x14ef objdir-CWLITEARM/stm32f3_hal_lowlevel.o
+.debug_loc      0x00000000     0x268b
+ .debug_loc     0x00000000      0x920 objdir-CWLITEARM/c_code.o
+ .debug_loc     0x00000920      0x6c6 objdir-CWLITEARM/simpleserial.o
+ .debug_loc     0x00000fe6      0x1b6 objdir-CWLITEARM/stm32f3_hal.o
+ .debug_loc     0x0000119c     0x14ef objdir-CWLITEARM/stm32f3_hal_lowlevel.o
 
-.debug_aranges  0x00000000      0x1c8
+.debug_aranges  0x00000000      0x1d8
  .debug_aranges
-                0x00000000       0x50 objdir-CWLITEARM/c_code.o
+                0x00000000       0x60 objdir-CWLITEARM/c_code.o
  .debug_aranges
-                0x00000050       0x78 objdir-CWLITEARM/simpleserial.o
+                0x00000060       0x78 objdir-CWLITEARM/simpleserial.o
  .debug_aranges
-                0x000000c8       0x60 objdir-CWLITEARM/stm32f3_hal.o
+                0x000000d8       0x60 objdir-CWLITEARM/stm32f3_hal.o
  .debug_aranges
-                0x00000128       0xa0 objdir-CWLITEARM/stm32f3_hal_lowlevel.o
+                0x00000138       0xa0 objdir-CWLITEARM/stm32f3_hal_lowlevel.o
 
-.debug_ranges   0x00000000      0x480
- .debug_ranges  0x00000000       0xa8 objdir-CWLITEARM/c_code.o
- .debug_ranges  0x000000a8      0x118 objdir-CWLITEARM/simpleserial.o
- .debug_ranges  0x000001c0       0xc0 objdir-CWLITEARM/stm32f3_hal.o
- .debug_ranges  0x00000280      0x200 objdir-CWLITEARM/stm32f3_hal_lowlevel.o
+.debug_ranges   0x00000000      0x518
+ .debug_ranges  0x00000000      0x140 objdir-CWLITEARM/c_code.o
+ .debug_ranges  0x00000140      0x118 objdir-CWLITEARM/simpleserial.o
+ .debug_ranges  0x00000258       0xc0 objdir-CWLITEARM/stm32f3_hal.o
+ .debug_ranges  0x00000318      0x200 objdir-CWLITEARM/stm32f3_hal_lowlevel.o
 
-.debug_line     0x00000000     0x24aa
- .debug_line    0x00000000      0x32c objdir-CWLITEARM/c_code.o
- .debug_line    0x0000032c      0x5b2 objdir-CWLITEARM/simpleserial.o
- .debug_line    0x000008de      0x3f1 objdir-CWLITEARM/stm32f3_hal.o
- .debug_line    0x00000ccf     0x17db objdir-CWLITEARM/stm32f3_hal_lowlevel.o
+.debug_line     0x00000000     0x2742
+ .debug_line    0x00000000      0x5c4 objdir-CWLITEARM/c_code.o
+ .debug_line    0x000005c4      0x5b2 objdir-CWLITEARM/simpleserial.o
+ .debug_line    0x00000b76      0x3f1 objdir-CWLITEARM/stm32f3_hal.o
+ .debug_line    0x00000f67     0x17db objdir-CWLITEARM/stm32f3_hal_lowlevel.o
 
-.debug_str      0x00000000     0x1334
- .debug_str     0x00000000     0x1334 objdir-CWLITEARM/c_code.o
-                                0x2da (size before relaxing)
- .debug_str     0x00001334        0x0 objdir-CWLITEARM/simpleserial.o
-                                0x30c (size before relaxing)
- .debug_str     0x00001334        0x0 objdir-CWLITEARM/stm32f3_hal.o
-                                0x969 (size before relaxing)
- .debug_str     0x00001334        0x0 objdir-CWLITEARM/stm32f3_hal_lowlevel.o
-                               0x1192 (size before relaxing)
+.debug_str      0x00000000     0x149d
+ .debug_str     0x00000000     0x149d objdir-CWLITEARM/c_code.o
+                                0x45b (size before relaxing)
+ .debug_str     0x0000149d        0x0 objdir-CWLITEARM/simpleserial.o
+                                0x31e (size before relaxing)
+ .debug_str     0x0000149d        0x0 objdir-CWLITEARM/stm32f3_hal.o
+                                0x97b (size before relaxing)
+ .debug_str     0x0000149d        0x0 objdir-CWLITEARM/stm32f3_hal_lowlevel.o
+                               0x11a4 (size before relaxing)
 
 .comment        0x00000000       0x45
  .comment       0x00000000       0x45 objdir-CWLITEARM/c_code.o
@@ -857,12 +861,13 @@ LOAD /Applications/ArmGNUToolchain/15.2.rel1/arm-none-eabi/bin/../lib/gcc/arm-no
  .comment       0x00000045        0x0 objdir-CWLITEARM/stm32f3_hal_lowlevel.o
                                  0x46 (size before relaxing)
 
-.debug_frame    0x00000000      0x508
- .debug_frame   0x00000000       0xbc objdir-CWLITEARM/c_code.o
- .debug_frame   0x000000bc      0x154 objdir-CWLITEARM/simpleserial.o
- .debug_frame   0x00000210       0xec objdir-CWLITEARM/stm32f3_hal.o
- .debug_frame   0x000002fc      0x1e0 objdir-CWLITEARM/stm32f3_hal_lowlevel.o
- .debug_frame   0x000004dc       0x2c /Applications/ArmGNUToolchain/15.2.rel1/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/15.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp/libg_nano.a(libc_a-init.o)
+.debug_frame    0x00000000      0x574
+ .debug_frame   0x00000000      0x108 objdir-CWLITEARM/c_code.o
+ .debug_frame   0x00000108      0x154 objdir-CWLITEARM/simpleserial.o
+ .debug_frame   0x0000025c       0xec objdir-CWLITEARM/stm32f3_hal.o
+ .debug_frame   0x00000348      0x1e0 objdir-CWLITEARM/stm32f3_hal_lowlevel.o
+ .debug_frame   0x00000528       0x20 /Applications/ArmGNUToolchain/15.2.rel1/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/15.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp/libg_nano.a(libc_a-memset.o)
+ .debug_frame   0x00000548       0x2c /Applications/ArmGNUToolchain/15.2.rel1/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/15.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp/libg_nano.a(libc_a-init.o)
 
 .stab           0x00000000      0x144
  .stab          0x00000000      0x144 objdir-CWLITEARM/stm32f3_startup.o
@@ -1090,6 +1095,7 @@ main                                              objdir-CWLITEARM/c_code.o
                                                   /Applications/ArmGNUToolchain/15.2.rel1/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/15.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp/crt0.o
 memset                                            /Applications/ArmGNUToolchain/15.2.rel1/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/15.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp/libg_nano.a(libc_a-memset.o)
                                                   /Applications/ArmGNUToolchain/15.2.rel1/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/15.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp/libg_nano.a(libc_a-findfp.o)
+                                                  objdir-CWLITEARM/c_code.o
                                                   /Applications/ArmGNUToolchain/15.2.rel1/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/15.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp/crt0.o
 platform_init                                     objdir-CWLITEARM/stm32f3_hal.o
                                                   objdir-CWLITEARM/c_code.o
@@ -1097,8 +1103,8 @@ putch                                             objdir-CWLITEARM/stm32f3_hal.o
                                                   objdir-CWLITEARM/simpleserial.o
 rsbox                                             objdir-CWLITEARM/aes.o
 sbox                                              objdir-CWLITEARM/aes.o
-set_seed_lfsr_high_hw                             objdir-CWLITEARM/c_code.o
-set_seed_lfsr_low_hw                              objdir-CWLITEARM/c_code.o
+set_mode_flags                                    objdir-CWLITEARM/c_code.o
+set_seed_lfsr                                     objdir-CWLITEARM/c_code.o
 simpleserial_addcmd                               objdir-CWLITEARM/simpleserial.o
                                                   objdir-CWLITEARM/c_code.o
 simpleserial_addcmd_flags                         objdir-CWLITEARM/simpleserial.o
@@ -1112,8 +1118,7 @@ software_init_hook                                /Applications/ArmGNUToolchain/
 ss_crc                                            objdir-CWLITEARM/simpleserial.o
 ss_get_commands                                   objdir-CWLITEARM/simpleserial.o
 ss_num_commands                                   objdir-CWLITEARM/simpleserial.o
-step_lfsr_high_hw                                 objdir-CWLITEARM/c_code.o
-step_lfsr_low_hw                                  objdir-CWLITEARM/c_code.o
+step_lfsr                                         objdir-CWLITEARM/c_code.o
 trigger_high                                      objdir-CWLITEARM/stm32f3_hal.o
                                                   objdir-CWLITEARM/c_code.o
 trigger_low                                       objdir-CWLITEARM/stm32f3_hal.o

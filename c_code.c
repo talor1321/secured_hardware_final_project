@@ -12,12 +12,62 @@ static uint32_t g_lfsr_state = 0;
 static uint32_t g_lfsr_mask = 0;
 static uint8_t g_mode_flags = 0;
 
+static uint32_t g_masked_state[4] = {0, 0, 0, 0};
+static uint32_t g_interleaved_poly[4] = {0, 0, 0, 0};
+static uint32_t g_shuffle_rng_state = 0;
+
 static uint32_t unpack_u32_le(const uint8_t* data)
 {
     return ((uint32_t)data[3] << 24) |
            ((uint32_t)data[2] << 16) |
            ((uint32_t)data[1] << 8) |
            ((uint32_t)data[0]);
+}
+
+static void compute_interleaved_poly(uint32_t poly)
+{
+    int j, i;
+    for (j = 0; j < 4; j++) {
+        g_interleaved_poly[j] = 0;
+        for (i = 0; i < 8; i++) {
+            if ((poly >> (j * 8 + i)) & 1) {
+                g_interleaved_poly[j] |= (1u << (i * 3));
+            }
+        }
+    }
+}
+
+static void expand_seed_to_shares(uint32_t seed, uint32_t mask1, uint32_t mask2)
+{
+    int j, i;
+    for (j = 0; j < 4; j++) {
+        g_masked_state[j] = 0;
+        for (i = 0; i < 8; i++) {
+            int bit_idx = j * 8 + i;
+            uint32_t s1 = (mask1 >> bit_idx) & 1;
+            uint32_t s2 = (mask2 >> bit_idx) & 1;
+            uint32_t s3 = ((seed >> bit_idx) & 1) ^ s1 ^ s2;
+            int pos = i * 3;
+            g_masked_state[j] |= (s1 << pos) | (s2 << (pos + 1)) | (s3 << (pos + 2));
+        }
+    }
+}
+
+static uint32_t collapse_shares(void)
+{
+    uint32_t result = 0;
+    int j, i;
+    for (j = 0; j < 4; j++) {
+        for (i = 0; i < 8; i++) {
+            int pos = i * 3;
+            uint32_t s1 = (g_masked_state[j] >> pos) & 1;
+            uint32_t s2 = (g_masked_state[j] >> (pos + 1)) & 1;
+            uint32_t s3 = (g_masked_state[j] >> (pos + 2)) & 1;
+            uint32_t original = s1 ^ s2 ^ s3;
+            result |= (original << (j * 8 + i));
+        }
+    }
+    return result;
 }
 
 static uint32_t step_plain_v1(uint8_t num_steps, uint32_t polynomial);
@@ -176,6 +226,290 @@ static uint32_t step_masked_shuffled(uint8_t num_steps, uint32_t polynomial)
     return g_lfsr_state ^ g_lfsr_mask;
 }
 
+static uint32_t step_masked_interleaved_asm(uint8_t num_steps, uint32_t polynomial)
+{
+    uint32_t lsb, mask1_val, mask2_val, mask3_val, temp, poly_val;
+
+    /* Precompute interleaved polynomial (outside the sensitive region) */
+    compute_interleaved_poly(polynomial);
+
+    trigger_high();
+
+    __asm__ volatile (
+        "cmp %[steps], #0 \n\t"
+        "beq 2f \n"
+        "1: \n\t"
+
+        /* Step A: Extract LSB group (3 bits from bottom of reg0) */
+        "and %[lsb], %[r0], #7 \n\t"
+
+        /* Step B: Multi-register right shift by 3 */
+        /* reg0 = (reg0 >> 3) | ((reg1 & 7) << 21) */
+        "lsr %[r0], %[r0], #3 \n\t"
+        "and %[temp], %[r1], #7 \n\t"
+        "orr %[r0], %[r0], %[temp], lsl #21 \n\t"
+
+        /* reg1 = (reg1 >> 3) | ((reg2 & 7) << 21) */
+        "lsr %[r1], %[r1], #3 \n\t"
+        "and %[temp], %[r2], #7 \n\t"
+        "orr %[r1], %[r1], %[temp], lsl #21 \n\t"
+
+        /* reg2 = (reg2 >> 3) | ((reg3 & 7) << 21) */
+        "lsr %[r2], %[r2], #3 \n\t"
+        "and %[temp], %[r3], #7 \n\t"
+        "orr %[r2], %[r2], %[temp], lsl #21 \n\t"
+
+        /* reg3 = reg3 >> 3 */
+        "lsr %[r3], %[r3], #3 \n\t"
+
+        /* Step C: Expand each share LSB to a full 32-bit mask */
+        /* mask1 = -(lsb & 1)  : 0x00000000 or 0xFFFFFFFF */
+        "and %[mask1], %[lsb], #1 \n\t"
+        "rsb %[mask1], %[mask1], #0 \n\t"
+
+        /* mask2 = -((lsb >> 1) & 1) */
+        "ubfx %[mask2], %[lsb], #1, #1 \n\t"
+        "rsb %[mask2], %[mask2], #0 \n\t"
+
+        /* mask3 = -((lsb >> 2) & 1) */
+        "ubfx %[mask3], %[lsb], #2, #1 \n\t"
+        "rsb %[mask3], %[mask3], #0 \n\t"
+
+        /* Step D: Polynomial feedback for each register                  */
+        /* feedback = (poly & mask1) | ((poly<<1) & mask2) | ((poly<<2) & mask3) */
+        /* [lsb] is reused as the feedback accumulator (original lsb no longer needed) */
+
+        /* ---- reg0 feedback ---- */
+        "ldr %[poly], [%[pptr], #0] \n\t"
+        "and %[lsb], %[poly], %[mask1] \n\t"
+        "and %[temp], %[mask2], %[poly], lsl #1 \n\t"
+        "orr %[lsb], %[lsb], %[temp] \n\t"
+        "and %[temp], %[mask3], %[poly], lsl #2 \n\t"
+        "orr %[lsb], %[lsb], %[temp] \n\t"
+        "eor %[r0], %[r0], %[lsb] \n\t"
+
+        /* ---- reg1 feedback ---- */
+        "ldr %[poly], [%[pptr], #4] \n\t"
+        "and %[lsb], %[poly], %[mask1] \n\t"
+        "and %[temp], %[mask2], %[poly], lsl #1 \n\t"
+        "orr %[lsb], %[lsb], %[temp] \n\t"
+        "and %[temp], %[mask3], %[poly], lsl #2 \n\t"
+        "orr %[lsb], %[lsb], %[temp] \n\t"
+        "eor %[r1], %[r1], %[lsb] \n\t"
+
+        /* ---- reg2 feedback ---- */
+        "ldr %[poly], [%[pptr], #8] \n\t"
+        "and %[lsb], %[poly], %[mask1] \n\t"
+        "and %[temp], %[mask2], %[poly], lsl #1 \n\t"
+        "orr %[lsb], %[lsb], %[temp] \n\t"
+        "and %[temp], %[mask3], %[poly], lsl #2 \n\t"
+        "orr %[lsb], %[lsb], %[temp] \n\t"
+        "eor %[r2], %[r2], %[lsb] \n\t"
+
+        /* ---- reg3 feedback ---- */
+        "ldr %[poly], [%[pptr], #12] \n\t"
+        "and %[lsb], %[poly], %[mask1] \n\t"
+        "and %[temp], %[mask2], %[poly], lsl #1 \n\t"
+        "orr %[lsb], %[lsb], %[temp] \n\t"
+        "and %[temp], %[mask3], %[poly], lsl #2 \n\t"
+        "orr %[lsb], %[lsb], %[temp] \n\t"
+        "eor %[r3], %[r3], %[lsb] \n\t"
+
+        /* Step E: Loop control */
+        "subs %[steps], %[steps], #1 \n\t"
+        "bne 1b \n"
+        "2: \n"
+
+        : [r0]    "+r" (g_masked_state[0]),
+          [r1]    "+r" (g_masked_state[1]),
+          [r2]    "+r" (g_masked_state[2]),
+          [r3]    "+r" (g_masked_state[3]),
+          [steps] "+r" (num_steps),
+          [lsb]   "=&r" (lsb),
+          [mask1] "=&r" (mask1_val),
+          [mask2] "=&r" (mask2_val),
+          [mask3] "=&r" (mask3_val),
+          [temp]  "=&r" (temp),
+          [poly]  "=&r" (poly_val)
+        : [pptr]  "r"  (g_interleaved_poly)
+        : "cc", "memory"
+    );
+
+    trigger_low();
+
+    return collapse_shares();
+}
+
+#define FB_R0 \
+    "ldr %[poly], [%[pptr], #0] \n\t" \
+    "and %[lsb], %[poly], %[t1_m1] \n\t" \
+    "and %[temp], %[t2_m2], %[poly], lsl #1 \n\t" \
+    "orr %[lsb], %[lsb], %[temp] \n\t" \
+    "and %[temp], %[t3_m3], %[poly], lsl #2 \n\t" \
+    "orr %[lsb], %[lsb], %[temp] \n\t" \
+    "eor %[r0], %[r0], %[lsb] \n\t"
+
+#define FB_R1 \
+    "ldr %[poly], [%[pptr], #4] \n\t" \
+    "and %[lsb], %[poly], %[t1_m1] \n\t" \
+    "and %[temp], %[t2_m2], %[poly], lsl #1 \n\t" \
+    "orr %[lsb], %[lsb], %[temp] \n\t" \
+    "and %[temp], %[t3_m3], %[poly], lsl #2 \n\t" \
+    "orr %[lsb], %[lsb], %[temp] \n\t" \
+    "eor %[r1], %[r1], %[lsb] \n\t"
+
+#define FB_R2 \
+    "ldr %[poly], [%[pptr], #8] \n\t" \
+    "and %[lsb], %[poly], %[t1_m1] \n\t" \
+    "and %[temp], %[t2_m2], %[poly], lsl #1 \n\t" \
+    "orr %[lsb], %[lsb], %[temp] \n\t" \
+    "and %[temp], %[t3_m3], %[poly], lsl #2 \n\t" \
+    "orr %[lsb], %[lsb], %[temp] \n\t" \
+    "eor %[r2], %[r2], %[lsb] \n\t"
+
+#define FB_R3 \
+    "ldr %[poly], [%[pptr], #12] \n\t" \
+    "and %[lsb], %[poly], %[t1_m1] \n\t" \
+    "and %[temp], %[t2_m2], %[poly], lsl #1 \n\t" \
+    "orr %[lsb], %[lsb], %[temp] \n\t" \
+    "and %[temp], %[t3_m3], %[poly], lsl #2 \n\t" \
+    "orr %[lsb], %[lsb], %[temp] \n\t" \
+    "eor %[r3], %[r3], %[lsb] \n\t"
+
+static uint32_t step_masked_interleaved_shuffled_asm(uint8_t num_steps, uint32_t polynomial)
+{
+    uint32_t lsb, t1_m1, t2_m2, t3_m3, temp, poly_val;
+    uint32_t rng = g_shuffle_rng_state;
+
+    compute_interleaved_poly(polynomial);
+    trigger_high();
+
+    __asm__ volatile (
+        "cmp %[steps], #0 \n\t"
+        "beq 99f \n"
+        "1: \n\t"
+
+        /* Extract LSB group */
+        "and %[lsb], %[r0], #7 \n\t"
+
+        /* Extract boundary bits (pre-extraction breaks strict dependencies) */
+        "and %[t1_m1], %[r1], #7 \n\t"
+        "and %[t2_m2], %[r2], #7 \n\t"
+        "and %[t3_m3], %[r3], #7 \n\t"
+
+        /* Advance RNG (xorshift32) */
+        "eor %[rng], %[rng], %[rng], lsl #13 \n\t"
+        "eor %[rng], %[rng], %[rng], lsr #17 \n\t"
+        "eor %[rng], %[rng], %[rng], lsl #5 \n\t"
+
+        /* Shuffled Shifts Selector (bits 0,1) */
+        "and %[temp], %[rng], #3 \n\t"
+        "cmp %[temp], #0 \n\t"
+        "beq 10f \n\t"
+        "cmp %[temp], #1 \n\t"
+        "beq 11f \n\t"
+        "cmp %[temp], #2 \n\t"
+        "beq 12f \n\t"
+        "b 13f \n\t"
+
+        "10: \n\t" /* Pad: 5 NOPs to equalize cycle count with branch 13f */
+        "nop; nop; nop; nop; nop \n\t"
+        "lsr %[r0], %[r0], #3 \n\t" "orr %[r0], %[r0], %[t1_m1], lsl #21 \n\t"
+        "lsr %[r1], %[r1], #3 \n\t" "orr %[r1], %[r1], %[t2_m2], lsl #21 \n\t"
+        "lsr %[r2], %[r2], #3 \n\t" "orr %[r2], %[r2], %[t3_m3], lsl #21 \n\t"
+        "lsr %[r3], %[r3], #3 \n\t"
+        "b 20f \n\t"
+
+        "11: \n\t" /* Pad: 3 NOPs */
+        "nop; nop; nop \n\t"
+        "lsr %[r1], %[r1], #3 \n\t" "orr %[r1], %[r1], %[t2_m2], lsl #21 \n\t"
+        "lsr %[r2], %[r2], #3 \n\t" "orr %[r2], %[r2], %[t3_m3], lsl #21 \n\t"
+        "lsr %[r3], %[r3], #3 \n\t"
+        "lsr %[r0], %[r0], #3 \n\t" "orr %[r0], %[r0], %[t1_m1], lsl #21 \n\t"
+        "b 20f \n\t"
+
+        "12: \n\t" /* Pad: 1 NOP */
+        "nop \n\t"
+        "lsr %[r2], %[r2], #3 \n\t" "orr %[r2], %[r2], %[t3_m3], lsl #21 \n\t"
+        "lsr %[r3], %[r3], #3 \n\t"
+        "lsr %[r0], %[r0], #3 \n\t" "orr %[r0], %[r0], %[t1_m1], lsl #21 \n\t"
+        "lsr %[r1], %[r1], #3 \n\t" "orr %[r1], %[r1], %[t2_m2], lsl #21 \n\t"
+        "b 20f \n\t"
+
+        "13: \n\t" /* No padding needed */
+        "lsr %[r3], %[r3], #3 \n\t"
+        "lsr %[r0], %[r0], #3 \n\t" "orr %[r0], %[r0], %[t1_m1], lsl #21 \n\t"
+        "lsr %[r1], %[r1], #3 \n\t" "orr %[r1], %[r1], %[t2_m2], lsl #21 \n\t"
+        "lsr %[r2], %[r2], #3 \n\t" "orr %[r2], %[r2], %[t3_m3], lsl #21 \n\t"
+        "b 20f \n\t"
+
+        "20: \n\t"
+        /* --- Shifts Done --- */
+
+        /* Mask expansion (we re-use t1_m1 etc. to hold expanded masks) */
+        "and %[t1_m1], %[lsb], #1 \n\t"
+        "rsb %[t1_m1], %[t1_m1], #0 \n\t"
+        "ubfx %[t2_m2], %[lsb], #1, #1 \n\t"
+        "rsb %[t2_m2], %[t2_m2], #0 \n\t"
+        "ubfx %[t3_m3], %[lsb], #2, #1 \n\t"
+        "rsb %[t3_m3], %[t3_m3], #0 \n\t"
+
+        /* Shuffled Feedback Selector (bits 2,3) */
+        "ubfx %[temp], %[rng], #2, #2 \n\t"
+        "cmp %[temp], #0 \n\t"
+        "beq 30f \n\t"
+        "cmp %[temp], #1 \n\t"
+        "beq 31f \n\t"
+        "cmp %[temp], #2 \n\t"
+        "beq 32f \n\t"
+        "b 33f \n\t"
+
+        "30: \n\t"
+        "nop; nop; nop; nop; nop \n\t"
+        FB_R0 FB_R1 FB_R2 FB_R3
+        "b 40f \n\t"
+
+        "31: \n\t"
+        "nop; nop; nop \n\t"
+        FB_R1 FB_R2 FB_R3 FB_R0
+        "b 40f \n\t"
+
+        "32: \n\t"
+        "nop \n\t"
+        FB_R2 FB_R3 FB_R0 FB_R1
+        "b 40f \n\t"
+
+        "33: \n\t"
+        FB_R3 FB_R0 FB_R1 FB_R2
+        "b 40f \n\t"
+
+        "40: \n\t"
+        "subs %[steps], %[steps], #1 \n\t"
+        "bne 1b \n"
+        "99: \n"
+
+        : [r0]    "+r" (g_masked_state[0]),
+          [r1]    "+r" (g_masked_state[1]),
+          [r2]    "+r" (g_masked_state[2]),
+          [r3]    "+r" (g_masked_state[3]),
+          [steps] "+r" (num_steps),
+          [rng]   "+r" (rng),
+          [lsb]   "=&r" (lsb),
+          [t1_m1] "=&r" (t1_m1),
+          [t2_m2] "=&r" (t2_m2),
+          [t3_m3] "=&r" (t3_m3),
+          [temp]  "=&r" (temp),
+          [poly]  "=&r" (poly_val)
+        : [pptr]  "r"  (g_interleaved_poly)
+        : "cc", "memory"
+    );
+
+    trigger_low();
+
+    g_shuffle_rng_state = rng;
+    return collapse_shares();
+}
+
 uint8_t set_mode_flags(uint8_t* msg, uint8_t len)
 {
     if(len >= 1) {
@@ -192,8 +526,17 @@ uint8_t set_seed_lfsr(uint8_t* msg, uint8_t len)
         g_lfsr_state = unpack_u32_le(msg);
     }
 
-    if((g_mode_flags & FLAG_MASKED) && (len >= 8)) {
-        g_lfsr_mask = unpack_u32_le(msg + 4);
+    if((g_mode_flags & FLAG_MASKED) && (len >= 12)) {
+        uint32_t seed = unpack_u32_le(msg);
+        uint32_t m1 = unpack_u32_le(msg + 4);
+        uint32_t m2 = unpack_u32_le(msg + 8);
+        expand_seed_to_shares(seed, m1, m2);
+        
+        if((g_mode_flags & FLAG_SHUFFLED) && (len >= 16)) {
+            g_shuffle_rng_state = unpack_u32_le(msg + 12);
+        } else {
+            g_shuffle_rng_state = 12345;
+        }
     } else if(!(g_mode_flags & FLAG_MASKED)) {
         g_lfsr_mask = 0;
     }
@@ -214,9 +557,9 @@ uint8_t step_lfsr(uint8_t* msg, uint8_t len)
 
     if(g_mode_flags & FLAG_MASKED) {
         if(g_mode_flags & FLAG_SHUFFLED) {
-            logical_state = step_masked_shuffled(num_steps, polynomial);
+            logical_state = step_masked_interleaved_shuffled_asm(num_steps, polynomial);
         } else {
-            logical_state = step_masked(num_steps, polynomial);
+            logical_state = step_masked_interleaved_asm(num_steps, polynomial);
         }
     } else {
         if(g_mode_flags & FLAG_SHUFFLED) {
@@ -243,7 +586,7 @@ int main(void)
 
     // 'f': set flags, 's': set seed(+optional mask), 'c': step
     simpleserial_addcmd('f', 1, set_mode_flags);
-    simpleserial_addcmd('s', 8, set_seed_lfsr);
+    simpleserial_addcmd('s', 16, set_seed_lfsr);
     simpleserial_addcmd('c', 1, step_lfsr);
     
     while(1)
