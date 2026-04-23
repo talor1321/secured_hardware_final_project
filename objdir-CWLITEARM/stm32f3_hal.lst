@@ -775,33 +775,33 @@
  601              		.file 10 "../../firmware/mcu/hal//stm32f3/stm32f3xx_hal_uart.h"
 DEFINED SYMBOLS
                             *ABS*:00000000 stm32f3_hal.c
-/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccE8fvak.s:19     .text.platform_init:00000000 $t
-/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccE8fvak.s:25     .text.platform_init:00000000 platform_init
-/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccE8fvak.s:140    .text.platform_init:00000074 $d
-/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccE8fvak.s:146    .text.init_uart:00000000 $t
-/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccE8fvak.s:152    .text.init_uart:00000000 init_uart
-/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccE8fvak.s:264    .text.init_uart:00000070 $d
-/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccE8fvak.s:271    .text.trigger_setup:00000000 $t
-/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccE8fvak.s:277    .text.trigger_setup:00000000 trigger_setup
-/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccE8fvak.s:349    .text.trigger_setup:00000044 $d
-/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccE8fvak.s:354    .text.trigger_high:00000000 $t
-/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccE8fvak.s:360    .text.trigger_high:00000000 trigger_high
-/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccE8fvak.s:377    .text.trigger_low:00000000 $t
-/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccE8fvak.s:383    .text.trigger_low:00000000 trigger_low
-/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccE8fvak.s:400    .text.getch:00000000 $t
-/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccE8fvak.s:406    .text.getch:00000000 getch
-/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccE8fvak.s:455    .text.getch:00000028 $d
-/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccE8fvak.s:461    .text.putch:00000000 $t
-/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccE8fvak.s:467    .text.putch:00000000 putch
-/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccE8fvak.s:501    .text.putch:0000001c $d
-/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccE8fvak.s:506    .text.change_err_led:00000000 $t
-/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccE8fvak.s:512    .text.change_err_led:00000000 change_err_led
-/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccE8fvak.s:540    .text.change_err_led:00000014 $d
-/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccE8fvak.s:545    .text.change_ok_led:00000000 $t
-/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccE8fvak.s:551    .text.change_ok_led:00000000 change_ok_led
-/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccE8fvak.s:579    .text.change_ok_led:00000014 $d
-/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccE8fvak.s:589    .bss:00000000 UartHandle
-/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccE8fvak.s:585    .bss:00000000 $d
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccpZB9ty.s:19     .text.platform_init:00000000 $t
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccpZB9ty.s:25     .text.platform_init:00000000 platform_init
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccpZB9ty.s:140    .text.platform_init:00000074 $d
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccpZB9ty.s:146    .text.init_uart:00000000 $t
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccpZB9ty.s:152    .text.init_uart:00000000 init_uart
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccpZB9ty.s:264    .text.init_uart:00000070 $d
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccpZB9ty.s:271    .text.trigger_setup:00000000 $t
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccpZB9ty.s:277    .text.trigger_setup:00000000 trigger_setup
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccpZB9ty.s:349    .text.trigger_setup:00000044 $d
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccpZB9ty.s:354    .text.trigger_high:00000000 $t
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccpZB9ty.s:360    .text.trigger_high:00000000 trigger_high
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccpZB9ty.s:377    .text.trigger_low:00000000 $t
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccpZB9ty.s:383    .text.trigger_low:00000000 trigger_low
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccpZB9ty.s:400    .text.getch:00000000 $t
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccpZB9ty.s:406    .text.getch:00000000 getch
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccpZB9ty.s:455    .text.getch:00000028 $d
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccpZB9ty.s:461    .text.putch:00000000 $t
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccpZB9ty.s:467    .text.putch:00000000 putch
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccpZB9ty.s:501    .text.putch:0000001c $d
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccpZB9ty.s:506    .text.change_err_led:00000000 $t
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccpZB9ty.s:512    .text.change_err_led:00000000 change_err_led
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccpZB9ty.s:540    .text.change_err_led:00000014 $d
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccpZB9ty.s:545    .text.change_ok_led:00000000 $t
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccpZB9ty.s:551    .text.change_ok_led:00000000 change_ok_led
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccpZB9ty.s:579    .text.change_ok_led:00000014 $d
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccpZB9ty.s:589    .bss:00000000 UartHandle
+/var/folders/6r/9mgcyvsn1ns4p0_hs8y0k38h0000gn/T//ccpZB9ty.s:585    .bss:00000000 $d
 
 UNDEFINED SYMBOLS
 HAL_RCC_OscConfig

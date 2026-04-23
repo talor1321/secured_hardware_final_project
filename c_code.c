@@ -82,7 +82,8 @@ static uint32_t step_plain(uint8_t num_steps, uint32_t polynomial)
 static uint32_t step_plain_v3(uint8_t num_steps, uint32_t polynomial)
 {
     uint32_t lsb, temp, garbage; 
-    
+    volatile uint32_t d = g_lfsr_state;
+    d ^= polynomial; d += 0x12345678; d ^= d << 3;
     trigger_high();
 
     __asm__ volatile (
@@ -118,6 +119,8 @@ static uint32_t step_plain_v3(uint8_t num_steps, uint32_t polynomial)
     );
 
     trigger_low();
+    d ^= g_lfsr_state; d += 0x87654321; d ^= d >> 2;
+
     return g_lfsr_state;
 }
 
@@ -259,25 +262,24 @@ static uint32_t step_masked_interleaved_asm(uint8_t num_steps, uint32_t polynomi
         "and %[temp], %[r3], #7 \n\t"
         "orr %[r2], %[r2], %[temp], lsl #21 \n\t"
 
-        /* reg3 = reg3 >> 3 */
+        /* reg3 = reg3 >> 3 (Padded to match the exact ALU signature of reg0-2) */
         "lsr %[r3], %[r3], #3 \n\t"
+        "and %[temp], %[r3], #0 \n\t"               /* Forces temp to 0 using the identical 'and' instruction */
+        "orr %[r3], %[r3], %[temp], lsl #21 \n\t"   /* Harmlessly ORs the 0, mirroring the power trace */
 
         /* Step C: Expand each share LSB to a full 32-bit mask */
-        /* mask1 = -(lsb & 1)  : 0x00000000 or 0xFFFFFFFF */
-        "and %[mask1], %[lsb], #1 \n\t"
+        /* Uniform UBFX extraction across all shares */
+        "ubfx %[mask1], %[lsb], #0, #1 \n\t"
         "rsb %[mask1], %[mask1], #0 \n\t"
 
-        /* mask2 = -((lsb >> 1) & 1) */
         "ubfx %[mask2], %[lsb], #1, #1 \n\t"
         "rsb %[mask2], %[mask2], #0 \n\t"
 
-        /* mask3 = -((lsb >> 2) & 1) */
         "ubfx %[mask3], %[lsb], #2, #1 \n\t"
         "rsb %[mask3], %[mask3], #0 \n\t"
 
-        /* Step D: Polynomial feedback for each register                  */
+        /* Step D: Polynomial feedback for each register */
         /* feedback = (poly & mask1) | ((poly<<1) & mask2) | ((poly<<2) & mask3) */
-        /* [lsb] is reused as the feedback accumulator (original lsb no longer needed) */
 
         /* ---- reg0 feedback ---- */
         "ldr %[poly], [%[pptr], #0] \n\t"
@@ -332,6 +334,7 @@ static uint32_t step_masked_interleaved_asm(uint8_t num_steps, uint32_t polynomi
           [temp]  "=&r" (temp),
           [poly]  "=&r" (poly_val)
         : [pptr]  "r"  (g_interleaved_poly)
+        
         : "cc", "memory"
     );
 
@@ -392,7 +395,7 @@ static uint32_t step_masked_interleaved_shuffled_asm(uint8_t num_steps, uint32_t
         /* Extract LSB group */
         "and %[lsb], %[r0], #7 \n\t"
 
-        /* Extract boundary bits (pre-extraction breaks strict dependencies) */
+        /* Extract boundary bits */
         "and %[t1_m1], %[r1], #7 \n\t"
         "and %[t2_m2], %[r2], #7 \n\t"
         "and %[t3_m3], %[r3], #7 \n\t"
@@ -402,42 +405,48 @@ static uint32_t step_masked_interleaved_shuffled_asm(uint8_t num_steps, uint32_t
         "eor %[rng], %[rng], %[rng], lsr #17 \n\t"
         "eor %[rng], %[rng], %[rng], lsl #5 \n\t"
 
-        /* Shuffled Shifts Selector (bits 0,1) */
-        "and %[temp], %[rng], #3 \n\t"
-        "cmp %[temp], #0 \n\t"
-        "beq 10f \n\t"
-        "cmp %[temp], #1 \n\t"
-        "beq 11f \n\t"
-        "cmp %[temp], #2 \n\t"
-        "beq 12f \n\t"
-        "b 13f \n\t"
+        /* --- BRANCHLESS SHIFTS SELECTOR --- */
+        "and %[temp], %[rng], #3 \n\t"           /* Mask bits 0,1 */
+        "lsl %[temp], %[temp], #2 \n\t"          /* temp = offset (0, 4, 8, or 12 bytes) */
+        "adr %[poly], 88f \n\t"                  /* Get jump table base address */
+        "ldr %[poly], [%[poly], %[temp]] \n\t"   /* Load destination address */
+        "orr %[poly], %[poly], #1 \n\t"          /* Explicitly set Thumb state bit */
+        "bx %[poly] \n\t"                        /* Branch and Exchange */
 
-        "10: \n\t" /* Pad: 5 NOPs to equalize cycle count with branch 13f */
-        "nop; nop; nop; nop; nop \n\t"
+        ".balign 4 \n\t"                         /* Ensure table is strictly word-aligned */
+        "88: \n\t"
+        ".word 10f \n\t"
+        ".word 11f \n\t"
+        ".word 12f \n\t"
+        ".word 13f \n\t"
+
+        "10: \n\t" 
+        "mov %[temp], #0 \n\t" /* Zero out temp for R3's dummy ORR */
         "lsr %[r0], %[r0], #3 \n\t" "orr %[r0], %[r0], %[t1_m1], lsl #21 \n\t"
         "lsr %[r1], %[r1], #3 \n\t" "orr %[r1], %[r1], %[t2_m2], lsl #21 \n\t"
         "lsr %[r2], %[r2], #3 \n\t" "orr %[r2], %[r2], %[t3_m3], lsl #21 \n\t"
-        "lsr %[r3], %[r3], #3 \n\t"
+        "lsr %[r3], %[r3], #3 \n\t" "orr %[r3], %[r3], %[temp], lsl #21 \n\t"
         "b 20f \n\t"
 
-        "11: \n\t" /* Pad: 3 NOPs */
-        "nop; nop; nop \n\t"
+        "11: \n\t" 
+        "mov %[temp], #0 \n\t"
         "lsr %[r1], %[r1], #3 \n\t" "orr %[r1], %[r1], %[t2_m2], lsl #21 \n\t"
         "lsr %[r2], %[r2], #3 \n\t" "orr %[r2], %[r2], %[t3_m3], lsl #21 \n\t"
-        "lsr %[r3], %[r3], #3 \n\t"
+        "lsr %[r3], %[r3], #3 \n\t" "orr %[r3], %[r3], %[temp], lsl #21 \n\t"
         "lsr %[r0], %[r0], #3 \n\t" "orr %[r0], %[r0], %[t1_m1], lsl #21 \n\t"
         "b 20f \n\t"
 
-        "12: \n\t" /* Pad: 1 NOP */
-        "nop \n\t"
+        "12: \n\t" 
+        "mov %[temp], #0 \n\t"
         "lsr %[r2], %[r2], #3 \n\t" "orr %[r2], %[r2], %[t3_m3], lsl #21 \n\t"
-        "lsr %[r3], %[r3], #3 \n\t"
+        "lsr %[r3], %[r3], #3 \n\t" "orr %[r3], %[r3], %[temp], lsl #21 \n\t"
         "lsr %[r0], %[r0], #3 \n\t" "orr %[r0], %[r0], %[t1_m1], lsl #21 \n\t"
         "lsr %[r1], %[r1], #3 \n\t" "orr %[r1], %[r1], %[t2_m2], lsl #21 \n\t"
         "b 20f \n\t"
 
-        "13: \n\t" /* No padding needed */
-        "lsr %[r3], %[r3], #3 \n\t"
+        "13: \n\t" 
+        "mov %[temp], #0 \n\t"
+        "lsr %[r3], %[r3], #3 \n\t" "orr %[r3], %[r3], %[temp], lsl #21 \n\t"
         "lsr %[r0], %[r0], #3 \n\t" "orr %[r0], %[r0], %[t1_m1], lsl #21 \n\t"
         "lsr %[r1], %[r1], #3 \n\t" "orr %[r1], %[r1], %[t2_m2], lsl #21 \n\t"
         "lsr %[r2], %[r2], #3 \n\t" "orr %[r2], %[r2], %[t3_m3], lsl #21 \n\t"
@@ -446,36 +455,38 @@ static uint32_t step_masked_interleaved_shuffled_asm(uint8_t num_steps, uint32_t
         "20: \n\t"
         /* --- Shifts Done --- */
 
-        /* Mask expansion (we re-use t1_m1 etc. to hold expanded masks) */
-        "and %[t1_m1], %[lsb], #1 \n\t"
+        /* Mask expansion (Uniform UBFX extraction) */
+        "ubfx %[t1_m1], %[lsb], #0, #1 \n\t"
         "rsb %[t1_m1], %[t1_m1], #0 \n\t"
         "ubfx %[t2_m2], %[lsb], #1, #1 \n\t"
         "rsb %[t2_m2], %[t2_m2], #0 \n\t"
         "ubfx %[t3_m3], %[lsb], #2, #1 \n\t"
         "rsb %[t3_m3], %[t3_m3], #0 \n\t"
 
-        /* Shuffled Feedback Selector (bits 2,3) */
-        "ubfx %[temp], %[rng], #2, #2 \n\t"
-        "cmp %[temp], #0 \n\t"
-        "beq 30f \n\t"
-        "cmp %[temp], #1 \n\t"
-        "beq 31f \n\t"
-        "cmp %[temp], #2 \n\t"
-        "beq 32f \n\t"
-        "b 33f \n\t"
+        /* --- BRANCHLESS FEEDBACK SELECTOR --- */
+        "ubfx %[temp], %[rng], #2, #2 \n\t"      /* Mask bits 2,3 */
+        "lsl %[temp], %[temp], #2 \n\t"
+        "adr %[poly], 99f \n\t"
+        "ldr %[poly], [%[poly], %[temp]] \n\t"   /* Load destination address */
+        "orr %[poly], %[poly], #1 \n\t"          /* Explicitly set Thumb state bit */
+        "bx %[poly] \n\t"                        /* Branch and Exchange */
+
+        ".balign 4 \n\t"
+        "99: \n\t"
+        ".word 30f \n\t"
+        ".word 31f \n\t"
+        ".word 32f \n\t"
+        ".word 33f \n\t"
 
         "30: \n\t"
-        "nop; nop; nop; nop; nop \n\t"
         FB_R0 FB_R1 FB_R2 FB_R3
         "b 40f \n\t"
 
         "31: \n\t"
-        "nop; nop; nop \n\t"
         FB_R1 FB_R2 FB_R3 FB_R0
         "b 40f \n\t"
 
         "32: \n\t"
-        "nop \n\t"
         FB_R2 FB_R3 FB_R0 FB_R1
         "b 40f \n\t"
 
