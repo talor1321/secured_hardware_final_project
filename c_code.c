@@ -15,6 +15,29 @@ static uint8_t g_mode_flags = 0;
 static uint32_t g_masked_state[4] = {0, 0, 0, 0};
 static uint32_t g_interleaved_poly[4] = {0, 0, 0, 0};
 static uint32_t g_shuffle_rng_state = 0;
+volatile uint32_t trigg_junk_var = 0;
+
+#define NOP10 "nop; nop; nop; nop; nop; \n\t" \
+              "nop; nop; nop; nop; nop; \n\t"
+
+#define NOP50 NOP10 NOP10 NOP10 NOP10 NOP10
+
+static void trigger_high_modified(void) {
+    // junk computation
+    // uint32_t polynomial = (g_mode_flags & FLAG_HIGH_HW) ? POLY_HIGH_HW : POLY_LOW_HW;
+    // trigg_junk_var ^= polynomial; trigg_junk_var += 0x12345678; trigg_junk_var ^= trigg_junk_var << 3;
+    // wait for a few cycles
+    // __asm__ volatile(NOP50);
+    // activate trigger
+    trigger_high();
+    // wait for a few cycles
+    // __asm__ volatile(NOP50);
+}
+
+static void trigger_low_modified(void) {
+    trigger_low();
+}
+
 
 static uint32_t unpack_u32_le(const uint8_t* data)
 {
@@ -37,7 +60,7 @@ static void compute_interleaved_poly(uint32_t poly)
     }
 }
 
-static void expand_seed_to_shares(uint32_t seed, uint32_t mask1, uint32_t mask2)
+static void construct_interleaved_shares_register(uint32_t mask1, uint32_t mask2, uint32_t mask3)
 {
     int j, i;
     for (j = 0; j < 4; j++) {
@@ -46,28 +69,11 @@ static void expand_seed_to_shares(uint32_t seed, uint32_t mask1, uint32_t mask2)
             int bit_idx = j * 8 + i;
             uint32_t s1 = (mask1 >> bit_idx) & 1;
             uint32_t s2 = (mask2 >> bit_idx) & 1;
-            uint32_t s3 = ((seed >> bit_idx) & 1) ^ s1 ^ s2;
+            uint32_t s3 = (mask3 >> bit_idx) & 1;
             int pos = i * 3;
             g_masked_state[j] |= (s1 << pos) | (s2 << (pos + 1)) | (s3 << (pos + 2));
         }
     }
-}
-
-static uint32_t collapse_shares(void)
-{
-    uint32_t result = 0;
-    int j, i;
-    for (j = 0; j < 4; j++) {
-        for (i = 0; i < 8; i++) {
-            int pos = i * 3;
-            uint32_t s1 = (g_masked_state[j] >> pos) & 1;
-            uint32_t s2 = (g_masked_state[j] >> (pos + 1)) & 1;
-            uint32_t s3 = (g_masked_state[j] >> (pos + 2)) & 1;
-            uint32_t original = s1 ^ s2 ^ s3;
-            result |= (original << (j * 8 + i));
-        }
-    }
-    return result;
 }
 
 static uint32_t step_plain_v1(uint8_t num_steps, uint32_t polynomial);
@@ -82,9 +88,7 @@ static uint32_t step_plain(uint8_t num_steps, uint32_t polynomial)
 static uint32_t step_plain_v3(uint8_t num_steps, uint32_t polynomial)
 {
     uint32_t lsb, temp, garbage; 
-    volatile uint32_t d = g_lfsr_state;
-    d ^= polynomial; d += 0x12345678; d ^= d << 3;
-    trigger_high();
+    trigger_high_modified();
 
     __asm__ volatile (
         "cmp %[steps], #0 \n\t"               
@@ -118,8 +122,7 @@ static uint32_t step_plain_v3(uint8_t num_steps, uint32_t polynomial)
         : "cc"                                
     );
 
-    trigger_low();
-    d ^= g_lfsr_state; d += 0x87654321; d ^= d >> 2;
+    trigger_low_modified();
 
     return g_lfsr_state;
 }
@@ -128,7 +131,7 @@ static uint32_t step_plain_v2(uint8_t num_steps, uint32_t polynomial)
 {
     uint32_t mask; 
     
-    trigger_high();
+    trigger_high_modified();
 
     __asm__ volatile (
         "cmp %[steps], #0 \n\t"               
@@ -154,13 +157,13 @@ static uint32_t step_plain_v2(uint8_t num_steps, uint32_t polynomial)
         : "cc"                                // We still clobber CC because of subs/cmp
     );
 
-    trigger_low();
+    trigger_low_modified();
     return g_lfsr_state;
 }
 
 static uint32_t step_plain_v1(uint8_t num_steps, uint32_t polynomial)
 {
-    trigger_high();
+    trigger_high_modified();
 
     __asm__ volatile (
         "cmp %[steps], #0 \n\t"               // Check if num_steps is 0
@@ -185,48 +188,20 @@ static uint32_t step_plain_v1(uint8_t num_steps, uint32_t polynomial)
         : "cc"                                // Tells compiler we modify condition flags
     );
 
-    trigger_low();
+    trigger_low_modified();
     return g_lfsr_state;
 }
 
 static uint32_t step_shuffled(uint8_t num_steps, uint32_t polynomial)
 {
     uint8_t i;
-    trigger_high();
+    trigger_high_modified();
     for(i = 0; i < num_steps; i++) {
         uint32_t lsb = g_lfsr_state & 1u;
         g_lfsr_state = (g_lfsr_state >> 1) ^ (polynomial & (0u - lsb));
     }
-    trigger_low();
+    trigger_low_modified();
     return g_lfsr_state;
-}
-
-static uint32_t step_masked(uint8_t num_steps, uint32_t polynomial)
-{
-    uint8_t i;
-    trigger_high();
-    for(i = 0; i < num_steps; i++) {
-        uint32_t lsb_state = g_lfsr_state & 1u;
-        uint32_t lsb_mask = g_lfsr_mask & 1u;
-        g_lfsr_state = (g_lfsr_state >> 1) ^ (polynomial * lsb_state);
-        g_lfsr_mask = (g_lfsr_mask >> 1) ^ (polynomial * lsb_mask);
-    }
-    trigger_low();
-    return g_lfsr_state ^ g_lfsr_mask;
-}
-
-static uint32_t step_masked_shuffled(uint8_t num_steps, uint32_t polynomial)
-{
-    uint8_t i;
-    trigger_high();
-    for(i = 0; i < num_steps; i++) {
-        uint32_t lsb_state = g_lfsr_state & 1u;
-        uint32_t lsb_mask = g_lfsr_mask & 1u;
-        g_lfsr_state = (g_lfsr_state >> 1) ^ (polynomial & (0u - lsb_state));
-        g_lfsr_mask = (g_lfsr_mask >> 1) ^ (polynomial & (0u - lsb_mask));
-    }
-    trigger_low();
-    return g_lfsr_state ^ g_lfsr_mask;
 }
 
 static uint32_t step_masked_interleaved_asm(uint8_t num_steps, uint32_t polynomial)
@@ -236,7 +211,7 @@ static uint32_t step_masked_interleaved_asm(uint8_t num_steps, uint32_t polynomi
     /* Precompute interleaved polynomial (outside the sensitive region) */
     compute_interleaved_poly(polynomial);
 
-    trigger_high();
+    trigger_high_modified();
 
     __asm__ volatile (
         "cmp %[steps], #0 \n\t"
@@ -338,46 +313,21 @@ static uint32_t step_masked_interleaved_asm(uint8_t num_steps, uint32_t polynomi
         : "cc", "memory"
     );
 
-    trigger_low();
+    trigger_low_modified();
 
-    return collapse_shares();
+    return 0x00;
 }
 
-#define FB_R0 \
-    "ldr %[poly], [%[pptr], #0] \n\t" \
+#define FB_R(n) \
+    "ldr %[poly], [%[pptr], #" #n "*4] \n\t" \
     "and %[lsb], %[poly], %[t1_m1] \n\t" \
     "and %[temp], %[t2_m2], %[poly], lsl #1 \n\t" \
     "orr %[lsb], %[lsb], %[temp] \n\t" \
     "and %[temp], %[t3_m3], %[poly], lsl #2 \n\t" \
     "orr %[lsb], %[lsb], %[temp] \n\t" \
-    "eor %[r0], %[r0], %[lsb] \n\t"
+    "eor %[r" #n "], %[r" #n "], %[lsb] \n\t"
 
-#define FB_R1 \
-    "ldr %[poly], [%[pptr], #4] \n\t" \
-    "and %[lsb], %[poly], %[t1_m1] \n\t" \
-    "and %[temp], %[t2_m2], %[poly], lsl #1 \n\t" \
-    "orr %[lsb], %[lsb], %[temp] \n\t" \
-    "and %[temp], %[t3_m3], %[poly], lsl #2 \n\t" \
-    "orr %[lsb], %[lsb], %[temp] \n\t" \
-    "eor %[r1], %[r1], %[lsb] \n\t"
-
-#define FB_R2 \
-    "ldr %[poly], [%[pptr], #8] \n\t" \
-    "and %[lsb], %[poly], %[t1_m1] \n\t" \
-    "and %[temp], %[t2_m2], %[poly], lsl #1 \n\t" \
-    "orr %[lsb], %[lsb], %[temp] \n\t" \
-    "and %[temp], %[t3_m3], %[poly], lsl #2 \n\t" \
-    "orr %[lsb], %[lsb], %[temp] \n\t" \
-    "eor %[r2], %[r2], %[lsb] \n\t"
-
-#define FB_R3 \
-    "ldr %[poly], [%[pptr], #12] \n\t" \
-    "and %[lsb], %[poly], %[t1_m1] \n\t" \
-    "and %[temp], %[t2_m2], %[poly], lsl #1 \n\t" \
-    "orr %[lsb], %[lsb], %[temp] \n\t" \
-    "and %[temp], %[t3_m3], %[poly], lsl #2 \n\t" \
-    "orr %[lsb], %[lsb], %[temp] \n\t" \
-    "eor %[r3], %[r3], %[lsb] \n\t"
+#define FB_R(n)
 
 static uint32_t step_masked_interleaved_shuffled_asm(uint8_t num_steps, uint32_t polynomial)
 {
@@ -385,7 +335,7 @@ static uint32_t step_masked_interleaved_shuffled_asm(uint8_t num_steps, uint32_t
     uint32_t rng = g_shuffle_rng_state;
 
     compute_interleaved_poly(polynomial);
-    trigger_high();
+    trigger_high_modified();
 
     __asm__ volatile (
         "cmp %[steps], #0 \n\t"
@@ -479,19 +429,19 @@ static uint32_t step_masked_interleaved_shuffled_asm(uint8_t num_steps, uint32_t
         ".word 33f \n\t"
 
         "30: \n\t"
-        FB_R0 FB_R1 FB_R2 FB_R3
+        FB_R(0) FB_R(1) FB_R(2) FB_R(3)
         "b 40f \n\t"
 
         "31: \n\t"
-        FB_R1 FB_R2 FB_R3 FB_R0
+        FB_R(1) FB_R(2) FB_R(3) FB_R(0)
         "b 40f \n\t"
 
         "32: \n\t"
-        FB_R2 FB_R3 FB_R0 FB_R1
+        FB_R(2) FB_R(3) FB_R(0) FB_R(1)
         "b 40f \n\t"
 
         "33: \n\t"
-        FB_R3 FB_R0 FB_R1 FB_R2
+        FB_R(3) FB_R(0) FB_R(1) FB_R(2)
         "b 40f \n\t"
 
         "40: \n\t"
@@ -515,10 +465,10 @@ static uint32_t step_masked_interleaved_shuffled_asm(uint8_t num_steps, uint32_t
         : "cc", "memory"
     );
 
-    trigger_low();
+    trigger_low_modified();
 
     g_shuffle_rng_state = rng;
-    return collapse_shares();
+    return 0x00;
 }
 
 uint8_t set_mode_flags(uint8_t* msg, uint8_t len)
@@ -538,10 +488,10 @@ uint8_t set_seed_lfsr(uint8_t* msg, uint8_t len)
     }
 
     if((g_mode_flags & FLAG_MASKED) && (len >= 12)) {
-        uint32_t seed = unpack_u32_le(msg);
         uint32_t m1 = unpack_u32_le(msg + 4);
         uint32_t m2 = unpack_u32_le(msg + 8);
-        expand_seed_to_shares(seed, m1, m2);
+        uint32_t m3 = unpack_u32_le(msg + 12);
+        construct_interleaved_shares_register(m1, m2, m3);
         
         if((g_mode_flags & FLAG_SHUFFLED) && (len >= 16)) {
             g_shuffle_rng_state = unpack_u32_le(msg + 12);
@@ -603,3 +553,4 @@ int main(void)
     while(1)
         simpleserial_get();
 }
+
