@@ -138,14 +138,12 @@ static uint32_t step_plain_v2(uint8_t num_steps, uint32_t polynomial)
         "beq 2f \n"                           
         "1: \n\t"                             
         
-        // --- Data Processing (No 's' -> No Flag Updates) ---
         "and %[mask], %[state], #1 \n\t"      // Extract LSB
         "lsr %[state], %[state], #1 \n\t"     // Shift state right
         "rsb %[mask], %[mask], #0 \n\t"       // Mask expansion (0 - LSB)
         "and %[mask], %[mask], %[poly] \n\t"  // Mask the polynomial
         "eor %[state], %[state], %[mask] \n\t"// Apply XOR feedback
         
-        // --- Loop Control (Keep 's' -> Updates Z flag) ---
         "subs %[steps], %[steps], #1 \n\t"    // Decrement counter
         "bne 1b \n"                           // Branch if Z flag != 1
         "2: \n"                               
@@ -326,8 +324,6 @@ static uint32_t step_masked_interleaved_asm(uint8_t num_steps, uint32_t polynomi
     "and %[temp], %[t3_m3], %[poly], lsl #2 \n\t" \
     "orr %[lsb], %[lsb], %[temp] \n\t" \
     "eor %[r" #n "], %[r" #n "], %[lsb] \n\t"
-
-#define FB_R(n)
 
 static uint32_t step_masked_interleaved_shuffled_asm(uint8_t num_steps, uint32_t polynomial)
 {
